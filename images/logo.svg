@@ -1,0 +1,20 @@
+<svg width="200" height="60" viewBox="0 0 200 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background circle -->
+  <circle cx="30" cy="30" r="25" fill="#2563eb" opacity="0.1"/>
+  
+  <!-- Main icon -->
+  <path d="M20 20h20v5H20v-5z" fill="#2563eb"/>
+  <path d="M20 30h15v5H20v-5z" fill="#2563eb"/>
+  <path d="M20 40h18v5H20v-5z" fill="#2563eb"/>
+  
+  <!-- Arrow element -->
+  <path d="M35 35l5-3v2h8v2h-8v2l-5-3z" fill="#f59e0b"/>
+  
+  <!-- Text -->
+  <text x="60" y="25" font-family="Inter, sans-serif" font-size="16" font-weight="700" fill="#1f2937">
+    East Africom
+  </text>
+  <text x="60" y="42" font-family="Inter, sans-serif" font-size="14" font-weight="500" fill="#2563eb">
+    CONSULTS
+  </text>
+</svg>

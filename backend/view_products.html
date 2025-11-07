@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Uganda Coffee Varieties - Database Contents</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 2rem; background: #f5f5f5; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .header { background: #fff; padding: 2rem; border-radius: 8px; margin-bottom: 2rem; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+        .stat-card { background: #fff; padding: 1.5rem; border-radius: 8px; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .stat-number { font-size: 2rem; font-weight: bold; color: #8B4513; }
+        .stat-label { color: #666; margin-top: 0.5rem; }
+        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; }
+        .product-card { background: #fff; border-radius: 8px; padding: 1.5rem; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .product-name { font-size: 1.2rem; font-weight: bold; color: #8B4513; margin-bottom: 0.5rem; }
+        .product-grade { background: #e8f5e8; color: #2d5a2d; padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.85rem; display: inline-block; }
+        .product-price { font-size: 1.4rem; font-weight: bold; color: #d2691e; margin: 0.5rem 0; }
+        .product-stock { color: #666; margin-bottom: 0.5rem; }
+        .product-description { color: #555; font-size: 0.9rem; line-height: 1.4; }
+        .featured-badge { background: #ffd700; color: #b8860b; padding: 0.2rem 0.6rem; border-radius: 10px; font-size: 0.75rem; }
+        .category-filter { margin: 1rem 0; }
+        .filter-btn { background: #8B4513; color: white; border: none; padding: 0.5rem 1rem; margin: 0.2rem; border-radius: 5px; cursor: pointer; }
+        .filter-btn.active { background: #d2691e; }
+        .loading { text-align: center; padding: 2rem; }
+        .error { background: #f8d7da; color: #721c24; padding: 1rem; border-radius: 5px; margin: 1rem 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🇺🇬 Uganda Coffee Varieties Database</h1>
+            <p>Viewing products stored in: <strong>eastafricom_cms</strong> database</p>
+            <button onclick="loadProducts()" style="background: #28a745; color: white; border: none; padding: 0.8rem 1.5rem; border-radius: 5px; cursor: pointer;">
+                🔄 Refresh Data
+            </button>
+        </div>
+
+        <div class="stats" id="stats">
+            <div class="stat-card">
+                <div class="stat-number" id="total-products">-</div>
+                <div class="stat-label">Total Products</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="coffee-count">-</div>
+                <div class="stat-label">Coffee Varieties</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="arabica-count">-</div>
+                <div class="stat-label">Arabica Varieties</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="robusta-count">-</div>
+                <div class="stat-label">Robusta Varieties</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="featured-count">-</div>
+                <div class="stat-label">Featured Products</div>
+            </div>
+        </div>
+
+        <div class="category-filter">
+            <button class="filter-btn active" onclick="filterProducts('all')">All Products</button>
+            <button class="filter-btn" onclick="filterProducts('coffee')">Coffee Only</button>
+            <button class="filter-btn" onclick="filterProducts('cocoa')">Cocoa Only</button>
+            <button class="filter-btn" onclick="filterProducts('featured')">Featured Only</button>
+        </div>
+
+        <div id="loading" class="loading" style="display: none;">
+            Loading products from database...
+        </div>
+
+        <div id="error-message" class="error" style="display: none;"></div>
+
+        <div class="products-grid" id="products-grid"></div>
+    </div>
+
+    <script>
+        let allProducts = [];
+        let currentFilter = 'all';
+
+        async function loadProducts() {
+            const loading = document.getElementById('loading');
+            const errorMessage = document.getElementById('error-message');
+            const productsGrid = document.getElementById('products-grid');
+            
+            loading.style.display = 'block';
+            errorMessage.style.display = 'none';
+            productsGrid.innerHTML = '';
+
+            try {
+                const response = await fetch('../api/products.php');
+                const data = await response.json();
+                
+                if (data.success) {
+                    allProducts = data.products;
+                    updateStats();
+                    displayProducts(allProducts);
+                } else {
+                    throw new Error(data.message || 'Failed to load products');
+                }
+            } catch (error) {
+                console.error('Error loading products:', error);
+                errorMessage.textContent = 'Error loading products: ' + error.message;
+                errorMessage.style.display = 'block';
+            } finally {
+                loading.style.display = 'none';
+            }
+        }
+
+        function updateStats() {
+            const total = allProducts.length;
+            const coffee = allProducts.filter(p => p.category === 'coffee').length;
+            const arabica = allProducts.filter(p => p.name.toLowerCase().includes('arabica')).length;
+            const robusta = allProducts.filter(p => p.name.toLowerCase().includes('robusta')).length;
+            const featured = allProducts.filter(p => p.featured === '1' || p.featured === 1).length;
+
+            document.getElementById('total-products').textContent = total;
+            document.getElementById('coffee-count').textContent = coffee;
+            document.getElementById('arabica-count').textContent = arabica;
+            document.getElementById('robusta-count').textContent = robusta;
+            document.getElementById('featured-count').textContent = featured;
+        }
+
+        function displayProducts(products) {
+            const grid = document.getElementById('products-grid');
+            
+            if (products.length === 0) {
+                grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 3rem; color: #666;">No products found. Try running the population script first.</div>';
+                return;
+            }
+
+            grid.innerHTML = products.map(product => `
+                <div class="product-card">
+                    <div class="product-name">${product.name}</div>
+                    <div style="margin-bottom: 0.5rem;">
+                        <span class="product-grade">${product.grade || 'N/A'}</span>
+                        ${product.featured === '1' || product.featured === 1 ? '<span class="featured-badge">Featured</span>' : ''}
+                    </div>
+                    <div class="product-price">$${parseFloat(product.price).toFixed(2)} USD/MT</div>
+                    <div class="product-stock">Stock: ${product.stock_quantity} MT</div>
+                    <div class="product-description">${product.description || 'No description available'}</div>
+                </div>
+            `).join('');
+        }
+
+        function filterProducts(category) {
+            // Update active button
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            let filtered = allProducts;
+            
+            switch(category) {
+                case 'coffee':
+                    filtered = allProducts.filter(p => p.category === 'coffee');
+                    break;
+                case 'cocoa':
+                    filtered = allProducts.filter(p => p.category === 'cocoa');
+                    break;
+                case 'featured':
+                    filtered = allProducts.filter(p => p.featured === '1' || p.featured === 1);
+                    break;
+                default:
+                    filtered = allProducts;
+            }
+            
+            displayProducts(filtered);
+        }
+
+        // Load products when page loads
+        window.addEventListener('DOMContentLoaded', loadProducts);
+    </script>
+</body>
+</html>

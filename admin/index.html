@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>East Africom - Admin Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .tab-btn.active {
+            background-color: #3b82f6;
+            color: white;
+        }
+        .loader {
+            border: 2px solid #f3f4f6;
+            border-top: 2px solid #3b82f6;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .status-online { color: #10b981; }
+        .status-offline { color: #ef4444; }
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 12px 20px;
+            border-radius: 6px;
+            color: white;
+            z-index: 10000;
+            opacity: 0;
+            transform: translateX(100%);
+            transition: all 0.3s ease;
+        }
+        .notification.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        .notification.success { background-color: #10b981; }
+        .notification.error { background-color: #ef4444; }
+        .notification.warning { background-color: #f59e0b; }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Header -->
+    <header class="bg-white shadow-sm border-b">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center">
+                    <h1 class="text-2xl font-bold text-gray-900">East Africom Admin</h1>
+                    <div class="ml-4 flex items-center">
+                        <span class="w-2 h-2 rounded-full mr-2" id="connection-status"></span>
+                        <span class="text-sm text-gray-500" id="connection-text">Connecting...</span>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button onclick="refreshAllData()" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition">
+                        <i class="fas fa-sync-alt mr-2"></i>Refresh All
+                    </button>
+                    <a href="../index.html" target="_blank" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition">
+                        <i class="fas fa-external-link-alt mr-2"></i>View Site
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <!-- Navigation Tabs -->
+        <div class="mb-6">
+            <nav class="flex space-x-1">
+                <button onclick="showTab('dashboard')" class="tab-btn px-4 py-2 rounded-lg font-medium active">
+                    <i class="fas fa-chart-dashboard mr-2"></i>Dashboard
+                </button>
+                <button onclick="showTab('products')" class="tab-btn px-4 py-2 rounded-lg font-medium">
+                    <i class="fas fa-coffee mr-2"></i>Products
+                </button>
+                <button onclick="showTab('testimonials')" class="tab-btn px-4 py-2 rounded-lg font-medium">
+                    <i class="fas fa-quote-left mr-2"></i>Testimonials
+                </button>
+                <button onclick="showTab('activity')" class="tab-btn px-4 py-2 rounded-lg font-medium">
+                    <i class="fas fa-chart-line mr-2"></i>Live Activity
+                </button>
+                <button onclick="showTab('settings')" class="tab-btn px-4 py-2 rounded-lg font-medium">
+                    <i class="fas fa-cog mr-2"></i>Settings
+                </button>
+            </nav>
+        </div>
+
+        <!-- Dashboard Tab -->
+        <div id="dashboard-tab" class="tab-content">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+                <!-- Stats Cards -->
+                <div class="bg-white p-6 rounded-lg shadow">
+                    <div class="flex items-center">
+                        <div class="p-2 bg-blue-100 rounded-lg">
+                            <i class="fas fa-coffee text-blue-600 text-xl"></i>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-sm font-medium text-gray-600">Total Products</p>
+                            <p class="text-2xl font-semibold text-gray-900" id="total-products">-</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-lg shadow">
+                    <div class="flex items-center">
+                        <div class="p-2 bg-green-100 rounded-lg">
+                            <i class="fas fa-warehouse text-green-600 text-xl"></i>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-sm font-medium text-gray-600">Total Stock</p>
+                            <p class="text-2xl font-semibold text-gray-900" id="total-stock">-</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-lg shadow">
+                    <div class="flex items-center">
+                        <div class="p-2 bg-purple-100 rounded-lg">
+                            <i class="fas fa-star text-purple-600 text-xl"></i>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-sm font-medium text-gray-600">Testimonials</p>
+                            <p class="text-2xl font-semibold text-gray-900" id="total-testimonials">-</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-lg shadow">
+                    <div class="flex items-center">
+                        <div class="p-2 bg-orange-100 rounded-lg">
+                            <i class="fas fa-chart-line text-orange-600 text-xl"></i>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-sm font-medium text-gray-600">Today's Activity</p>
+                            <p class="text-2xl font-semibold text-gray-900" id="today-activity">-</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="bg-white rounded-lg shadow">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h3 class="text-lg font-medium text-gray-900">Recent Activity</h3>
+                </div>
+                <div class="p-6">
+                    <div id="dashboard-activity" class="space-y-3">
+                        <div class="flex items-center justify-center py-8">
+                            <div class="loader"></div>
+                            <span class="ml-3 text-gray-500">Loading activity...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Products Tab -->
+        <div id="products-tab" class="tab-content hidden">
+            <div class="bg-white rounded-lg shadow">
+                <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+                    <h2 class="text-xl font-semibold text-gray-900">Products Management</h2>
+                    <button onclick="openProductModal()" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition">
+                        <i class="fas fa-plus mr-2"></i>Add Product
+                    </button>
+                </div>
+                <div class="p-6">
+                    <div id="products-table">
+                        <div class="flex items-center justify-center py-8">
+                            <div class="loader"></div>
+                            <span class="ml-3 text-gray-500">Loading products...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Testimonials Tab -->
+        <div id="testimonials-tab" class="tab-content hidden">
+            <div class="bg-white rounded-lg shadow">
+                <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+                    <h2 class="text-xl font-semibold text-gray-900">Testimonials Management</h2>
+                    <button onclick="openTestimonialModal()" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition">
+                        <i class="fas fa-plus mr-2"></i>Add Testimonial
+                    </button>
+                </div>
+                <div class="p-6">
+                    <div id="testimonials-table">
+                        <div class="flex items-center justify-center py-8">
+                            <div class="loader"></div>
+                            <span class="ml-3 text-gray-500">Loading testimonials...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Live Activity Tab -->
+        <div id="activity-tab" class="tab-content hidden">
+            <div class="bg-white rounded-lg shadow">
+                <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+                    <h2 class="text-xl font-semibold text-gray-900">Live Activity Management</h2>
+                    <div class="space-x-2">
+                        <button onclick="generateSampleActivity()" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition">
+                            <i class="fas fa-magic mr-2"></i>Generate Sample
+                        </button>
+                        <button onclick="openActivityModal()" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition">
+                            <i class="fas fa-plus mr-2"></i>Add Activity
+                        </button>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <div id="activity-table">
+                        <div class="flex items-center justify-center py-8">
+                            <div class="loader"></div>
+                            <span class="ml-3 text-gray-500">Loading activity...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings Tab -->
+        <div id="settings-tab" class="tab-content hidden">
+            <div class="bg-white rounded-lg shadow">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h2 class="text-xl font-semibold text-gray-900">Site Settings</h2>
+                </div>
+                <div class="p-6">
+                    <div id="settings-form">
+                        <div class="flex items-center justify-center py-8">
+                            <div class="loader"></div>
+                            <span class="ml-3 text-gray-500">Loading settings...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div id="modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden z-50">
+        <div class="flex justify-center items-center h-full p-4">
+            <div class="bg-white rounded-lg max-w-2xl w-full max-h-96 overflow-y-auto">
+                <div class="p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 id="modal-title" class="text-lg font-medium text-gray-900">Modal Title</h3>
+                        <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600">
+                            <i class="fas fa-times text-xl"></i>
+                        </button>
+                    </div>
+                    <div id="modal-content">
+                        <!-- Modal content will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Container -->
+    <div id="notifications"></div>
+
+    <script src="admin.js?v=2.0"></script>
+</body>
+</html>

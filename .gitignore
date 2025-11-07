@@ -1,0 +1,43 @@
+# East Africom .gitignore
+
+# Local development files
+*.log
+*.tmp
+.env
+.vscode/
+.idea/
+
+# Database configuration (sensitive)
+backend/config/database_local.php
+
+# Temporary files
+temp/
+cache/
+logs/
+
+# OS generated files
+Thumbs.db
+.DS_Store
+*.swp
+*.swo
+
+# Backup files
+*~
+*.bak
+
+# Test files
+test-*.html
+*-test.php
+api-diagnostics.php
+test-connection.php
+test-system.php
+
+# Documentation (keep in separate repo)
+*.md
+*.pdf
+
+# Windows specific
+desktop.ini
+
+# Setup files (one-time use)
+setup-database.php

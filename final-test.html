@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>East Africom - Test All Features</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f8f9fa;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin: 40px 0;
+            padding: 20px;
+            border: 2px dashed #ddd;
+            border-radius: 8px;
+        }
+        .hero {
+            text-align: center;
+            margin-bottom: 60px;
+            padding: 60px 0;
+            background: linear-gradient(135deg, #00b894, #00a085);
+            color: white;
+            border-radius: 12px;
+        }
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin: 40px 0;
+        }
+        .testimonial-card {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="hero">
+            <h1>East Africom Export</h1>
+            <p>Premium Coffee & Cocoa Direct from Africa</p>
+        </div>
+
+        <div class="test-section">
+            <h2>🚨 Test Area 1: Urgency Banner</h2>
+            <p>The urgency banner should appear at the top of the page with countdown timer.</p>
+        </div>
+
+        <div class="test-section">
+            <h2>💬 Test Area 2: Instant Communication</h2>
+            <p>WhatsApp button and Live Chat widget should be visible.</p>
+        </div>
+
+        <div class="test-section" id="testimonials">
+            <h2>⭐ Test Area 3: Testimonials</h2>
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <p>"Outstanding service and premium quality beans. Our café's revenue increased by 40% after switching to East Africom."</p>
+                    <div><strong>Maria Santos</strong> - Premium Coffee Roasters, Brazil</div>
+                </div>
+                <div class="testimonial-card">
+                    <p>"The direct trade relationship has been incredible. Quality is consistent and the team is always responsive."</p>
+                    <div><strong>James Mitchell</strong> - Artisan Chocolate Co., UK</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h2>📊 Test Area 4: Success Stories & Social Proof</h2>
+            <p>Success stories and statistics should appear below testimonials.</p>
+        </div>
+    </div>
+
+    <!-- Load all conversion optimization scripts -->
+    <script src="js/urgency-scarcity.js"></script>
+    <script src="js/instant-communication.js"></script>
+    <script src="js/testimonials.js"></script>
+
+    <script>
+        console.log('=== TESTING ALL FEATURES ===');
+        
+        // Force execution of all features
+        setTimeout(() => {
+            console.log('--- Testing Urgency Features ---');
+            if (typeof createUrgencyBannerNow === 'function') {
+                createUrgencyBannerNow();
+                console.log('✅ Urgency banner function executed');
+            } else {
+                console.log('❌ Urgency banner function not found');
+            }
+            
+            console.log('--- Testing Communication Features ---');
+            if (typeof createWhatsAppButtonNow === 'function') {
+                createWhatsAppButtonNow();
+                console.log('✅ WhatsApp button function executed');
+            } else {
+                console.log('❌ WhatsApp button function not found');
+            }
+            
+            if (typeof createLiveChatNow === 'function') {
+                createLiveChatNow();
+                console.log('✅ Live chat function executed');
+            } else {
+                console.log('❌ Live chat function not found');
+            }
+            
+            console.log('--- Testing Testimonials Features ---');
+            if (typeof enhanceTestimonialsNow === 'function') {
+                enhanceTestimonialsNow();
+                console.log('✅ Testimonials enhancement function executed');
+            } else {
+                console.log('❌ Testimonials enhancement function not found');
+            }
+            
+            console.log('=== TESTING COMPLETE ===');
+            
+            // Check what's actually visible
+            setTimeout(() => {
+                const banner = document.querySelector('[style*="urgency"]') || document.querySelector('.urgency-banner-now');
+                const whatsapp = document.querySelector('[style*="whatsapp"]') || document.querySelector('.whatsapp-now');
+                const livechat = document.querySelector('[style*="chat"]') || document.querySelector('.livechat-now');
+                const stories = document.querySelector('.success-stories-added');
+                
+                console.log('=== VISIBILITY CHECK ===');
+                console.log('Urgency banner visible:', banner ? '✅ YES' : '❌ NO');
+                console.log('WhatsApp button visible:', whatsapp ? '✅ YES' : '❌ NO');
+                console.log('Live chat visible:', livechat ? '✅ YES' : '❌ NO');
+                console.log('Success stories visible:', stories ? '✅ YES' : '❌ NO');
+                
+                if (banner) console.log('Banner element:', banner);
+                if (whatsapp) console.log('WhatsApp element:', whatsapp);
+                if (livechat) console.log('LiveChat element:', livechat);
+                if (stories) console.log('Stories element:', stories);
+            }, 2000);
+            
+        }, 1000);
+    </script>
+</body>
+</html>

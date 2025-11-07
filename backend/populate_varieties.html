@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Populate Uganda Coffee Varieties</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 2rem; }
+        .container { max-width: 800px; margin: 0 auto; }
+        .btn { background: #007bff; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; }
+        .btn:hover { background: #0056b3; }
+        .result { margin-top: 20px; padding: 20px; border: 1px solid #ddd; border-radius: 5px; background: #f9f9f9; }
+        .success { border-color: #28a745; background: #d4edda; }
+        .error { border-color: #dc3545; background: #f8d7da; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Uganda Coffee Varieties Database Population</h1>
+        <p>Click the button below to populate the database with comprehensive Uganda coffee varieties.</p>
+        
+        <button class="btn" onclick="populateDatabase()">Populate Database with Uganda Coffee Varieties</button>
+        
+        <div id="result" class="result" style="display: none;">
+            <h3>Results:</h3>
+            <div id="output"></div>
+        </div>
+    </div>
+
+    <script>
+        async function populateDatabase() {
+            const resultDiv = document.getElementById('result');
+            const outputDiv = document.getElementById('output');
+            
+            resultDiv.style.display = 'block';
+            outputDiv.innerHTML = 'Processing... Please wait.';
+            
+            try {
+                const response = await fetch('populate_uganda_varieties.php');
+                const text = await response.text();
+                
+                if (response.ok) {
+                    resultDiv.className = 'result success';
+                    outputDiv.innerHTML = '<pre>' + text + '</pre>';
+                } else {
+                    resultDiv.className = 'result error';
+                    outputDiv.innerHTML = 'Error: ' + text;
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                outputDiv.innerHTML = 'Error: ' + error.message;
+            }
+        }
+    </script>
+</body>
+</html>
