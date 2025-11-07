@@ -73,9 +73,25 @@ try {
 
     // Initialize or update Git
     if (!is_dir('.git')) {
-        logDeployment("Initializing Git repository");
-        executeCommand('git init');
-        executeCommand("git remote add origin {$config['git_repo']}");
+        logDeployment("Cloning Git repository");
+        // Remove current directory contents first (except logs and backups)
+        $files_to_keep = ['deployment.log', 'webhook.log', 'backups', 'deploy.php', 'webhook.php'];
+        $current_files = glob('*');
+        foreach ($current_files as $file) {
+            if (!in_array(basename($file), $files_to_keep)) {
+                if (is_dir($file)) {
+                    executeCommand("rm -rf '$file'");
+                } else {
+                    unlink($file);
+                }
+            }
+        }
+        
+        // Clone the repository
+        $result = executeCommand("git clone {$config['git_repo']} .");
+        if ($result['code'] !== 0) {
+            throw new Exception("Failed to clone repository: " . implode("\n", $result['output']));
+        }
     }
 
     // Fetch and reset to latest
