@@ -99,6 +99,27 @@ try {
         }
     }
 
+    // Fix file permissions after deployment
+    logDeployment("Fixing file permissions");
+    
+    // Set directory permissions to 755
+    $directories = ['.', 'admin', 'backend', 'css', 'images', 'js', 'pages'];
+    foreach ($directories as $dir) {
+        if (is_dir($dir)) {
+            chmod($dir, 0755);
+        }
+    }
+    
+    // Set common file permissions to 644
+    $file_patterns = ['*.html', '*.php', '*.css', '*.js', '*.md'];
+    foreach ($file_patterns as $pattern) {
+        foreach (glob($pattern) as $file) {
+            if (is_file($file)) {
+                chmod($file, 0644);
+            }
+        }
+    }
+
     logDeployment("Cache cleared");
 
     // Verification
