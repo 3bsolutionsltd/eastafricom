@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>East Africom - Deployment Dashboard</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; background: #f5f5f5; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .status { padding: 15px; margin: 10px 0; border-radius: 5px; }
+        .success { background: #d4edda; border: 1px solid #c3e6cb; color: #155724; }
+        .error { background: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; }
+        .info { background: #d1ecf1; border: 1px solid #bee5eb; color: #0c5460; }
+        .btn { padding: 12px 20px; margin: 5px; background: #007bff; color: white; text-decoration: none; border-radius: 5px; display: inline-block; }
+        .btn:hover { background: #0056b3; }
+        .btn-success { background: #28a745; }
+        .btn-success:hover { background: #1e7e34; }
+        .logs { background: #f8f9fa; padding: 15px; border: 1px solid #dee2e6; border-radius: 5px; font-family: monospace; white-space: pre-wrap; max-height: 300px; overflow-y: auto; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 East Africom Deployment Dashboard</h1>
+        
+        <?php
+        // Check if website files exist
+        $website_ready = file_exists('index.html') && is_dir('admin') && is_dir('css');
+        ?>
+        
+        <div class="status <?php echo $website_ready ? 'success' : 'error'; ?>">
+            <?php if ($website_ready): ?>
+                ✅ <strong>Website Status:</strong> Ready and deployed
+            <?php else: ?>
+                ❌ <strong>Website Status:</strong> Not deployed yet
+            <?php endif; ?>
+        </div>
+        
+        <div class="info">
+            <strong>🔗 Quick Links:</strong><br>
+            <?php if ($website_ready): ?>
+                <a href="index.html" class="btn btn-success">🌐 Visit Website</a>
+                <a href="admin/" class="btn">🔧 Admin Panel</a>
+            <?php endif; ?>
+            <a href="simple-deploy.php?secret=EAC_Deploy_2025_5d7c8a7b9c2e4f6a1b3c8d9e2f4a6b8c" class="btn">📦 Deploy Now</a>
+        </div>
+        
+        <h2>📋 Recent Deployment Logs</h2>
+        <div class="logs">
+<?php
+if (file_exists('simple-deploy.log')) {
+    $logs = file_get_contents('simple-deploy.log');
+    $lines = explode("\n", $logs);
+    $recent_lines = array_slice($lines, -20);
+    echo htmlspecialchars(implode("\n", $recent_lines));
+} else {
+    echo "No deployment logs yet.";
+}
+?>
+        </div>
+        
+        <h2>🔔 Webhook Logs</h2>
+        <div class="logs">
+<?php
+if (file_exists('simple-webhook.log')) {
+    $logs = file_get_contents('simple-webhook.log');
+    $lines = explode("\n", $logs);
+    $recent_lines = array_slice($lines, -10);
+    echo htmlspecialchars(implode("\n", $recent_lines));
+} else {
+    echo "No webhook logs yet.";
+}
+?>
+        </div>
+        
+        <h2>📊 System Information</h2>
+        <div class="info">
+            <strong>Current Directory:</strong> <?php echo getcwd(); ?><br>
+            <strong>PHP Version:</strong> <?php echo phpversion(); ?><br>
+            <strong>Server Time:</strong> <?php echo date('Y-m-d H:i:s'); ?><br>
+            <strong>Files in Directory:</strong> <?php echo count(scandir('.')) - 2; ?> files
+        </div>
+    </div>
+</body>
+</html>
