@@ -1,5 +1,5 @@
 // CONVERSION OPTIMIZATION - Phase 9
-console.log('Conversion optimization features loading...');
+// Conversion optimization features loading
 
 // Conversion tracking data
 const conversionData = {
@@ -480,9 +480,11 @@ function getSessionId() {
     return sessionId;
 }
 
-// 5. Conversion Dashboard (Admin View)
+// 5. Conversion Dashboard (Admin View) - DISABLED per user request
 function createConversionDashboard() {
-    // Add floating dashboard button for demo
+    // Analytics button disabled - Live Chat is now the only floating button
+    console.log('📊 Analytics dashboard disabled - Clean UI with Live Chat only');
+    /*
     const dashboardBtn = document.createElement('button');
     dashboardBtn.innerHTML = '📊 Analytics';
     dashboardBtn.style.cssText = `
@@ -507,6 +509,7 @@ function createConversionDashboard() {
     dashboardBtn.onclick = showConversionDashboard;
     
     document.body.appendChild(dashboardBtn);
+    */
 }
 
 function showConversionDashboard() {
@@ -576,7 +579,7 @@ if (document.readyState === 'loading') {
         // Track page view
         trackConversion('page_view');
         
-        console.log('Conversion optimization features loaded!');
+        // Conversion optimization features loaded
     });
 } else {
     addConversionAnimations();

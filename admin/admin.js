@@ -64,17 +64,23 @@ class AdminDashboard {
     async loadDashboardData() {
         try {
             // Load all data in parallel
-            const [products, testimonials, activities, settings] = await Promise.all([
+            const [products, testimonials, activities, settings, slideshow, awards, certifications] = await Promise.all([
                 this.fetchData('products.php'),
                 this.fetchData('testimonials.php'),
                 this.fetchData('live-activity.php'),
-                this.fetchData('settings.php')
+                this.fetchData('settings.php'),
+                this.fetchData('slideshow.php'),
+                this.fetchData('awards.php'),
+                this.fetchData('certifications.php')
             ]);
 
             this.data.products = products?.data?.products || [];
             this.data.testimonials = testimonials?.data?.testimonials || [];
             this.data.activities = activities?.data?.activities || [];
             this.data.settings = settings?.data?.settings || {};
+            this.data.slideshow = slideshow?.data?.slides || [];
+            this.data.awards = awards?.data?.awards || [];
+            this.data.certifications = certifications?.data?.certifications || [];
 
             this.updateDashboard();
             
@@ -99,19 +105,29 @@ class AdminDashboard {
 
     updateDashboard() {
         // Update stats
-        document.getElementById('total-products').textContent = this.data.products.length;
+        const statSlides = document.getElementById('stat-slides');
+        if (statSlides) statSlides.textContent = (this.data.slideshow && this.data.slideshow.length) || 0;
+        
+        const statAwards = document.getElementById('stat-awards');
+        if (statAwards) statAwards.textContent = (this.data.awards && this.data.awards.length) || 0;
+        
+        const totalProducts = document.getElementById('total-products');
+        if (totalProducts) totalProducts.textContent = this.data.products.length;
         
         const totalStock = this.data.products.reduce((sum, product) => sum + (product.stock || 0), 0);
-        document.getElementById('total-stock').textContent = `${totalStock} MT`;
+        const totalStockEl = document.getElementById('total-stock');
+        if (totalStockEl) totalStockEl.textContent = `${totalStock} MT`;
         
-        document.getElementById('total-testimonials').textContent = this.data.testimonials.length;
+        const totalTestimonials = document.getElementById('total-testimonials');
+        if (totalTestimonials) totalTestimonials.textContent = this.data.testimonials.length;
         
         const todayActivities = this.data.activities.filter(activity => {
             const activityDate = new Date(activity.time).toDateString();
             const today = new Date().toDateString();
             return activityDate === today;
         });
-        document.getElementById('today-activity').textContent = todayActivities.length;
+        const todayActivity = document.getElementById('today-activity');
+        if (todayActivity) todayActivity.textContent = todayActivities.length;
 
         // Update recent activity
         this.updateDashboardActivity();
@@ -145,6 +161,15 @@ class AdminDashboard {
 
     updateCurrentTabContent() {
         switch (this.currentTab) {
+            case 'slideshow':
+                this.renderSlideshowTable();
+                break;
+            case 'awards':
+                this.renderAwardsTable();
+                break;
+            case 'certifications':
+                this.renderCertificationsTable();
+                break;
             case 'products':
                 this.renderProductsTable();
                 break;
@@ -158,6 +183,73 @@ class AdminDashboard {
                 this.renderSettingsForm();
                 break;
         }
+    }
+
+    renderCertificationsTable() {
+        const container = document.getElementById('certifications-table');
+        
+        if (!this.data.certifications || this.data.certifications.length === 0) {
+            container.innerHTML = '<p class="text-gray-500 text-center py-8">No certifications found. <a href="javascript:void(0)" onclick="openCertificationModal()" class="text-blue-600 hover:underline">Add your first certification</a></p>';
+            return;
+        }
+
+        container.innerHTML = `
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Certification</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Badges</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        ${this.data.certifications.map(cert => `
+                            <tr>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center">
+                                        <i class="${cert.icon} text-blue-500 text-xl mr-3"></i>
+                                        <div>
+                                            <div class="font-medium text-gray-900">${cert.title_en}</div>
+                                            <div class="text-sm text-gray-500">${cert.title_zh}</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 max-w-xs">
+                                    <div class="text-sm text-gray-900 truncate">${cert.description_en}</div>
+                                    <div class="text-xs text-gray-500 truncate">${cert.description_zh}</div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex flex-wrap gap-1">
+                                        ${cert.badge1 ? `<span class="px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded">${cert.badge1}</span>` : ''}
+                                        ${cert.badge2 ? `<span class="px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded">${cert.badge2}</span>` : ''}
+                                        ${cert.badge3 ? `<span class="px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded">${cert.badge3}</span>` : ''}
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 text-sm text-gray-900">${cert.display_order}</td>
+                                <td class="px-6 py-4">
+                                    <span class="px-2 py-1 text-xs rounded ${cert.active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
+                                        ${cert.active ? 'Active' : 'Inactive'}
+                                    </span>
+                                    ${cert.chinese_specific ? '<span class="ml-1 px-2 py-1 text-xs bg-purple-100 text-purple-800 rounded">中国专用</span>' : ''}
+                                </td>
+                                <td class="px-6 py-4 text-sm font-medium space-x-2">
+                                    <button onclick="openCertificationModal(${cert.id})" class="text-blue-600 hover:text-blue-900">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button onclick="deleteCertification(${cert.id})" class="text-red-600 hover:text-red-900">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            </div>
+        `;
     }
 
     renderProductsTable() {
@@ -178,6 +270,7 @@ class AdminDashboard {
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
                         <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Image</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Stock</th>
@@ -189,6 +282,14 @@ class AdminDashboard {
                     <tbody class="bg-white divide-y divide-gray-200">
                         ${this.data.products.map(product => `
                             <tr>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    ${product.image_url ? 
+                                        `<img src="../${product.image_url}" alt="${product.name}" class="h-12 w-12 object-cover rounded">` :
+                                        `<div class="h-12 w-12 bg-gray-200 rounded flex items-center justify-center">
+                                            <i class="fas fa-image text-gray-400"></i>
+                                        </div>`
+                                    }
+                                </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div>
                                         <div class="font-medium text-gray-900">${product.name}</div>
@@ -204,10 +305,26 @@ class AdminDashboard {
                                     </span>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                    <button onclick="editProduct(${product.id})" class="text-blue-600 hover:text-blue-900 mr-3">
+                                    <button onclick="openImageUploadModal(${product.id}, '${product.name.replace(/'/g, "\\'")}')" 
+                                            class="text-green-600 hover:text-green-900 mr-2" 
+                                            title="Upload Image">
+                                        <i class="fas fa-camera"></i>
+                                    </button>
+                                    ${product.image_url ? 
+                                        `<button onclick="deleteProductImage(${product.id})" 
+                                                class="text-orange-600 hover:text-orange-900 mr-2" 
+                                                title="Delete Image">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>` : ''
+                                    }
+                                    <button onclick="editProduct(${product.id})" 
+                                            class="text-blue-600 hover:text-blue-900 mr-2"
+                                            title="Edit Product">
                                         <i class="fas fa-edit"></i>
                                     </button>
-                                    <button onclick="deleteProduct(${product.id})" class="text-red-600 hover:text-red-900">
+                                    <button onclick="deleteProduct(${product.id})" 
+                                            class="text-red-600 hover:text-red-900"
+                                            title="Delete Product">
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </td>
@@ -263,6 +380,110 @@ class AdminDashboard {
                                     </button>
                                     <button onclick="deleteTestimonial(${testimonial.id})" class="text-red-600 hover:text-red-900">
                                         <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            </div>
+        `;
+    }
+
+    renderSlideshowTable() {
+        const container = document.getElementById('slideshow-table');
+        
+        if (!this.data.slideshow || this.data.slideshow.length === 0) {
+            container.innerHTML = '<p class="text-gray-500 text-center py-8">No slideshow slides found. <a href="javascript:void(0)" onclick="openSlideshowModal()" class="text-blue-600 hover:underline">Add your first slide</a></p>';
+            return;
+        }
+
+        container.innerHTML = `
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Position</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Chapter</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        ${this.data.slideshow.map(slide => `
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-blue-100 text-blue-800 font-semibold">${slide.position}</span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${slide.chapter}</td>
+                                <td class="px-6 py-4">
+                                    <div class="font-medium text-gray-900">${slide.title_en}</div>
+                                    <div class="text-sm text-gray-500">${slide.title_zh}</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full ${slide.active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
+                                        ${slide.active ? 'Active' : 'Inactive'}
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
+                                    <button onclick='openSlideshowModal(${JSON.stringify(slide).replace(/'/g, "\\'")})' class="text-blue-600 hover:text-blue-900">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            </div>
+        `;
+    }
+
+    renderAwardsTable() {
+        const container = document.getElementById('awards-table');
+        
+        if (!this.data.awards || this.data.awards.length === 0) {
+            container.innerHTML = '<p class="text-gray-500 text-center py-8">No awards found. <a href="javascript:void(0)" onclick="openAwardModal()" class="text-blue-600 hover:underline">Add your first award</a></p>';
+            return;
+        }
+
+        container.innerHTML = `
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Award</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Organization</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Year</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        ${this.data.awards.map(award => `
+                            <tr>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center">
+                                        <i class="fas ${award.icon} text-yellow-500 text-xl mr-3"></i>
+                                        <div class="font-medium text-gray-900">${award.title}</div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 text-sm text-gray-900">${award.organization}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${award.year}</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
+                                        ${award.category || 'General'}
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full ${award.active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
+                                        ${award.active ? 'Active' : 'Inactive'}
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
+                                    <button onclick='openAwardModal(${JSON.stringify(award).replace(/'/g, "\\'")})' class="text-blue-600 hover:text-blue-900">
+                                        <i class="fas fa-edit"></i>
                                     </button>
                                 </td>
                             </tr>
@@ -455,11 +676,21 @@ function showTab(tabName) {
     });
     
     // Show selected tab
-    document.getElementById(`${tabName}-tab`).classList.remove('hidden');
-    event.target.classList.add('active');
+    const tabElement = document.getElementById(tabName + '-tab');
+    if (tabElement) tabElement.classList.remove('hidden');
     
-    admin.currentTab = tabName;
-    admin.updateCurrentTabContent();
+    // Find and activate the button that was clicked
+    const buttons = document.querySelectorAll('.tab-btn');
+    buttons.forEach(btn => {
+        if (btn.getAttribute('onclick') && btn.getAttribute('onclick').includes(tabName)) {
+            btn.classList.add('active');
+        }
+    });
+    
+    if (typeof admin !== 'undefined') {
+        admin.currentTab = tabName;
+        admin.updateCurrentTabContent();
+    }
 }
 
 async function refreshAllData() {
@@ -923,5 +1154,605 @@ function closeAddProductModal() {
     const modal = document.getElementById('add-product-modal');
     if (modal) {
         modal.remove();
+    }
+}
+
+// Slideshow Management Functions
+async function openSlideshowModal(slide = null) {
+    const modal = document.getElementById('modal');
+    const title = document.getElementById('modal-title');
+    const content = document.getElementById('modal-content');
+    
+    title.textContent = slide ? 'Edit Slide' : 'Add New Slide';
+    
+    content.innerHTML = `
+        <form id="slide-form" class="space-y-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Chapter</label>
+                <input type="text" id="slide-chapter" value="${slide?.chapter || ''}" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Chapter 1" required>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Title (English)</label>
+                    <input type="text" id="slide-title-en" value="${slide?.title_en || ''}" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Title (Chinese)</label>
+                    <input type="text" id="slide-title-zh" value="${slide?.title_zh || ''}" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                </div>
+            </div>
+            
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Subtitle (English)</label>
+                <textarea id="slide-subtitle-en" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>${slide?.subtitle_en || ''}</textarea>
+            </div>
+            
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Subtitle (Chinese)</label>
+                <textarea id="slide-subtitle-zh" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>${slide?.subtitle_zh || ''}</textarea>
+            </div>
+            
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Image URL</label>
+                <input type="text" id="slide-image" value="${slide?.image_url || 'images/coffee_bag_beans.jpg'}" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+            
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Button Text (English)</label>
+                    <input type="text" id="slide-btn-en" value="${slide?.button_text_en || ''}" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Button Text (Chinese)</label>
+                    <input type="text" id="slide-btn-zh" value="${slide?.button_text_zh || ''}" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Button Link</label>
+                    <input type="text" id="slide-link" value="${slide?.button_link || '#'}" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Position</label>
+                    <input type="number" id="slide-position" value="${slide?.position || 1}" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" min="1" required>
+                </div>
+            </div>
+            
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Autoplay Duration (ms)</label>
+                <input type="number" id="slide-duration" value="${slide?.autoplay_duration || 6000}" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" step="1000" required>
+            </div>
+            
+            <div class="flex items-center">
+                <input type="checkbox" id="slide-active" ${!slide || slide.active ? 'checked' : ''} class="mr-2 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                <label for="slide-active" class="text-sm font-medium text-gray-700">Active</label>
+            </div>
+            
+            <div class="flex justify-end space-x-3 pt-4">
+                <button type="button" onclick="closeModal()" class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
+                    Cancel
+                </button>
+                <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                    ${slide ? 'Update' : 'Add'} Slide
+                </button>
+            </div>
+        </form>
+    `;
+    
+    document.getElementById('slide-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        saveSlide(slide?.id);
+    });
+    
+    modal.classList.remove('hidden');
+}
+
+async function saveSlide(slideId) {
+    const slideData = {
+        id: slideId,
+        chapter: document.getElementById('slide-chapter').value,
+        title_en: document.getElementById('slide-title-en').value,
+        title_zh: document.getElementById('slide-title-zh').value,
+        subtitle_en: document.getElementById('slide-subtitle-en').value,
+        subtitle_zh: document.getElementById('slide-subtitle-zh').value,
+        image_url: document.getElementById('slide-image').value,
+        button_text_en: document.getElementById('slide-btn-en').value,
+        button_text_zh: document.getElementById('slide-btn-zh').value,
+        button_link: document.getElementById('slide-link').value,
+        position: parseInt(document.getElementById('slide-position').value),
+        autoplay_duration: parseInt(document.getElementById('slide-duration').value),
+        active: document.getElementById('slide-active').checked ? 1 : 0
+    };
+    
+    admin.showNotification(`Slide ${slideId ? 'updated' : 'added'} successfully! (Database setup required)`, 'success');
+    closeModal();
+    
+    // Note: Actual API endpoint would need to be created for POST/PUT operations
+    console.log('Slide data to save:', slideData);
+}
+
+// Awards Management Functions
+async function openAwardModal(award = null) {
+    const modal = document.getElementById('modal');
+    const title = document.getElementById('modal-title');
+    const content = document.getElementById('modal-content');
+    
+    title.textContent = award ? 'Edit Award' : 'Add New Award';
+    
+    content.innerHTML = `
+        <form id="award-form" class="space-y-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Award Title</label>
+                <input type="text" id="award-title" value="${award?.title || ''}" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Organization</label>
+                    <input type="text" id="award-org" value="${award?.organization || ''}" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Year</label>
+                    <input type="number" id="award-year" value="${award?.year || new Date().getFullYear()}" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" min="2000" max="2100" required>
+                </div>
+            </div>
+            
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                <textarea id="award-description" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">${award?.description || ''}</textarea>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Icon (FontAwesome)</label>
+                    <input type="text" id="award-icon" value="${award?.icon || 'fa-award'}" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="fa-trophy">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Category</label>
+                    <input type="text" id="award-category" value="${award?.category || ''}" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Excellence">
+                </div>
+            </div>
+            
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Image URL (optional)</label>
+                <input type="text" id="award-image" value="${award?.image_url || ''}" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+            
+            <div class="flex items-center">
+                <input type="checkbox" id="award-active" ${!award || award.active ? 'checked' : ''} class="mr-2 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                <label for="award-active" class="text-sm font-medium text-gray-700">Active</label>
+            </div>
+            
+            <div class="flex justify-end space-x-3 pt-4">
+                <button type="button" onclick="closeModal()" class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
+                    Cancel
+                </button>
+                <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                    ${award ? 'Update' : 'Add'} Award
+                </button>
+            </div>
+        </form>
+    `;
+    
+    document.getElementById('award-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        saveAward(award?.id);
+    });
+    
+    modal.classList.remove('hidden');
+}
+
+async function saveAward(awardId) {
+    const awardData = {
+        id: awardId,
+        title: document.getElementById('award-title').value,
+        organization: document.getElementById('award-org').value,
+        year: parseInt(document.getElementById('award-year').value),
+        description: document.getElementById('award-description').value,
+        icon: document.getElementById('award-icon').value,
+        category: document.getElementById('award-category').value,
+        image_url: document.getElementById('award-image').value,
+        active: document.getElementById('award-active').checked ? 1 : 0
+    };
+    
+    admin.showNotification(`Award ${awardId ? 'updated' : 'added'} successfully! (Database setup required)`, 'success');
+    closeModal();
+    
+    // Note: Actual API endpoint would need to be created for POST/PUT operations
+    console.log('Award data to save:', awardData);
+}
+
+// Certification Management Functions
+function openCertificationModal(certId = null) {
+    const modal = document.getElementById('modal');
+    const modalContent = document.getElementById('modal-content');
+    
+    const cert = certId ? admin.data.certifications.find(c => c.id === certId) : null;
+    
+    modalContent.innerHTML = `
+        <div class="flex justify-between items-center mb-6">
+            <h3 class="text-xl font-bold">${cert ? 'Edit' : 'Add'} Certification</h3>
+            <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+        </div>
+        
+        <form id="certification-form" class="space-y-4">
+            <div>
+                <label for="cert-icon" class="block text-sm font-medium text-gray-700 mb-1">Icon Class (FontAwesome)</label>
+                <input type="text" id="cert-icon" value="${cert?.icon || 'fas fa-certificate'}" 
+                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" required>
+                <p class="text-xs text-gray-500 mt-1">Example: fas fa-certificate, fas fa-flag, fas fa-globe-asia</p>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label for="cert-title-en" class="block text-sm font-medium text-gray-700 mb-1">Title (English)</label>
+                    <input type="text" id="cert-title-en" value="${cert?.title_en || ''}" 
+                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" required>
+                </div>
+                <div>
+                    <label for="cert-title-zh" class="block text-sm font-medium text-gray-700 mb-1">Title (Chinese)</label>
+                    <input type="text" id="cert-title-zh" value="${cert?.title_zh || ''}" 
+                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" required>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label for="cert-desc-en" class="block text-sm font-medium text-gray-700 mb-1">Description (English)</label>
+                    <textarea id="cert-desc-en" rows="3" 
+                              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" required>${cert?.description_en || ''}</textarea>
+                </div>
+                <div>
+                    <label for="cert-desc-zh" class="block text-sm font-medium text-gray-700 mb-1">Description (Chinese)</label>
+                    <textarea id="cert-desc-zh" rows="3" 
+                              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" required>${cert?.description_zh || ''}</textarea>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-3 gap-4">
+                <div>
+                    <label for="cert-badge1" class="block text-sm font-medium text-gray-700 mb-1">Badge 1</label>
+                    <input type="text" id="cert-badge1" value="${cert?.badge1 || ''}" 
+                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                </div>
+                <div>
+                    <label for="cert-badge2" class="block text-sm font-medium text-gray-700 mb-1">Badge 2</label>
+                    <input type="text" id="cert-badge2" value="${cert?.badge2 || ''}" 
+                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                </div>
+                <div>
+                    <label for="cert-badge3" class="block text-sm font-medium text-gray-700 mb-1">Badge 3</label>
+                    <input type="text" id="cert-badge3" value="${cert?.badge3 || ''}" 
+                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label for="cert-order" class="block text-sm font-medium text-gray-700 mb-1">Display Order</label>
+                    <input type="number" id="cert-order" value="${cert?.display_order || 0}" min="0"
+                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                </div>
+                <div class="space-y-2">
+                    <div class="flex items-center">
+                        <input type="checkbox" id="cert-chinese" ${cert?.chinese_specific ? 'checked' : ''}
+                               class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                        <label for="cert-chinese" class="ml-2 text-sm font-medium text-gray-700">Chinese Specific (中国专用)</label>
+                    </div>
+                    <div class="flex items-center">
+                        <input type="checkbox" id="cert-active" ${cert?.active !== false ? 'checked' : ''}
+                               class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                        <label for="cert-active" class="ml-2 text-sm font-medium text-gray-700">Active</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flex justify-end space-x-3 pt-4">
+                <button type="button" onclick="closeModal()" class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
+                    Cancel
+                </button>
+                <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                    ${cert ? 'Update' : 'Add'} Certification
+                </button>
+            </div>
+        </form>
+    `;
+    
+    document.getElementById('certification-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        saveCertification(cert?.id);
+    });
+    
+    modal.classList.remove('hidden');
+}
+
+async function saveCertification(certId) {
+    const certData = {
+        id: certId,
+        icon: document.getElementById('cert-icon').value,
+        title_en: document.getElementById('cert-title-en').value,
+        title_zh: document.getElementById('cert-title-zh').value,
+        description_en: document.getElementById('cert-desc-en').value,
+        description_zh: document.getElementById('cert-desc-zh').value,
+        badge1: document.getElementById('cert-badge1').value,
+        badge2: document.getElementById('cert-badge2').value,
+        badge3: document.getElementById('cert-badge3').value,
+        display_order: parseInt(document.getElementById('cert-order').value),
+        chinese_specific: document.getElementById('cert-chinese').checked ? 1 : 0,
+        active: document.getElementById('cert-active').checked ? 1 : 0
+    };
+    
+    try {
+        const method = certId ? 'PUT' : 'POST';
+        const response = await fetch(`${admin.apiBase}/certifications.php`, {
+            method: method,
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(certData)
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            admin.showNotification(`Certification ${certId ? 'updated' : 'added'} successfully!`, 'success');
+            closeModal();
+            await admin.loadDashboardData();
+            admin.renderCertificationsTable();
+        } else {
+            throw new Error(result.message || 'Failed to save certification');
+        }
+    } catch (error) {
+        console.error('Error saving certification:', error);
+        admin.showNotification('Error: ' + error.message, 'error');
+    }
+}
+
+async function deleteCertification(certId) {
+    if (!confirm('Are you sure you want to delete this certification?')) {
+        return;
+    }
+    
+    try {
+        const response = await fetch(`${admin.apiBase}/certifications.php?id=${certId}`, {
+            method: 'DELETE'
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            admin.showNotification('Certification deleted successfully', 'success');
+            await admin.loadDashboardData();
+            admin.renderCertificationsTable();
+        } else {
+            throw new Error(result.message || 'Failed to delete certification');
+        }
+    } catch (error) {
+        console.error('Error deleting certification:', error);
+        admin.showNotification('Error: ' + error.message, 'error');
+    }
+}
+
+// ============================================
+// CONTACT INFORMATION MANAGEMENT
+// ============================================
+
+async function loadContactInfo() {
+    try {
+        const response = await fetch(`${admin.apiBase}/contact-info.php`);
+        const result = await response.json();
+        
+        if (result.success && result.contact) {
+            const contact = result.contact;
+            
+            // Populate form fields
+            document.getElementById('street-address').value = contact.street_address || '';
+            document.getElementById('po-box').value = contact.po_box || '';
+            document.getElementById('city').value = contact.city || '';
+            document.getElementById('country').value = contact.country || '';
+            document.getElementById('primary-phone').value = contact.primary_phone || '';
+            document.getElementById('secondary-phone').value = contact.secondary_phone || '';
+            document.getElementById('whatsapp-phone').value = contact.whatsapp_phone || '';
+            document.getElementById('primary-email').value = contact.primary_email || '';
+            document.getElementById('secondary-email').value = contact.secondary_email || '';
+            document.getElementById('facebook-link').value = contact.facebook_link || '';
+            document.getElementById('twitter-link').value = contact.twitter_link || '';
+            document.getElementById('linkedin-link').value = contact.linkedin_link || '';
+            document.getElementById('instagram-link').value = contact.instagram_link || '';
+            document.getElementById('years-experience').value = contact.years_experience || '5yrs+';
+            document.getElementById('export-tonnage').value = contact.export_tonnage || '200+ tons';
+        }
+    } catch (error) {
+        console.error('Error loading contact info:', error);
+        admin.showNotification('Error loading contact information', 'error');
+    }
+}
+
+// Handle contact info form submission
+document.addEventListener('DOMContentLoaded', function() {
+    const contactForm = document.getElementById('contact-info-form');
+    if (contactForm) {
+        contactForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const contactData = {
+                street_address: document.getElementById('street-address').value,
+                po_box: document.getElementById('po-box').value,
+                city: document.getElementById('city').value,
+                country: document.getElementById('country').value,
+                primary_phone: document.getElementById('primary-phone').value,
+                secondary_phone: document.getElementById('secondary-phone').value,
+                whatsapp_phone: document.getElementById('whatsapp-phone').value,
+                primary_email: document.getElementById('primary-email').value,
+                secondary_email: document.getElementById('secondary-email').value,
+                facebook_link: document.getElementById('facebook-link').value,
+                twitter_link: document.getElementById('twitter-link').value,
+                linkedin_link: document.getElementById('linkedin-link').value,
+                instagram_link: document.getElementById('instagram-link').value,
+                years_experience: document.getElementById('years-experience').value,
+                export_tonnage: document.getElementById('export-tonnage').value
+            };
+            
+            try {
+                const response = await fetch(`${admin.apiBase}/contact-info.php`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(contactData)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    admin.showNotification('Contact information saved successfully!', 'success');
+                } else {
+                    throw new Error(result.error || 'Failed to save contact information');
+                }
+            } catch (error) {
+                console.error('Error saving contact info:', error);
+                admin.showNotification('Error: ' + error.message, 'error');
+            }
+        });
+    }
+    
+    // Load contact info when tab is shown
+    const contactTab = document.querySelector('[onclick*="showTab(\'contact-info\')"]');
+    if (contactTab) {
+        contactTab.addEventListener('click', function() {
+            setTimeout(() => {
+                loadContactInfo();
+            }, 100);
+        });
+    }
+});
+
+// ============================================
+// PRODUCT IMAGE UPLOAD
+// ============================================
+
+function openImageUploadModal(productId, productName) {
+    const modal = document.getElementById('modal');
+    const modalTitle = document.getElementById('modal-title');
+    const modalContent = document.getElementById('modal-content');
+    
+    modalTitle.textContent = `Upload Image for ${productName}`;
+    modalContent.innerHTML = `
+        <form id="image-upload-form" enctype="multipart/form-data">
+            <input type="hidden" name="product_id" value="${productId}">
+            
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                    Select Product Image
+                </label>
+                <input type="file" 
+                       name="image" 
+                       id="product-image-input"
+                       accept="image/jpeg,image/jpg,image/png,image/gif,image/webp"
+                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                       required>
+                <p class="text-xs text-gray-500 mt-1">
+                    Accepted formats: JPG, PNG, GIF, WebP (Max 5MB)
+                </p>
+            </div>
+            
+            <div id="image-preview" class="mb-4 hidden">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Preview</label>
+                <img id="preview-img" src="" alt="Preview" class="max-w-full h-48 object-contain border rounded">
+            </div>
+            
+            <div class="flex justify-end space-x-2">
+                <button type="button" 
+                        onclick="closeModal()" 
+                        class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
+                    Cancel
+                </button>
+                <button type="submit" 
+                        class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
+                    <i class="fas fa-upload mr-2"></i>Upload Image
+                </button>
+            </div>
+        </form>
+    `;
+    
+    modal.classList.remove('hidden');
+    
+    // Image preview
+    const fileInput = document.getElementById('product-image-input');
+    const previewDiv = document.getElementById('image-preview');
+    const previewImg = document.getElementById('preview-img');
+    
+    fileInput.addEventListener('change', function() {
+        const file = this.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                previewImg.src = e.target.result;
+                previewDiv.classList.remove('hidden');
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+    
+    // Handle form submission
+    const form = document.getElementById('image-upload-form');
+    form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const formData = new FormData(this);
+        
+        try {
+            const response = await fetch(`${admin.apiBase}/product-image.php`, {
+                method: 'POST',
+                body: formData
+            });
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                admin.showNotification('Image uploaded successfully!', 'success');
+                closeModal();
+                await admin.loadDashboardData();
+                admin.renderProductsTable();
+            } else {
+                throw new Error(result.error || 'Failed to upload image');
+            }
+        } catch (error) {
+            console.error('Error uploading image:', error);
+            admin.showNotification('Error: ' + error.message, 'error');
+        }
+    });
+}
+
+async function deleteProductImage(productId) {
+    if (!confirm('Are you sure you want to delete this product image?')) {
+        return;
+    }
+    
+    try {
+        const response = await fetch(`${admin.apiBase}/product-image.php`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ product_id: productId })
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            admin.showNotification('Image deleted successfully', 'success');
+            await admin.loadDashboardData();
+            admin.renderProductsTable();
+        } else {
+            throw new Error(result.error || 'Failed to delete image');
+        }
+    } catch (error) {
+        console.error('Error deleting image:', error);
+        admin.showNotification('Error: ' + error.message, 'error');
     }
 }

@@ -1,5 +1,5 @@
 // TRUST & CREDIBILITY BOOSTERS - Phase 7
-console.log('Trust & credibility features loading...');
+// Trust & credibility features loading
 
 // Trust badges and certifications data
 const trustData = {
@@ -197,7 +197,7 @@ function enhanceCertificationsSection() {
                 </div>
             </div>
         `;
-        console.log('Enhanced certifications section created');
+        // Enhanced certifications section created
     }
 }
 
@@ -607,7 +607,7 @@ if (document.readyState === 'loading') {
             createLiveTrustSignals();
             createFloatingTrustNotifications();
         }, 1000);
-        console.log('Trust & credibility features loaded!');
+        // Trust & credibility features loaded
     });
 } else {
     addTrustAnimations();

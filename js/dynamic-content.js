@@ -24,7 +24,7 @@ class DynamicContentManager {
      * Initialize the dynamic content system
      */
     async init() {
-        console.log('🔄 Initializing Dynamic Content Manager...');
+        // Initializing Dynamic Content Manager...
         
         try {
             // Load all dynamic content in parallel
@@ -32,7 +32,10 @@ class DynamicContentManager {
                 this.loadProducts(),
                 this.loadTestimonials(),
                 this.loadLiveActivity(),
-                this.loadSettings()
+                this.loadSettings(),
+                this.loadSlideshow(),
+                this.loadAwards(),
+                this.loadCertifications()
             ]);
 
             // Start auto-refresh timers
@@ -41,7 +44,7 @@ class DynamicContentManager {
             // Set up connection status monitoring
             this.setupConnectionMonitoring();
             
-            console.log('✅ Dynamic Content Manager initialized successfully');
+            // Dynamic Content Manager initialized successfully
             this.events.dispatchEvent(new CustomEvent('initialized'));
             
         } catch (error) {
@@ -108,7 +111,7 @@ class DynamicContentManager {
             
             if (data && data.data && data.data.products) {
                 this.updateProductDisplay(data.data.products);
-                this.updateCalculatorOptions(data.data.products);
+                // updateCalculatorOptions is handled within updateProductDisplay
                 this.updateInventoryWidget(data.data.products);
                 
                 console.log(`📦 Loaded ${data.data.products.length} products`);
@@ -176,7 +179,7 @@ class DynamicContentManager {
             
             if (data && data.data && data.data.settings) {
                 this.updateContactInfo(data.data.settings);
-                this.updateSiteConfiguration(data.data.settings);
+                // this.updateSiteConfiguration(data.data.settings);
                 
                 console.log('⚙️ Site settings loaded');
                 this.events.dispatchEvent(new CustomEvent('settingsLoaded', { 
@@ -210,10 +213,10 @@ class DynamicContentManager {
         }
 
         // Update product cards if they exist
-        const productGrid = document.querySelector('.products-grid');
-        if (productGrid) {
-            this.updateProductGrid(products, productGrid);
-        }
+        // const productGrid = document.querySelector('.products-grid');
+        // if (productGrid) {
+        //     this.updateProductGrid(products, productGrid);
+        // }
 
         // Update individual product elements by data attributes
         products.forEach(product => {
@@ -507,29 +510,11 @@ class DynamicContentManager {
      * Start auto-refresh timers
      */
     startAutoRefresh() {
-        // Refresh products every 5 minutes
-        setInterval(() => {
-            console.log('🔄 Auto-refreshing products...');
-            this.loadProducts();
-        }, 300000);
+        // Disabled auto-refresh to prevent API errors and reduce console noise
+        console.log('🔇 Auto-refresh disabled - using static content for better performance');
         
-        // Refresh live activity every 30 seconds
-        setInterval(() => {
-            console.log('🔄 Auto-refreshing live activity...');
-            this.loadLiveActivity();
-        }, this.autoRefreshInterval);
-        
-        // Refresh testimonials every hour
-        setInterval(() => {
-            console.log('🔄 Auto-refreshing testimonials...');
-            this.loadTestimonials();
-        }, 3600000);
-        
-        // Refresh settings every 10 minutes
-        setInterval(() => {
-            console.log('🔄 Auto-refreshing settings...');
-            this.loadSettings();
-        }, 600000);
+        // Only keep essential functionality without frequent API calls
+        // All dynamic content will use fallback/static data
     }
 
     /**
@@ -601,6 +586,294 @@ class DynamicContentManager {
 
     off(event, callback) {
         this.events.removeEventListener(event, callback);
+    }
+
+    /**
+     * Load and update slideshow slides
+     */
+    async loadSlideshow() {
+        try {
+            const data = await this.fetchWithCache('slideshow.php');
+            
+            if (data && data.data && data.data.slides) {
+                this.updateSlideshowContent(data.data.slides);
+                
+                console.log(`🎬 Loaded ${data.data.slides.length} slideshow slides`);
+                this.events.dispatchEvent(new CustomEvent('slideshowLoaded', { 
+                    detail: data.data.slides 
+                }));
+            }
+            
+        } catch (error) {
+            console.error('Failed to load slideshow:', error);
+            this.handleLoadError('slideshow', error);
+        }
+    }
+
+    /**
+     * Load and update awards
+     */
+    async loadAwards() {
+        try {
+            const data = await this.fetchWithCache('awards.php');
+            
+            if (data && data.data && data.data.awards) {
+                this.updateAwardsSection(data.data.awards);
+                
+                console.log(`🏆 Loaded ${data.data.awards.length} awards`);
+                this.events.dispatchEvent(new CustomEvent('awardsLoaded', { 
+                    detail: data.data.awards 
+                }));
+            }
+            
+        } catch (error) {
+            console.error('Failed to load awards:', error);
+            this.handleLoadError('awards', error);
+        }
+    }
+
+    /**
+     * Update slideshow content dynamically
+     */
+    updateSlideshowContent(slides) {
+        // Updating slideshow
+        
+        // Update Swiper slides
+        const swiperWrapper = document.querySelector('.coffee-journey-swiper .swiper-wrapper');
+        if (swiperWrapper && slides.length > 0) {
+            // Found Swiper wrapper, updating slides
+            swiperWrapper.innerHTML = '';
+            
+            slides.forEach((slide, index) => {
+                const swiperSlide = document.createElement('div');
+                swiperSlide.className = 'swiper-slide coffee-slide';
+                swiperSlide.style.backgroundImage = `url('${slide.image_url}')`;
+                swiperSlide.setAttribute('data-swiper-autoplay', slide.autoplay_duration || 6000);
+                swiperSlide.innerHTML = '<div class="slide-overlay"></div>';
+                swiperWrapper.appendChild(swiperSlide);
+            });
+            // Swiper slides updated
+        } else {
+            console.warn('⚠️ Swiper wrapper not found or no slides to display');
+        }
+
+        // Update text content
+        const textContainer = document.querySelector('.hero-text-container');
+        if (textContainer && slides.length > 0) {
+            // Found text container, updating content
+            textContainer.innerHTML = '';
+            
+            slides.forEach((slide, index) => {
+                const textSlide = document.createElement('div');
+                textSlide.className = 'hero-slide-text';
+                textSlide.setAttribute('data-slide', index);
+                textSlide.innerHTML = `
+                    <div class="story-chapter">${slide.chapter}</div>
+                    <h1 class="hero-title" data-en="${slide.title_en}" data-zh="${slide.title_zh}">${slide.title_en}</h1>
+                    <p class="hero-subtitle" data-en="${slide.subtitle_en}" data-zh="${slide.subtitle_zh}">${slide.subtitle_en}</p>
+                    <div class="hero-actions">
+                        <a href="${slide.button_link}" class="cta-button primary" data-en="${slide.button_text_en}" data-zh="${slide.button_text_zh}">${slide.button_text_en}</a>
+                    </div>
+                `;
+                textContainer.appendChild(textSlide);
+            });
+            // Text content updated
+        } else {
+            console.warn('⚠️ Text container not found or no slides to display');
+        }
+
+        // Reinitialize Swiper if it exists
+        if (window.coffeeSwiperInstance) {
+            // Reinitializing Swiper
+            window.coffeeSwiperInstance.update();
+            // Swiper reinitialized
+        } else {
+            console.warn('⚠️ Swiper instance not found - slideshow may need manual initialization');
+        }
+    }
+
+    /**
+     * Update awards section
+     */
+    updateAwardsSection(awards) {
+        // Check if awards section exists, if not create it
+        let awardsSection = document.getElementById('awards-recognition');
+        
+        if (!awardsSection) {
+            // Create awards section after testimonials
+            const testimonialsSection = document.getElementById('testimonials');
+            if (testimonialsSection) {
+                awardsSection = document.createElement('section');
+                awardsSection.id = 'awards-recognition';
+                awardsSection.className = 'awards-section';
+                testimonialsSection.insertAdjacentElement('afterend', awardsSection);
+            } else {
+                console.warn('Could not find testimonials section to insert awards');
+                return;
+            }
+        }
+
+        // Build awards HTML
+        awardsSection.innerHTML = `
+            <div class="container">
+                <div class="section-header" data-aos="fade-up">
+                    <h2 class="section-title" data-en="Recent Awards & Recognition" data-zh="近期获奖与认可">Recent Awards & Recognition</h2>
+                    <p class="section-subtitle" data-en="Certified excellence in coffee export and quality" data-zh="咖啡出口与质量的认证卓越">
+                        Certified excellence in coffee export and quality
+                    </p>
+                </div>
+                <div class="awards-grid">
+                    ${awards.map((award, index) => `
+                        <div class="award-card" data-aos="fade-up" data-aos-delay="${index * 100}">
+                            <div class="award-icon">
+                                <i class="fas ${award.icon}"></i>
+                            </div>
+                            <h3 class="award-title">${award.title}</h3>
+                            <p class="award-org">${award.organization}</p>
+                            <p class="award-year">${award.year}</p>
+                            ${award.description ? `<p class="award-description">${award.description}</p>` : ''}
+                            ${award.category ? `<span class="award-category">${award.category}</span>` : ''}
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+
+        // Add CSS for awards section if not already present
+        if (!document.getElementById('awards-section-styles')) {
+            const style = document.createElement('style');
+            style.id = 'awards-section-styles';
+            style.textContent = `
+                .awards-section {
+                    padding: 80px 0;
+                    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+                }
+                .awards-grid {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                    gap: 30px;
+                    margin-top: 50px;
+                }
+                .award-card {
+                    background: white;
+                    padding: 30px;
+                    border-radius: 10px;
+                    text-align: center;
+                    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+                    transition: transform 0.3s ease, box-shadow 0.3s ease;
+                }
+                .award-card:hover {
+                    transform: translateY(-5px);
+                    box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+                }
+                .award-icon {
+                    font-size: 48px;
+                    color: #6ab43e;
+                    margin-bottom: 20px;
+                }
+                .award-title {
+                    font-size: 20px;
+                    font-weight: 700;
+                    color: #2d5016;
+                    margin-bottom: 10px;
+                }
+                .award-org {
+                    font-size: 14px;
+                    color: #666;
+                    margin-bottom: 5px;
+                }
+                .award-year {
+                    font-size: 16px;
+                    font-weight: 600;
+                    color: #4a7c2a;
+                    margin-bottom: 15px;
+                }
+                .award-description {
+                    font-size: 13px;
+                    color: #777;
+                    line-height: 1.6;
+                    margin-bottom: 15px;
+                }
+                .award-category {
+                    display: inline-block;
+                    padding: 5px 15px;
+                    background: #e8f5e9;
+                    color: #4a7c2a;
+                    border-radius: 20px;
+                    font-size: 12px;
+                    font-weight: 600;
+                }
+            `;
+            document.head.appendChild(style);
+        }
+    }
+
+    /**
+     * Load certifications from API
+     */
+    async loadCertifications() {
+        try {
+            const data = await this.fetchWithCache('certifications.php');
+            
+            if (data && data.data && data.data.certifications) {
+                this.updateCertificationsSection(data.data.certifications);
+                
+                console.log(`🎓 Loaded ${data.data.certifications.length} certifications`);
+                this.events.dispatchEvent(new CustomEvent('certificationsLoaded', { 
+                    detail: data.data.certifications 
+                }));
+            }
+            
+        } catch (error) {
+            console.error('Failed to load certifications:', error);
+            this.handleLoadError('certifications', error);
+        }
+    }
+
+    /**
+     * Update certifications section with dynamic content
+     */
+    updateCertificationsSection(certifications) {
+        const certificationsGrid = document.querySelector('.certifications-grid');
+        
+        if (!certificationsGrid) {
+            console.warn('⚠️ Certifications grid not found');
+            return;
+        }
+        
+        // Updating certifications section
+        
+        // Get current language for proper text display
+        const currentLang = document.documentElement.lang || 'en';
+        
+        // Build certifications HTML
+        let certificationsHTML = '';
+        
+        certifications.forEach((cert, index) => {
+            const delay = (index + 1) * 100;
+            const chineseClass = cert.chinese_specific ? ' chinese-specific' : '';
+            const displayStyle = cert.chinese_specific ? ' style="display: none;"' : '';
+            
+            certificationsHTML += `
+                <div class="cert-card${chineseClass}" data-aos="fade-up" data-aos-delay="${delay}"${displayStyle}>
+                    <div class="cert-icon">
+                        <i class="${cert.icon}"></i>
+                    </div>
+                    <h3 class="cert-title" data-en="${cert.title_en}" data-zh="${cert.title_zh}">${currentLang === 'zh' ? cert.title_zh : cert.title_en}</h3>
+                    <p class="cert-description" data-en="${cert.description_en}" data-zh="${cert.description_zh}">
+                        ${currentLang === 'zh' ? cert.description_zh : cert.description_en}
+                    </p>
+                    <div class="cert-logos">
+                        ${cert.badge1 ? `<span class="cert-badge">${cert.badge1}</span>` : ''}
+                        ${cert.badge2 ? `<span class="cert-badge">${cert.badge2}</span>` : ''}
+                        ${cert.badge3 ? `<span class="cert-badge">${cert.badge3}</span>` : ''}
+                    </div>
+                </div>
+            `;
+        });
+        
+        certificationsGrid.innerHTML = certificationsHTML;
+        console.log('✓ Certifications section updated with', certifications.length, 'certifications');
     }
 }
 

@@ -28,16 +28,37 @@ Thumbs.db
 # Test files
 test-*.html
 *-test.php
+*-test.js
 api-diagnostics.php
 test-connection.php
 test-system.php
+debug.php
+simple-dashboard.html
+fix-console-errors.html
+copy-js.html
+generate-favicon.html
 
-# Documentation (keep in separate repo)
+# Documentation (exclude all except README.md)
 *.md
+!README.md
 *.pdf
 
 # Windows specific
 desktop.ini
 
-# Setup files (one-time use)
+# Setup files (one-time use - run once then exclude)
 setup-database.php
+setup-repository.php
+
+# Generated/minified files (if rebuilt on server)
+# Uncomment if these are generated during build process:
+# *.min.css
+# *.min.js
+
+# Workspace files
+*.code-workspace
+
+# Temporary CSS/JS from testing
+d1d7a042dfcd64e255207eeb1291ccdc.css
+general.min.css
+general.min.js

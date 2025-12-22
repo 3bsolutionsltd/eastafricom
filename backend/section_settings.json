@@ -1,0 +1,11 @@
+{
+    "hero": true,
+    "trustWidget": true,
+    "about": true,
+    "greenProcess": true,
+    "greenServices": false,
+    "products": true,
+    "awards": false,
+    "testimonials": false,
+    "contact": true
+}

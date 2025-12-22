@@ -1,5 +1,5 @@
 // PRICE CALCULATOR - Interactive Tools Phase
-console.log('Price calculator loading...');
+// Price calculator loading
 
 // Global variables for calculator
 let calculatorState = {
@@ -307,7 +307,7 @@ function resetCalculator() {
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', function() {
         createPriceCalculator();
-        console.log('Price calculator initialized!');
+        // Price calculator initialized
     });
 } else {
     createPriceCalculator();

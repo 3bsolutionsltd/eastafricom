@@ -96,3 +96,106 @@ class Localization {
 
 // Initialize localization
 window.localization = new Localization();
+
+// Enhanced language switching function for comprehensive translation
+function toggleLanguage() {
+    const currentLang = document.getElementById('current-lang')?.textContent;
+    const newLang = currentLang === 'EN' ? 'zh' : 'en';
+    
+    // Update language indicators
+    if (document.getElementById('current-lang')) {
+        document.getElementById('current-lang').textContent = newLang === 'en' ? 'EN' : '中文';
+    }
+    if (document.getElementById('alt-lang')) {
+        document.getElementById('alt-lang').textContent = newLang === 'en' ? '中文' : 'EN';
+    }
+    
+    // Apply translations to all elements with language attributes
+    const elements = document.querySelectorAll('[data-en][data-zh]');
+    elements.forEach(element => {
+        const text = element.getAttribute(`data-${newLang}`);
+        if (text) {
+            // Handle different element types
+            if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
+                element.placeholder = text;
+            } else if (element.classList.contains('btn-text')) {
+                element.textContent = text;
+            } else if (element.classList.contains('cta-btn') || element.querySelector('i')) {
+                // For elements with icons (like CTA buttons), preserve the icon
+                const icon = element.querySelector('i');
+                if (icon) {
+                    element.textContent = '';
+                    element.appendChild(icon);
+                    element.appendChild(document.createTextNode(' ' + text));
+                } else {
+                    element.textContent = text;
+                }
+            } else {
+                element.textContent = text;
+            }
+        }
+    });
+    
+    // Update banner button text specifically
+    const bannerBtn = document.querySelector('.banner-order-btn .btn-text');
+    const bannerBtnParent = document.querySelector('.banner-order-btn');
+    if (bannerBtn && bannerBtnParent) {
+        const btnText = bannerBtnParent.getAttribute(`data-${newLang}`);
+        if (btnText) bannerBtn.textContent = btnText;
+    }
+    
+    // Update currency display
+    updateCurrencyDisplay(newLang);
+    
+    // Store language preference
+    localStorage.setItem('language', newLang);
+    
+    // Show/hide Chinese-specific content
+    toggleChineseContent(newLang === 'zh');
+    
+    // Update page language attribute
+    document.documentElement.lang = newLang === 'zh' ? 'zh-CN' : 'en';
+}
+
+// Currency display function
+function updateCurrencyDisplay(lang) {
+    const priceElements = document.querySelectorAll('.price-value');
+    priceElements.forEach(element => {
+        const usdPrice = element.textContent;
+        if (lang === 'zh' && usdPrice.includes('$')) {
+            // Convert to CNY (approximate rate: 1 USD = 7.2 CNY)
+            const price = parseFloat(usdPrice.replace(/[^0-9.-]/g, ''));
+            if (!isNaN(price)) {
+                element.textContent = `¥${(price * 7.2).toFixed(0)}`;
+            }
+        } else if (lang === 'en' && usdPrice.includes('¥')) {
+            // Convert back to USD
+            const price = parseFloat(usdPrice.replace(/[^0-9.-]/g, ''));
+            if (!isNaN(price)) {
+                element.textContent = `$${(price / 7.2).toFixed(2)}`;
+            }
+        }
+    });
+}
+
+// Toggle Chinese-specific content
+function toggleChineseContent(isZh) {
+    const chineseElements = document.querySelectorAll('.chinese-specific, .chinese-contact, .chinese-payment, .chinese-social, .chinese-testimonial');
+    const internationalElements = document.querySelectorAll('.international-contact, .international-payment, .international-testimonial');
+    
+    chineseElements.forEach(el => {
+        el.style.display = isZh ? 'block' : 'none';
+    });
+    
+    internationalElements.forEach(el => {
+        el.style.display = isZh ? 'none' : 'block';
+    });
+}
+
+// Initialize language on page load
+document.addEventListener('DOMContentLoaded', () => {
+    const savedLang = localStorage.getItem('language') || 'en';
+    if (savedLang === 'zh') {
+        toggleLanguage();
+    }
+});

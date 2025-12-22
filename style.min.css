@@ -1,0 +1,183 @@
+/*
+Theme Name: Fully Green
+Template: bizberg
+Text Domain: fully-green
+Author: Bizberg Themes
+Author URI: https://bizbergthemes.com/
+Theme URI: https://bizbergthemes.com/downloads/fully-green/
+License: GNU General Public License v3 or later
+License URI: http://www.gnu.org/licenses/gpl-3.0.html
+Description: Fully Green is child theme of Bizberg WordPress Theme. Theme is a clean & modern Eco Nature WordPress Theme. Fully Green is suitable for any nature, environment, environmental, donation, action, green, animal, africa, wild, non profit, foundation, paypal, natural, ngo, earth websites. This Free WordPress theme is fully responsive, cross-browser compatible, translation ready & SEO friendly. If you run into any problem while using our theme, you can refer to extensive documentation or contact our friendly support team. It fully supports Elementor, all the sections are made from Elementor.
+Tags: custom-logo,custom-menu,featured-images,threaded-comments,translation-ready,left-sidebar,right-sidebar,grid-layout,theme-options,blog,news,portfolio
+Version: 0.3
+Tested up to: 5.9
+Requires PHP: 5.6
+*/
+
+.navbar-default .navbar-nav > li > a {
+    letter-spacing: 0;
+}
+
+.green_process .column_wrapper {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding: 80px 0;
+}
+
+.green_process .column_wrapper .column.right {
+    display: flex;
+    flex-direction: column;
+    row-gap: 15px;
+    padding: 30px;
+}
+
+.green_process .column_wrapper .column.right h3 {
+    color: #6ab43e;
+    font-size: 20px;
+    border-left: 3px solid #6ab43e;
+    padding: 1px 11px;
+}
+
+.green_process .column_wrapper .column.right h2 {
+	color: #000;
+    font-weight: 900;
+}
+
+.green_process .column_wrapper .column.left .image {
+    display: flex;
+    height: 100%;
+    width: 100%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.green_process .column_wrapper {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding: 80px 0;
+    grid-column-gap: 30px;
+}
+
+.green_process .item_wrapper .item {
+    display: flex;
+    column-gap: 20px;
+    align-items: center;
+    align-content: center;
+}
+
+.green_process .item_wrapper .item i {
+    font-size: 25px;
+    padding: 26px;
+    border: 2px solid #eee;
+    color: #6ab43e;
+    border-radius: 50%;
+}
+
+.green_process .item_wrapper {
+    display: flex;
+    flex-direction: column;
+    grid-row-gap: 25px;
+    padding-top: 20px;
+}
+
+.green_services {
+    background: #f4f7fe;
+    padding: 65px 0;
+}
+
+.services_wrapper {
+    grid-template-columns: 1fr 1fr 1fr;
+    display: grid;
+    gap: 25px;
+}
+
+.services_wrapper .item {
+    background: #fff;
+    padding: 30px;
+    box-shadow: 2.5px 4.33px 15px 0px rgb(0 0 0 / 10%);
+    display: flex;
+    flex-direction: column;
+    row-gap: 15px;
+    align-items: center;
+}
+
+.services_wrapper .item p{
+    text-align: center;
+}
+
+.services_wrapper .item span i{
+    font-size: 25px;
+    background: #6ab43e;
+    color: #fff;
+    width: 60px;
+    border-radius: 50%;
+    height: 60px;
+    line-height: 2.4;
+    text-align: center;
+    padding-right: 1px;
+}
+
+.services_wrapper .item span{
+    margin-bottom: 10px;
+}
+
+.services_wrapper .item h3 {
+    font-weight: 700;
+    color: #000;
+    text-align: center;
+}
+
+@media (max-width: 991px){
+    .green_process .column_wrapper {
+        grid-template-columns: 1fr;
+        padding: 80px 0;
+        grid-column-gap: 30px;
+    }
+    .green_process .column_wrapper .column.left .image {
+        height: 400px;
+    }
+    .green_process .column_wrapper .column.right {
+        padding: 40px 0 0 0;
+    }
+    .services_wrapper {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 412px){
+    .services_wrapper {
+        grid-template-columns: 1fr;
+    }
+}
+
+/** 
+* Givewp CSS
+*/
+
+.single-give_forms .give_forms{
+    padding-top: 0;
+}
+
+.detail-content.single_page.eb_page .give_error, 
+.detail-content.single_page.eb_page .give_success, 
+.detail-content.single_page.eb_page .give_warning {
+    padding: 1em 1.5em 1em 2em;
+}
+
+#give_donation_receipt th {
+    padding: 15px;
+}
+
+#give_donation_receipt td {
+    padding: 12px 20px;
+}
+
+form#give-email-access-form {
+    display: flex;
+    flex-direction: column;
+}
+
+form#give-email-access-form input#give-email {
+    width: 100%;
+}

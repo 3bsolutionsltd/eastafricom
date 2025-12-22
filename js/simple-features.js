@@ -1,36 +1,10 @@
 // ENHANCED SIMPLE IMPLEMENTATION - Direct and Effective
-console.log('Enhanced simple features loading...');
+// Enhanced simple features loading
 
-// 1. Create Enhanced Urgency Banner
+// 1. Create Enhanced Urgency Banner - DISABLED
 function createEnhancedBanner() {
-    const banner = document.createElement('div');
-    banner.innerHTML = `
-        <div style="background: linear-gradient(135deg, #ef4444, #dc2626); color: white; padding: 15px 0; position: fixed; top: 0; left: 0; right: 0; z-index: 999; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.2);">
-            <div style="max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; padding: 0 20px;">
-                <span style="font-size: 20px;">⚡</span>
-                <div style="flex: 1; margin: 0 15px;">
-                    <span style="font-weight: bold; font-size: 16px;">🔥 November Export Special - FREE Quality Certification!</span>
-                    <div style="font-size: 13px; opacity: 0.9;">Only 23 containers remaining • Ends November 30th</div>
-                </div>
-                <div style="display: flex; gap: 15px; align-items: center;">
-                    <div style="text-align: center; min-width: 40px;">
-                        <div id="daysLeft" style="font-weight: bold; font-size: 18px;">29</div>
-                        <div style="font-size: 10px;">DAYS</div>
-                    </div>
-                    <div style="text-align: center; min-width: 40px;">
-                        <div id="hoursLeft" style="font-weight: bold; font-size: 18px;">19</div>
-                        <div style="font-size: 10px;">HOURS</div>
-                    </div>
-                </div>
-                <button onclick="claimOffer()" style="background: rgba(255,255,255,0.2); border: 1px solid white; color: white; padding: 8px 16px; border-radius: 20px; cursor: pointer; font-weight: 600; margin-left: 10px;">Claim Now</button>
-                <button onclick="this.parentElement.parentElement.style.display='none'; document.body.style.paddingTop='0'" style="background: none; border: none; color: white; font-size: 20px; cursor: pointer; margin-left: 10px;">×</button>
-            </div>
-        </div>
-    `;
-    document.body.insertBefore(banner.firstElementChild, document.body.firstChild);
-    document.body.style.paddingTop = '160px'; // Account for both banner (80px) and navbar (80px)
-    startCountdown();
-    console.log('Enhanced banner created');
+    // Red banner removed - using green top banner from index.html instead
+    console.log('Red banner creation skipped - using green theme banner');
 }
 
 // 2. Create Enhanced WhatsApp Button with Tooltip
@@ -59,19 +33,20 @@ function createEnhancedWhatsApp() {
 // 3. Create Enhanced Live Chat with Professional Design
 function createEnhancedChat() {
     const chat = document.createElement('div');
+    chat.className = 'smart-floating-element live-chat-widget';
     chat.innerHTML = `
-        <div style="position: fixed; bottom: 100px; right: 20px; z-index: 9999;">
-            <div onclick="toggleChat()" style="background: linear-gradient(135deg, #10b981, #059669); color: white; padding: 15px 20px; border-radius: 25px; cursor: pointer; box-shadow: 0 8px 25px rgba(16,185,129,0.3); display: flex; align-items: center; gap: 12px; transition: transform 0.3s ease; max-width: 280px;"
-                 onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 12px 35px rgba(16,185,129,0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 8px 25px rgba(16,185,129,0.3)'">
-                <div style="position: relative;">
+        <div style="position: fixed; bottom: 2rem; right: 2rem; z-index: 9999; transition: all 0.5s ease; opacity: 1; transform: translateX(0);">
+            <div onclick="toggleChat()" style="background: linear-gradient(135deg, #6ab43e, #4a7c2a); color: white; padding: 15px 20px; border-radius: 25px; cursor: pointer; box-shadow: 2.5px 4.33px 15px 0px rgba(106, 180, 62, 0.3); display: flex; align-items: center; gap: 12px; transition: all 0.3s ease; max-width: 280px;"
+                 onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 12px 35px rgba(106,180,62,0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='2.5px 4.33px 15px 0px rgba(106,180,62,0.3)'">
+                <div style="position: relative; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
                     <span style="font-size: 24px;">💬</span>
                     <span style="position: absolute; top: -5px; right: -5px; background: #ff4757; color: white; border-radius: 50%; width: 16px; height: 16px; font-size: 10px; display: flex; align-items: center; justify-content: center; animation: bounce 2s infinite;">1</span>
                 </div>
-                <div>
-                    <div style="font-weight: 600; font-size: 16px;">Live Chat</div>
-                    <div style="font-size: 12px; opacity: 0.9;">
-                        <span style="display: inline-block; width: 8px; height: 8px; background: #4ade80; border-radius: 50%; margin-right: 5px; animation: pulse 2s infinite;"></span>
-                        Online • &lt; 2 min response
+                <div style="display: flex; flex-direction: column; justify-content: center; min-width: 0;">
+                    <div style="font-weight: 600; font-size: 16px; line-height: 1.2; margin-bottom: 2px;">Live Chat</div>
+                    <div style="font-size: 12px; opacity: 0.9; line-height: 1; display: flex; align-items: center;">
+                        <span style="display: inline-block; width: 8px; height: 8px; background: #4ade80; border-radius: 50%; margin-right: 6px; animation: pulse 2s infinite; flex-shrink: 0;"></span>
+                        <span>Online • &lt; 2 min response</span>
                     </div>
                 </div>
             </div>
@@ -176,7 +151,7 @@ function enhanceTestimonialsSection() {
         `;
         
         startTestimonialRotation();
-        console.log('Enhanced testimonials created');
+        // Enhanced testimonials created
     }
 }
 
@@ -402,7 +377,7 @@ if (document.readyState === 'loading') {
         createEnhancedWhatsApp();
         createEnhancedChat();
         setTimeout(enhanceTestimonialsSection, 500); // Small delay for DOM
-        console.log('All enhanced features loaded!');
+        // All enhanced features loaded
     });
 } else {
     addEnhancedAnimations();

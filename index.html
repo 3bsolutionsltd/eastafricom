@@ -20,7 +20,9 @@
     <link rel="alternate" hreflang="zh" href="https://eastafricom.com/zh/">
     
     <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="images/favicon.ico">
+    <link rel="icon" type="image/png" href="images/logo-eac.png">
+    <link rel="apple-touch-icon" href="images/logo-eac.png">
+    <meta name="theme-color" content="#6ab43e">
     
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -42,14 +44,53 @@
         window.geoData = null;
         window.userRegion = 'international';
     </script>
-    <style>
-        .product-card {
-            opacity: 1 !important;
-            transform: none !important;
-        }
-    </style>
+    
+    <!-- Structured Data (Schema.org) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "East Africom Consults",
+      "url": "https://eastafricom.com",
+      "logo": "https://eastafricom.com/images/logo-eac.png",
+      "description": "Leading exporter of premium East African coffee and cocoa with sustainable sourcing and international certifications",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Mulago",
+        "addressLocality": "Kampala",
+        "addressCountry": "UG",
+        "postalCode": "108145"
+      },
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "telephone": "+256-776-701-003",
+        "contactType": "sales",
+        "email": "frank.asiimwe@eastafricom.com",
+        "availableLanguage": ["English", "Chinese"]
+      },
+      "sameAs": [
+        "https://www.linkedin.com/company/eastafricom",
+        "https://wa.me/256776701003"
+      ]
+    }
+    </script>
 </head>
 <body>
+    <!-- Order Now Top Banner -->
+    <div id="order-now-banner" class="order-now-banner">
+        <div class="banner-content">
+            <div class="banner-text">
+                <span class="banner-fire">🔥</span>
+                <span class="banner-message" data-en="PREMIUM EAST AFRICAN COFFEE - LIMITED STOCK!" data-zh="优质东非咖啡 - 库存有限！">PREMIUM EAST AFRICAN COFFEE - LIMITED STOCK!</span>
+                <span class="banner-action" data-en="ORDER NOW & SAVE 15%" data-zh="立即订购省 15%">ORDER NOW & SAVE 15%</span>
+            </div>
+            <a href="#contact" class="banner-order-btn" data-en="ORDER NOW" data-zh="立即订购">
+                <i class="fas fa-coffee"></i>
+                <span class="btn-text">ORDER NOW</span>
+            </a>
+        </div>
+    </div>
+
     <!-- Geo-targeting Notification Bar -->
     <div id="geo-notification" class="geo-notification" style="display: none;">
         <div class="geo-content">
@@ -87,7 +128,9 @@
                     <a href="#contact" class="nav-link" data-en="Contact" data-zh="联系我们">Contact</a>
                 </li>
                 <li class="nav-item">
-                    <a href="#contact" class="nav-link cta-btn" data-en="Get Quote" data-zh="获取报价">Get Quote</a>
+                    <a href="#contact" class="nav-link cta-btn" data-en="Request Quote" data-zh="获取报价">
+                        <i class="fas fa-paper-plane"></i> Request Quote
+                    </a>
                 </li>
                 <li class="nav-item language-toggle">
                     <button class="lang-btn" onclick="toggleLanguage()">
@@ -103,145 +146,58 @@
         </div>
     </nav>
 
-    <!-- Hero Section -->
+    <!-- Hero Section - FullyGreen Style -->
     <section id="home" class="hero coffee-hero">
-        <div class="hero-background" style="background-image: url('https://images.unsplash.com/photo-1447933601403-0c6688de566e?w=1920&h=1080&fit=crop&crop=center&q=80');">
-            <div class="hero-overlay"></div>
+        <!-- Clean Background Slideshow -->
+        <div class="hero-slideshow">
+            <div class="hero-slide active" style="background-image: url('images/coffee_bag_beans.jpg');"></div>
+            <div class="hero-slide" style="background-image: url('images/top-view-coffee-cup-coffee-beans-dark-table-scaled.jpg');"></div>
+            <div class="hero-slide" style="background-image: url('images/coffee_bag_beans.jpeg');"></div>
         </div>
+        <div class="hero-overlay"></div>
+        
+        <!-- Hero Content - FullyGreen Style -->
         <div class="hero-content">
             <div class="container">
-                <div class="hero-text" data-aos="fade-up" data-aos-duration="1000">
-                    <h1 class="hero-title" data-en="Welcome To EastAfricom" data-zh="欢迎来到EastAfricom">
-                        <span class="welcome-text">Welcome To</span>
-                        <span class="company-name gradient-text">EastAfricom</span>
-                        <span class="tagline">Sourcing Supply Quality Defect-Free Organic Products</span>
-                    </h1>
-                    <p class="hero-subtitle" data-en="Premium East African coffee and cocoa exports with guaranteed defect-free quality • 100% organic certification • Global delivery excellence | Minimum order: 1 container (19.2 MT) • 24-hour guaranteed quote response" data-zh="优质东非咖啡和可可出口，保证无缺陷品质 • 100%有机认证 • 全球配送卓越 | 最低订单：1个集装箱 (19.2公吨) • 24小时保证报价回复">
-                        ✨ <strong>Premium East African coffee and cocoa exports with guaranteed defect-free quality</strong> ✨
-                        <br>🌿 100% organic certification • 🚀 Global delivery excellence • 🛡️ Quality guarantee
-                        <br><strong class="highlight-text">Minimum order: 1 container (19.2 MT) • 24-hour guaranteed quote response</strong>
+                <div class="hero-text">
+                    <h3 class="hero-subtitle" data-en="From East Africa to Your Cup" data-zh="从东非到您的杯子">From East Africa to Your Cup</h3>
+                    <h1 class="hero-title" data-en="Premium Organic Coffee & Cocoa" data-zh="优质有机咖啡和可可">Premium Organic Coffee & Cocoa</h1>
+                    <p class="hero-description" data-en="Sustainably sourced from Uganda's highland farms (1,800-2,200m altitude). 100% defect-free guarantee with international organic certifications. Direct from farmer to your business." data-zh="来自乌干达高原农场（1800-2200米海拔）的可持续采购。100%无缺陷保证，国际有机认证。直接从农民到您的企业。">
+                        Sustainably sourced from Uganda's highland farms (1,800-2,200m altitude). 100% defect-free guarantee with international organic certifications. Direct from farmer to your business.
                     </p>
-                    
-                    <!-- Enhanced Action Buttons Grid -->
-                    <div class="hero-actions-grid">
-                        <!-- Primary Action - Most Important -->
-                        <div class="primary-action">
-                            <a href="#contact" class="btn-primary-hero" data-en="ORDER NOW - Get Quote" data-zh="立即订购 - 获取报价">
-                                <div class="btn-icon">
-                                    <i class="fas fa-shopping-cart"></i>
-                                </div>
-                                <div class="btn-content">
-                                    <span class="btn-title">ORDER NOW</span>
-                                    <span class="btn-subtitle">Get Professional Quote</span>
-                                    <span class="btn-detail">Free • 24-hour response • No obligation</span>
-                                </div>
-                                <div class="btn-arrow">
-                                    <i class="fas fa-arrow-right"></i>
-                                </div>
-                            </a>
-                        </div>
-
-                        <!-- Secondary Actions Grid -->
-                        <div class="secondary-actions">
-                            <button onclick="openPriceCalculator()" class="btn-secondary-hero calculator-btn" data-en="Instant Calculator" data-zh="即时计算器">
-                                <div class="btn-icon">
-                                    <i class="fas fa-calculator"></i>
-                                </div>
-                                <div class="btn-content">
-                                    <span class="btn-title">Price Calculator</span>
-                                    <span class="btn-subtitle">Get instant estimate</span>
-                                </div>
-                            </button>
-
-                            <a href="tel:+256776701003" class="btn-secondary-hero urgent-btn" data-en="Urgent Orders" data-zh="紧急订单">
-                                <div class="btn-icon">
-                                    <i class="fas fa-phone-alt"></i>
-                                </div>
-                                <div class="btn-content">
-                                    <span class="btn-title">Urgent Orders</span>
-                                    <span class="btn-subtitle">Call Frank directly</span>
-                                </div>
-                            </a>
-
-                            <a href="#products" class="btn-secondary-hero catalog-btn" data-en="View Products" data-zh="查看产品">
-                                <div class="btn-icon">
-                                    <i class="fas fa-seedling"></i>
-                                </div>
-                                <div class="btn-content">
-                                    <span class="btn-title">View Products</span>
-                                    <span class="btn-subtitle">Browse catalog</span>
-                                </div>
-                            </a>
-                        </div>
-
-                        <!-- Quick Contact Options -->
-                        <div class="quick-contact-strip">
-                            <div class="contact-option">
-                                <a href="https://wa.me/256776701003?text=Hi%20Frank,%20I'm%20interested%20in%20your%20coffee%20and%20cocoa%20exports." target="_blank" class="contact-link whatsapp">
-                                    <i class="fab fa-whatsapp"></i>
-                                    <span>WhatsApp</span>
-                                </a>
-                            </div>
-                            <div class="contact-option">
-                                <a href="mailto:frank.asiimwe@eastafricom.com" class="contact-link email">
-                                    <i class="fas fa-envelope"></i>
-                                    <span>Email</span>
-                                </a>
-                            </div>
-                            <div class="contact-option">
-                                <a href="tel:+256776701003" class="contact-link phone">
-                                    <i class="fas fa-phone"></i>
-                                    <span>Call Now</span>
-                                </a>
-                            </div>
-                        </div>
+                    <div class="hero-actions">
+                        <a href="#products" class="cta-button primary" data-en="View Products" data-zh="查看产品">
+                            <i class="fas fa-coffee"></i> View Products
+                        </a>
+                        <a href="#contact" class="cta-button secondary" data-en="Get Quote" data-zh="获取报价">
+                            <i class="fas fa-envelope"></i> Get Quote
+                        </a>
                     </div>
-
-                    <!-- Ordering Benefits -->
-                    <div class="ordering-benefits">
-                        <div class="benefit-item">
-                            <i class="fas fa-truck"></i>
-                            <span data-en="Free shipping 2+ containers" data-zh="2+集装箱免费运输">Free shipping 2+ containers</span>
-                        </div>
-                        <div class="benefit-item">
+                    <div class="hero-features">
+                        <div class="feature-badge">
                             <i class="fas fa-shield-alt"></i>
-                            <span data-en="Quality guarantee" data-zh="质量保证">Quality guarantee</span>
+                            <span data-en="100% Defect-Free" data-zh="100%无缺陷">100% Defect-Free</span>
                         </div>
-                        <div class="benefit-item">
-                            <i class="fas fa-credit-card"></i>
-                            <span data-en="Flexible payment terms" data-zh="灵活付款条件">Flexible payment terms</span>
+                        <div class="feature-badge">
+                            <i class="fas fa-leaf"></i>
+                            <span data-en="Organic Certified" data-zh="有机认证">Organic Certified</span>
                         </div>
-                    </div>
-
-                    <!-- Enhanced Currency Display with Pricing -->
-                    <div class="currency-display pricing-display" id="currency-display">
-                        <div class="price-item">
-                            <span class="price-label" data-en="Coffee from:" data-zh="咖啡起价:">Coffee from:</span>
-                            <span class="price-value">$2,850 USD/MT</span>
+                        <div class="feature-badge">
+                            <i class="fas fa-shipping-fast"></i>
+                            <span data-en="Global Shipping" data-zh="全球运输">Global Shipping</span>
                         </div>
-                        <div class="price-item">
-                            <span class="price-label" data-en="Cocoa from:" data-zh="可可起价:">Cocoa from:</span>
-                            <span class="price-value">$3,200 USD/MT</span>
-                        </div>
-                        <small class="price-note" data-en="FOB Mombasa • Subject to market conditions" data-zh="FOB蒙巴萨 • 视市场情况而定">FOB Mombasa • Subject to market conditions</small>
-                    </div>
-                </div>
-                <div class="hero-stats" data-aos="fade-up" data-aos-delay="200">
-                    <div class="stat-item">
-                        <span class="stat-number">50,000+</span>
-                        <span class="stat-label" data-en="Tons Exported Annually" data-zh="年出口吨数">Tons Exported Annually</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-number">25+</span>
-                        <span class="stat-label" data-en="Countries Served" data-zh="服务国家">Countries Served</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-number">15+</span>
-                        <span class="stat-label" data-en="Years Experience" data-zh="年经验">Years Experience</span>
                     </div>
                 </div>
             </div>
         </div>
+        
+        <!-- Slide Navigation Dots -->
+        <div class="hero-slide-nav">
+            <button class="slide-dot active" data-slide="0" aria-label="Slide 1"></button>
+            <button class="slide-dot" data-slide="1" aria-label="Slide 2"></button>
+            <button class="slide-dot" data-slide="2" aria-label="Slide 3"></button>
+        </div>
+        
         <div class="scroll-indicator">
             <div class="scroll-arrow"></div>
         </div>
@@ -271,15 +227,7 @@
                         <div class="quality-badge">Guaranteed</div>
                     </div>
                     
-                    <div class="quality-card" data-aos="zoom-in" data-aos-delay="200">
-                        <div class="quality-icon">
-                            <i class="fas fa-leaf"></i>
-                        </div>
-                        <h3 data-en="100% Organic Certified" data-zh="100%有机认证">100% Organic Certified</h3>
-                        <p data-en="All products carry international organic certifications from accredited bodies" data-zh="所有产品均通过权威机构的国际有机认证">All products carry international organic certifications from accredited bodies</p>
-                        <div class="quality-badge">Certified</div>
-                    </div>
-                    
+
                     <div class="quality-card" data-aos="zoom-in" data-aos-delay="300">
                         <div class="quality-icon">
                             <i class="fas fa-microscope"></i>
@@ -298,17 +246,118 @@
                         <div class="quality-badge">Compliant</div>
                     </div>
                 </div>
-                
-                <div class="quality-cta" data-aos="fade-up" data-aos-delay="500">
-                    <h3 data-en="Quality Documentation Available" data-zh="提供质量文件">Quality Documentation Available</h3>
-                    <p data-en="Request detailed quality certificates, lab reports, and organic certifications" data-zh="申请详细的质量证书、实验室报告和有机认证">Request detailed quality certificates, lab reports, and organic certifications</p>
-                    <a href="#contact" class="btn btn-primary quality-btn" data-en="Request Quality Documents" data-zh="申请质量文件">
-                        <i class="fas fa-file-certificate"></i> Request Quality Documents
-                    </a>
-                </div>
+
             </div>
         </div>
     </section>
+
+    <!-- FullyGreen Process Section - Our Coffee Journey -->
+    <div class="green_process">
+        <div class="container">
+            <div class="column_wrapper">
+                <div class="column left">
+                    <div class="image" style="background-image: url('images/coffee_bag_beans.jpeg');"></div>
+                </div>
+                
+                <div class="column right">
+                    <h3 data-en="From Farm to Cup" data-zh="从农场到杯子">From Farm to Cup</h3>
+                    <h2 data-en="Our Premium Coffee Process" data-zh="我们的优质咖啡工艺">Our Premium Coffee Process</h2>
+
+                    <div class="item_wrapper">
+                        <div class="item">
+                            <span class="icon_wrap">
+                                <i class="fas fa-check"></i>
+                            </span>
+                            <p data-en="Highland sourcing from 1800-2200m altitude farms ensuring optimal flavor development" data-zh="来自海拔1800-2200米高原农场的采购，确保最佳风味发展">Highland sourcing from 1800-2200m altitude farms ensuring optimal flavor development</p>
+                        </div>
+
+                        <div class="item">
+                            <span class="icon_wrap">
+                                <i class="fas fa-check"></i>
+                            </span>
+                            <p data-en="Hand-picked selection of only the ripest red cherries by experienced farmers" data-zh="经验丰富的农民手工挑选最成熟的红色咖啡果">Hand-picked selection of only the ripest red cherries by experienced farmers</p>
+                        </div>
+
+                        <div class="item">
+                            <span class="icon_wrap">
+                                <i class="fas fa-check"></i>
+                            </span>
+                            <p data-en="Traditional washing and natural drying methods preserving unique flavor profiles" data-zh="传统水洗和自然干燥方法保持独特的风味特征">Traditional washing and natural drying methods preserving unique flavor profiles</p>
+                        </div>
+
+                        <div class="item">
+                            <span class="icon_wrap">
+                                <i class="fas fa-check"></i>
+                            </span>
+                            <p data-en="Rigorous quality control with cupping, grading, and laboratory testing" data-zh="严格的质量控制，包括杯测、分级和实验室测试">Rigorous quality control with cupping, grading, and laboratory testing</p>
+                        </div>
+
+                        <div class="item">
+                            <span class="icon_wrap">
+                                <i class="fas fa-check"></i>
+                            </span>
+                            <p data-en="Certified organic and fair trade practices supporting local farming communities" data-zh="认证有机和公平贸易做法支持当地农业社区">Certified organic and fair trade practices supporting local farming communities</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FullyGreen Services Section - Why Choose Us -->
+    <div class="green_services">
+        <div class="container">
+            <div class="services_wrapper">
+                <div class="item">
+                    <span class="icon_wrap">
+                        <i class="fas fa-shipping-fast"></i>
+                    </span>
+                    <h3 data-en="Global Logistics" data-zh="全球物流">Global Logistics</h3>
+                    <p data-en="Reliable shipping from Mombasa Port to worldwide destinations with full tracking and insurance" data-zh="从蒙巴萨港可靠运输到全球目的地，全程跟踪和保险">Reliable shipping from Mombasa Port to worldwide destinations with full tracking and insurance</p>
+                </div>
+
+                <div class="item">
+                    <span class="icon_wrap">
+                        <i class="fas fa-leaf"></i>
+                    </span>
+                    <h3 data-en="100% Organic" data-zh="100%有机">100% Organic</h3>
+                    <p data-en="Certified organic farming practices with EU, USDA, and international organic standards compliance" data-zh="经过认证的有机农业实践，符合欧盟、美国农业部和国际有机标准">Certified organic farming practices with EU, USDA, and international organic standards compliance</p>
+                </div>
+
+                <div class="item">
+                    <span class="icon_wrap">
+                        <i class="fas fa-certificate"></i>
+                    </span>
+                    <h3 data-en="Quality Certified" data-zh="质量认证">Quality Certified</h3>
+                    <p data-en="International certifications including Fair Trade, Rainforest Alliance, and UTZ Certified" data-zh="国际认证包括公平贸易、雨林联盟和UTZ认证">International certifications including Fair Trade, Rainforest Alliance, and UTZ Certified</p>
+                </div>
+
+                <div class="item">
+                    <span class="icon_wrap">
+                        <i class="fas fa-users"></i>
+                    </span>
+                    <h3 data-en="Direct Sourcing" data-zh="直接采购">Direct Sourcing</h3>
+                    <p data-en="Partnership with 500+ smallholder farmers ensuring transparency and fair pricing" data-zh="与500多个小农合作，确保透明度和公平定价">Partnership with 500+ smallholder farmers ensuring transparency and fair pricing</p>
+                </div>
+
+                <div class="item">
+                    <span class="icon_wrap">
+                        <i class="fas fa-flask"></i>
+                    </span>
+                    <h3 data-en="Lab Testing" data-zh="实验室测试">Lab Testing</h3>
+                    <p data-en="Comprehensive laboratory analysis for moisture content, defects, and cup quality scoring" data-zh="全面的实验室分析，包括水分含量、缺陷和杯测质量评分">Comprehensive laboratory analysis for moisture content, defects, and cup quality scoring</p>
+                </div>
+
+                <div class="item">
+                    <span class="icon_wrap">
+                        <i class="fas fa-handshake"></i>
+                    </span>
+                    <h3 data-en="B2B Support" data-zh="B2B支持">B2B Support</h3>
+                    <p data-en="Dedicated account managers, custom packaging, and flexible payment terms for business buyers" data-zh="为企业买家提供专职客户经理、定制包装和灵活的付款条件">Dedicated account managers, custom packaging, and flexible payment terms for business buyers</p>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <section id="products" class="products">
         <div class="container">
@@ -326,11 +375,11 @@
                             <i class="fas fa-coffee"></i>
                         </div>
                         <h3 class="category-title" data-en="*** PREMIUM DEFECT-FREE *** Organic Coffee Varieties" data-zh="***优质无缺陷***有机咖啡品种">*** PREMIUM DEFECT-FREE *** Organic Coffee Varieties</h3>
-                        <p class="category-description" data-en="🌿 100% Organic Certified • 🛡️ Zero Defects Guarantee • Complete range of Arabica and Robusta coffee with various processing methods from East Africa's finest regions" data-zh="🌿 100%有机认证 • 🛡️ 零缺陷保证 • 来自东非最优质地区的阿拉比卡和罗布斯塔咖啡，采用各种加工方法">
-                            🌿 <strong>100% Organic Certified</strong> • 🛡️ <strong>Zero Defects Guarantee</strong> • Complete range of Arabica and Robusta coffee with various processing methods from East Africa's finest regions
+                        <p class="category-description" data-en="🛡️ Zero Defects Guarantee • 🌱 Sustainable Farming • Complete range of Arabica and Robusta coffee with various processing methods from East Africa's finest regions" data-zh="🛡️ 零缺陷保证 • 🌱 可持续农业 • 来自东非最优质地区的阿拉比卡和罗布斯塔咖啡，采用各种加工方法">
+                            🛡️ <strong>Zero Defects Guarantee</strong> • 🌱 <strong>Sustainable Farming</strong> • Complete range of Arabica and Robusta coffee with various processing methods from East Africa's finest regions
                         </p>
                     </div>
-                    <div class="product-grid" style="display: grid !important; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)) !important; gap: 2rem !important; visibility: visible !important;">
+                    <div class="product-grid">
                         <!-- Arabica AA Grade - Washed -->
                         <div class="product-card" style="display: block !important; visibility: visible !important; opacity: 1 !important;">
                             <div class="product-image">
@@ -535,77 +584,7 @@
                     </div>
                 </div>
 
-                <!-- Cocoa Products -->
-                <div class="product-category" data-aos="fade-up" data-aos-delay="200">
-                    <div class="category-header">
-                        <div class="category-icon">
-                            <i class="fas fa-seedling"></i>
-                        </div>
-                        <h3 class="category-title" data-en="Premium Cocoa" data-zh="优质可可">Premium Cocoa</h3>
-                        <p class="category-description" data-en="High-quality cocoa beans and processed products" data-zh="优质可可豆和加工产品">
-                            High-quality cocoa beans and processed products
-                        </p>
-                    </div>
-                    <div class="product-grid">
-                        <div class="product-card">
-                            <div class="product-image">
-                                <img src="images/coffee_bag_beans.jpeg" alt="Premium Raw Cocoa Beans">
-                                <div class="product-badge">Premium</div>
-                            </div>
-                            <div class="product-info">
-                                <h4 class="product-name" data-en="Raw Cocoa Beans" data-zh="生可可豆">Raw Cocoa Beans</h4>
-                                <p class="product-specs" data-en="Fermented & Dried, 6-7% Moisture" data-zh="发酵和干燥，6-7%水分">Fermented & Dried, 6-7% Moisture</p>
-                                <div class="product-pricing">
-                                    <span class="price" data-currency="USD">$2.80-3.50/kg</span>
-                                    <span class="price-cny" data-currency="CNY" style="display: none;">¥20-25/kg</span>
-                                    <small class="price-note" data-en="FOB Mombasa Port" data-zh="蒙巴萨港FOB">FOB Mombasa Port</small>
-                                </div>
-                                <div class="product-features">
-                                    <span class="feature-tag">Organic</span>
-                                    <span class="feature-tag">Fair Trade</span>
-                                    <span class="feature-tag">Premium Grade</span>
-                                </div>
-                                <div class="product-order-section">
-                                    <button class="order-btn" onclick="openQuoteModal('raw-cocoa')" data-en="ORDER NOW - Get Quote" data-zh="立即订购 - 获取报价">
-                                        <i class="fas fa-shopping-cart"></i> ORDER NOW - Get Quote
-                                    </button>
-                                    <div class="quick-contact">
-                                        <a href="tel:+256776701003" class="quick-contact-btn" data-en="📞 Call" data-zh="📞 电话">📞 Call</a>
-                                        <a href="https://wa.me/256776701003" class="quick-contact-btn" target="_blank" data-en="💬 WhatsApp" data-zh="💬 微信">💬 WhatsApp</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="product-card">
-                            <div class="product-image">
-                                <img src="images/coffee_bag_beans.jpeg" alt="Premium Cocoa Powder">
-                            </div>
-                            <div class="product-info">
-                                <h4 class="product-name" data-en="Cocoa Powder" data-zh="可可粉">Cocoa Powder</h4>
-                                <p class="product-specs" data-en="Natural & Alkalized, 10-12% Fat" data-zh="天然和碱化，10-12%脂肪">Natural & Alkalized, 10-12% Fat</p>
-                                <div class="product-pricing">
-                                    <span class="price" data-currency="USD">$4.20-5.80/kg</span>
-                                    <span class="price-cny" data-currency="CNY" style="display: none;">¥30-41/kg</span>
-                                    <small class="price-note" data-en="FOB Mombasa Port" data-zh="蒙巴萨港FOB">FOB Mombasa Port</small>
-                                </div>
-                                <div class="product-features">
-                                    <span class="feature-tag">Food Grade</span>
-                                    <span class="feature-tag">Industrial Use</span>
-                                    <span class="feature-tag">Quality Certified</span>
-                                </div>
-                                <div class="product-order-section">
-                                    <button class="order-btn" onclick="openQuoteModal('cocoa-powder')" data-en="ORDER NOW - Get Quote" data-zh="立即订购 - 获取报价">
-                                        <i class="fas fa-shopping-cart"></i> ORDER NOW - Get Quote
-                                    </button>
-                                    <div class="quick-contact">
-                                        <a href="tel:+256776701003" class="quick-contact-btn" data-en="📞 Call" data-zh="📞 电话">📞 Call</a>
-                                        <a href="https://wa.me/256776701003" class="quick-contact-btn" target="_blank" data-en="💬 WhatsApp" data-zh="💬 微信">💬 WhatsApp</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+
             </div>
             
             <!-- CTA Section -->
@@ -643,7 +622,7 @@
             </div>
             <div class="about-content">
                 <div class="about-text" data-aos="fade-right">
-                    <h3 data-en="15+ Years of Agricultural Export Excellence" data-zh="15年以上农产品出口卓越经验">15+ Years of Agricultural Export Excellence</h3>
+                    <h3 data-en="5+ Years of Agricultural Export Excellence" data-zh="5年以上农产品出口卓越经验">5+ Years of Agricultural Export Excellence</h3>
                     <p data-en="We are dedicated to sourcing and supplying organic products that are defect free. We work through partnerships with a variety of farmers and firms, giving us a 360-degree perspective on East African agricultural exports." data-zh="我们致力于采购和供应无缺陷的有机产品。我们通过与各种农民和公司的合作伙伴关系工作，为我们提供了东非农业出口的360度视角。">
                         We are dedicated to sourcing and supplying organic products that are defect free. 
                         We work through partnerships with a variety of farmers and firms, giving us a 360-degree 
@@ -674,7 +653,7 @@
                     <div class="image-container">
                         <img src="images/coffee_bag_beans.jpeg" alt="Premium Coffee Cup with Beans Top View - East African Coffee Excellence" class="about-img">
                         <div class="experience-badge">
-                            <span class="badge-number">50K+</span>
+                            <span class="badge-number">200+</span>
                             <span class="badge-text">Tons<br>Exported</span>
                         </div>
                     </div>
@@ -695,43 +674,41 @@
             <div class="certifications-grid">
                 <div class="cert-card" data-aos="fade-up" data-aos-delay="100">
                     <div class="cert-icon">
-                        <i class="fas fa-leaf"></i>
+                        <i class="fas fa-certificate"></i>
                     </div>
-                    <h3 class="cert-title" data-en="Organic Certification" data-zh="有机认证">Organic Certification</h3>
-                    <p class="cert-description" data-en="USDA Organic, EU Organic, JAS Organic certified products" data-zh="USDA有机、欧盟有机、JAS有机认证产品">
-                        USDA Organic, EU Organic, JAS Organic certified products
+                    <h3 class="cert-title" data-en="GACC Certificate" data-zh="GACC认证">GACC Certificate</h3>
+                    <p class="cert-description" data-en="General Administration of China Customs certified for direct export to China" data-zh="中国海关总署认证，可直接出口到中国">
+                        General Administration of China Customs certified for direct export to China
                     </p>
                     <div class="cert-logos">
-                        <span class="cert-badge">USDA</span>
-                        <span class="cert-badge">EU</span>
-                        <span class="cert-badge">JAS</span>
+                        <span class="cert-badge">GACC</span>
+                        <span class="cert-badge">China</span>
                     </div>
                 </div>
                 <div class="cert-card" data-aos="fade-up" data-aos-delay="200">
                     <div class="cert-icon">
-                        <i class="fas fa-balance-scale"></i>
+                        <i class="fas fa-flag"></i>
                     </div>
-                    <h3 class="cert-title" data-en="Fair Trade Certified" data-zh="公平贸易认证">Fair Trade Certified</h3>
-                    <p class="cert-description" data-en="Supporting farmer communities and sustainable practices" data-zh="支持农民社区和可持续实践">
-                        Supporting farmer communities and sustainable practices
+                    <h3 class="cert-title" data-en="Uganda Export Trade" data-zh="乌干达出口贸易">Uganda Export Trade</h3>
+                    <p class="cert-description" data-en="Official Uganda government export license and trade certification" data-zh="乌干达政府官方出口许可证和贸易认证">
+                        Official Uganda government export license and trade certification
                     </p>
                     <div class="cert-logos">
-                        <span class="cert-badge">Fairtrade</span>
-                        <span class="cert-badge">UTZ</span>
+                        <span class="cert-badge">Uganda</span>
+                        <span class="cert-badge">Export</span>
                     </div>
                 </div>
                 <div class="cert-card" data-aos="fade-up" data-aos-delay="300">
                     <div class="cert-icon">
-                        <i class="fas fa-shield-alt"></i>
+                        <i class="fas fa-shipping-fast"></i>
                     </div>
-                    <h3 class="cert-title" data-en="Quality Standards" data-zh="质量标准">Quality Standards</h3>
-                    <p class="cert-description" data-en="ISO 22000, HACCP, and SQF food safety certifications" data-zh="ISO 22000、HACCP和SQF食品安全认证">
-                        ISO 22000, HACCP, and SQF food safety certifications
+                    <h3 class="cert-title" data-en="Export Certified" data-zh="出口认证">Export Certified</h3>
+                    <p class="cert-description" data-en="International export standards compliance and quality certification" data-zh="符合国际出口标准和质量认证">
+                        International export standards compliance and quality certification
                     </p>
                     <div class="cert-logos">
-                        <span class="cert-badge">ISO</span>
-                        <span class="cert-badge">HACCP</span>
-                        <span class="cert-badge">SQF</span>
+                        <span class="cert-badge">Export</span>
+                        <span class="cert-badge">Quality</span>
                     </div>
                 </div>
                 <div class="cert-card chinese-specific" data-aos="fade-up" data-aos-delay="400" style="display: none;">
@@ -872,7 +849,7 @@
                             <i class="fas fa-map-marker-alt"></i>
                             <div>
                                 <h4 data-en="Head Quarters" data-zh="总部">Head Quarters</h4>
-                                <p>Mulago - Kampala<br>P.O BOX 108145, KAMPALA - UGANDA</p>
+                                <p>Mulago - Kampala<br>P.O BOX 421481 - Mbarara, UGANDA</p>
                             </div>
                         </div>
                         <div class="contact-item international-contact">
@@ -1060,24 +1037,30 @@
                 </div>
             </div>
             <div class="footer-bottom">
-                <p data-en="&copy; 2024 East Africom Consults. All rights reserved. | Sustainable sourcing from East Africa to the world." data-zh="&copy; 2024 东非咨询公司。保留所有权利。| 从东非到世界的可持续采购。">
-                    &copy; 2024 East Africom Consults. All rights reserved. | Sustainable sourcing from East Africa to the world.
+                <p data-en="&copy; 2025 East Africom Consults. All rights reserved. | Sustainable sourcing from East Africa to the world." data-zh="&copy; 2025 东非咨询公司。保留所有权利。| 从东非到世界的可持续采购。">
+                    &copy; 2025 East Africom Consults. All rights reserved. | Sustainable sourcing from East Africa to the world.
                 </p>
+                <div class="footer-legal-links">
+                    <a href="#" data-en="Privacy Policy" data-zh="隐私政策">Privacy Policy</a>
+                    <span class="separator">|</span>
+                    <a href="#" data-en="Terms of Service" data-zh="服务条款">Terms of Service</a>
+                    <span class="separator">|</span>
+                    <a href="#" data-en="Cookie Policy" data-zh="Cookie政策">Cookie Policy</a>
+                </div>
             </div>
         </div>
     </footer>
 
     <!-- Back to Top Button -->
-    <!-- Back to Top Button -->
     <button id="backToTop" class="back-to-top">
         <i class="fas fa-arrow-up"></i>
     </button>
 
-    <!-- Floating Order Button -->
-    <a href="#contact" class="floating-order-btn" data-en="💰 ORDER NOW" data-zh="💰 立即订购">
-        <i class="fas fa-shopping-cart"></i>
-        <span data-en="ORDER NOW" data-zh="立即订购">ORDER NOW</span>
-    </a>
+    <!-- Floating UI Toggle (For user control) -->
+    <button class="floating-ui-toggle" onclick="enhancedToggleFloatingUI()" 
+            title="Toggle floating buttons visibility - Press F key or click here">
+        <i class="fas fa-eye"></i>
+    </button>
 
     <!-- Scripts -->
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
@@ -1094,6 +1077,12 @@
     <!-- Advanced Testimonials & Social Proof Module (DISABLED - Using Enhanced Version) -->
     <!-- <script src="js/testimonials.js"></script> -->
     
+    <!-- Simple Hero Slideshow (FullyGreen Style) -->
+    <script src="js/simple-hero-slideshow.js"></script>
+    
+    <!-- Section Manager - Enable/Disable Sections -->
+    <script src="js/section-manager.js"></script>
+    
     <!-- ENHANCED FEATURES -->
     <script src="js/simple-features.js"></script>
     <script src="js/price-calculator.js"></script>
@@ -1104,7 +1093,15 @@
     
     <!-- Dynamic Content System -->
     <script src="js/dynamic-content.js"></script>
+    
+    <!-- Enhanced Navigation -->
+    <script src="js/navigation.js"></script>
+    
+    <!-- Fully Green Theme Sections - DISABLED for cleaner layout -->
+    <!-- <script src="js/fully-green-sections.js"></script> -->
+    <!-- <script src="js/coffee-slideshow.js"></script> -->
 </body>
 </html>
-< ! - -   C I / C D   P i p e l i n e   T e s t   -   1 1 / 0 7 / 2 0 2 5   1 9 : 3 4 : 4 6   - - >  
+< ! - -   C I / C D   P i p e l i n e   T e s t   -   1 1 / 0 7 / 2 0 2 5   1 9 : 3 4 : 4 6   - - > 
+ 
  

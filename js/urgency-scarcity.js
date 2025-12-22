@@ -51,12 +51,13 @@ class UrgencyScarcity {
     }
     
     init() {
-        this.createUrgencyBanner();
+        // Disabled urgency banner - clean professional layout
+        // this.createUrgencyBanner();
         this.addProductUrgencyElements();
         this.createSeasonalPricingDisplay();
         this.setupCountdownTimers();
         this.addInventoryIndicators();
-        this.createFloatingUrgencyReminder();
+        // this.createFloatingUrgencyReminder();
         this.trackUserBehavior();
     }
     
@@ -812,14 +813,15 @@ function createUrgencyBannerNow() {
     console.log('Urgency banner created successfully!');
 }
 
+// Urgency banner disabled for clean professional layout
 // Execute immediately if DOM is ready, otherwise wait
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', createUrgencyBannerNow);
-} else {
-    createUrgencyBannerNow();
-}
+// if (document.readyState === 'loading') {
+//     document.addEventListener('DOMContentLoaded', createUrgencyBannerNow);
+// } else {
+//     createUrgencyBannerNow();
+// }
 
-window.urgencySystem = new UrgencyScarcity();
+// window.urgencySystem = new UrgencyScarcity();
 
 // Export for use in other modules
 if (typeof module !== 'undefined' && module.exports) {

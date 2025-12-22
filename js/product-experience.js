@@ -1,5 +1,5 @@
 // ENHANCED PRODUCT EXPERIENCE - Phase 8
-console.log('Enhanced product experience features loading...');
+// Enhanced product experience features loading
 
 // Product data with detailed specifications
 const productData = {
@@ -770,30 +770,9 @@ function createProductComparison() {
     `;
     document.body.appendChild(comparisonModal.firstElementChild);
     
-    // Create the floating comparison button
-    const comparisonBtn = document.createElement('button');
-    comparisonBtn.innerHTML = '⚖️ Compare Products';
-    comparisonBtn.style.cssText = `
-        position: fixed;
-        bottom: 200px;
-        right: 20px;
-        background: linear-gradient(135deg, #8b5cf6, #7c3aed);
-        color: white;
-        border: none;
-        padding: 12px 20px;
-        border-radius: 25px;
-        font-weight: 600;
-        cursor: pointer;
-        box-shadow: 0 8px 25px rgba(139, 92, 246, 0.3);
-        z-index: 998;
-        transition: transform 0.3s ease;
-    `;
+    // Compare Products button has been completely removed
     
-    comparisonBtn.onmouseover = () => comparisonBtn.style.transform = 'translateY(-2px)';
-    comparisonBtn.onmouseout = () => comparisonBtn.style.transform = 'translateY(0)';
-    comparisonBtn.onclick = openProductComparison;
-    
-    document.body.appendChild(comparisonBtn);
+    console.log('ℹ️ Compare Products button disabled as requested');
 }
 
 function openProductComparison() {
@@ -818,7 +797,7 @@ if (document.readyState === 'loading') {
             enhanceProductCards();
             createProductComparison();
         }, 1000);
-        console.log('Enhanced product experience features loaded!');
+        // Enhanced product experience features loaded
     });
 } else {
     createProductGalleryModal();

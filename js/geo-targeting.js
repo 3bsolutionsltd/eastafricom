@@ -14,7 +14,6 @@ class GeoTargeting {
         try {
             await this.detectLocation();
             this.setupCurrencyDisplay();
-            this.initializeLocalization();
             this.setupEventListeners();
         } catch (error) {
             console.warn('Geo-targeting initialization failed:', error);
@@ -24,9 +23,15 @@ class GeoTargeting {
 
     async detectLocation() {
         try {
-            // Try IP geolocation service
-            const response = await fetch('https://ipapi.co/json/');
-            const data = await response.json();
+            // Use ip-api.com directly (no CORS restrictions on localhost)
+            const response = await fetch('http://ip-api.com/json/');
+            const fallbackData = await response.json();
+            const data = {
+                country_code: fallbackData.countryCode,
+                country_name: fallbackData.country,
+                city: fallbackData.city,
+                region: fallbackData.region
+            };
             
             this.userCountry = data.country_code;
             
@@ -48,7 +53,8 @@ class GeoTargeting {
     showChineseNotification() {
         const notification = document.getElementById('geo-notification');
         if (notification) {
-            notification.style.display = 'block';
+            // Disable notification completely
+            notification.style.display = 'none !important';
             
             // Auto-hide after 10 seconds if no action
             setTimeout(() => {
@@ -303,10 +309,13 @@ function downloadCatalog() {
         : 'Product catalog download started. Please contact us if you have any issues.');
 }
 
-// Initialize geo-targeting when DOM is loaded
-document.addEventListener('DOMContentLoaded', function() {
-    window.geoTargeting = new GeoTargeting();
-});
+// Initialize geo-targeting when DOM is loaded - single instance only
+if (!window.geoTargetingInitialized) {
+    document.addEventListener('DOMContentLoaded', function() {
+        window.geoTargeting = new GeoTargeting();
+        window.geoTargetingInitialized = true;
+    });
+}
 
 // Export for module usage
 if (typeof module !== 'undefined' && module.exports) {

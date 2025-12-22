@@ -879,6 +879,9 @@ class PerformanceOptimizer {
     }
 
     preloadCriticalResources() {
+        // Disabled: These external Unsplash images were causing preload warnings
+        // and weren't actually critical for initial page load
+        /* 
         const criticalImages = [
             'https://images.unsplash.com/photo-1442512595331-e89e73853f31?w=1920&h=1080&fit=crop&crop=center',
             'https://images.unsplash.com/photo-1559056199-641a0ac8b55e?w=800&h=600&fit=crop&crop=center'
@@ -891,6 +894,7 @@ class PerformanceOptimizer {
             link.href = src;
             document.head.appendChild(link);
         });
+        */
     }
 
     optimizeAnimations() {
@@ -959,10 +963,8 @@ const Utils = {
 
 // Initialize everything when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
-    // Check if geo-targeting script is loaded
-    if (typeof GeoTargeting !== 'undefined') {
-        window.geoTargeting = new GeoTargeting();
-    }
+    // GeoTargeting is initialized in geo-targeting.js
+    // Removed duplicate initialization to prevent double API calls
 
     // Initialize all components
     new Navigation();
