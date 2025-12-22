@@ -12,6 +12,21 @@ try {
     $pdo = getDB();
     
     if ($method === 'GET') {
+        // Check if table exists first
+        $tableExists = $pdo->query("SHOW TABLES LIKE 'quality_badges'")->rowCount() > 0;
+        
+        if (!$tableExists) {
+            echo json_encode([
+                'success' => true,
+                'data' => [
+                    'badges' => [],
+                    'total' => 0
+                ],
+                'message' => 'Table not created yet. Run setup-quality-badges.php'
+            ]);
+            exit;
+        }
+        
         // Fetch all quality badges
         $stmt = $pdo->prepare("
             SELECT id, icon, title_en, title_zh, description_en, description_zh, 
