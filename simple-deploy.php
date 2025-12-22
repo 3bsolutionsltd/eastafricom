@@ -24,19 +24,22 @@ try {
     // Step 1: Download repository as ZIP
     logMessage("Downloading repository from GitHub...");
     
-    $context = stream_context_create([
-        'http' => [
-            'method' => 'GET',
-            'header' => [
-                'User-Agent: EastAfricom-Deploy/1.0'
-            ],
-            'timeout' => 30
-        ]
-    ]);
+    // Use curl for better reliability with GitHub API
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $github_api_url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+    curl_setopt($ch, CURLOPT_USERAGENT, 'EastAfricom-Deploy/1.0');
+    curl_setopt($ch, CURLOPT_TIMEOUT, 60);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
     
-    $zip_content = file_get_contents($github_api_url, false, $context);
-    if ($zip_content === false) {
-        throw new Exception("Failed to download repository");
+    $zip_content = curl_exec($ch);
+    $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    $curl_error = curl_error($ch);
+    curl_close($ch);
+    
+    if ($zip_content === false || $http_code !== 200) {
+        throw new Exception("Failed to download repository (HTTP $http_code): $curl_error");
     }
     
     // Step 2: Save and extract ZIP
