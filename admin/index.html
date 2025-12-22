@@ -102,6 +102,9 @@
                 <button onclick="showTab('certifications')" class="tab-btn px-3 py-2 rounded-lg font-medium text-sm whitespace-nowrap">
                     <i class="fas fa-certificate mr-1"></i>Certifications
                 </button>
+                <button onclick="showTab('quality-badges')" class="tab-btn px-3 py-2 rounded-lg font-medium text-sm whitespace-nowrap">
+                    <i class="fas fa-shield-alt mr-1"></i>Quality
+                </button>
                 <button onclick="showTab('activity')" class="tab-btn px-3 py-2 rounded-lg font-medium text-sm whitespace-nowrap">
                     <i class="fas fa-chart-line mr-1"></i>Activity
                 </button>
@@ -295,6 +298,26 @@
                         <div class="flex items-center justify-center py-8">
                             <div class="loader"></div>
                             <span class="ml-3 text-gray-500">Loading certifications...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quality Badges Tab -->
+        <div id="quality-badges-tab" class="tab-content hidden">
+            <div class="bg-white rounded-lg shadow">
+                <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+                    <h2 class="text-xl font-semibold text-gray-900">Quality Assurance Badges</h2>
+                    <button onclick="openQualityBadgeModal()" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition">
+                        <i class="fas fa-plus mr-2"></i>Add Badge
+                    </button>
+                </div>
+                <div class="p-6">
+                    <div id="quality-badges-table">
+                        <div class="flex items-center justify-center py-8">
+                            <div class="loader"></div>
+                            <span class="ml-3 text-gray-500">Loading quality badges...</span>
                         </div>
                     </div>
                 </div>
