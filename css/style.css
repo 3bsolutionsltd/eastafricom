@@ -5511,7 +5511,7 @@ h1, h2, h3 {
 }
 
 .nav-logo .logo {
-    height: 45px;
+    height: 70px;
     width: auto;
     transition: transform var(--transition-fast);
 }
