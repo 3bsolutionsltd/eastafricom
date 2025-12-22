@@ -198,6 +198,48 @@ class AdminDashboard {
             return;
         }
 
+        container.innerHTML = `
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Certification</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Type</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Valid Until</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    ${this.data.certifications.map(cert => `
+                        <tr>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center">
+                                    <i class="fas ${cert.icon} text-green-600 text-xl mr-3"></i>
+                                    <div class="font-medium text-gray-900">${cert.name}</div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 text-sm text-gray-900">${cert.type || 'N/A'}</td>
+                            <td class="px-6 py-4 text-sm text-gray-900">${cert.valid_until || 'N/A'}</td>
+                            <td class="px-6 py-4">
+                                <span class="px-2 py-1 text-xs font-semibold rounded-full ${cert.active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
+                                    ${cert.active ? 'Active' : 'Inactive'}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 text-sm space-x-2">
+                                <button onclick="openCertificationModal(${cert.id})" class="text-blue-600 hover:text-blue-900">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button onclick="deleteCertification(${cert.id})" class="text-red-600 hover:text-red-900">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            </table>
+        `;
+    }
+
     renderQualityBadgesTable() {
         const container = document.getElementById('quality-badges-table');
         
@@ -248,65 +290,6 @@ class AdminDashboard {
                     `).join('')}
                 </tbody>
             </table>
-        `;
-    }
-
-        container.innerHTML = `
-            <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Certification</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Badges</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
-                        ${this.data.certifications.map(cert => `
-                            <tr>
-                                <td class="px-6 py-4">
-                                    <div class="flex items-center">
-                                        <i class="${cert.icon} text-blue-500 text-xl mr-3"></i>
-                                        <div>
-                                            <div class="font-medium text-gray-900">${cert.title_en}</div>
-                                            <div class="text-sm text-gray-500">${cert.title_zh}</div>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4 max-w-xs">
-                                    <div class="text-sm text-gray-900 truncate">${cert.description_en}</div>
-                                    <div class="text-xs text-gray-500 truncate">${cert.description_zh}</div>
-                                </td>
-                                <td class="px-6 py-4">
-                                    <div class="flex flex-wrap gap-1">
-                                        ${cert.badge1 ? `<span class="px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded">${cert.badge1}</span>` : ''}
-                                        ${cert.badge2 ? `<span class="px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded">${cert.badge2}</span>` : ''}
-                                        ${cert.badge3 ? `<span class="px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded">${cert.badge3}</span>` : ''}
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4 text-sm text-gray-900">${cert.display_order}</td>
-                                <td class="px-6 py-4">
-                                    <span class="px-2 py-1 text-xs rounded ${cert.active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
-                                        ${cert.active ? 'Active' : 'Inactive'}
-                                    </span>
-                                    ${cert.chinese_specific ? '<span class="ml-1 px-2 py-1 text-xs bg-purple-100 text-purple-800 rounded">中国专用</span>' : ''}
-                                </td>
-                                <td class="px-6 py-4 text-sm font-medium space-x-2">
-                                    <button onclick="openCertificationModal(${cert.id})" class="text-blue-600 hover:text-blue-900">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button onclick="deleteCertification(${cert.id})" class="text-red-600 hover:text-red-900">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                        `).join('')}
-                    </tbody>
-                </table>
-            </div>
         `;
     }
 
