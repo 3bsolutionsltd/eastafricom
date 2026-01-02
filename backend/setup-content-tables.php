@@ -19,6 +19,12 @@
     try {
         $pdo = getDB();
         
+        if (!$pdo) {
+            throw new Exception("Failed to connect to database");
+        }
+        
+        echo "<div class='info'>✓ Database connection established</div>";
+        
         // Create slideshow_slides table
         $sql1 = "CREATE TABLE IF NOT EXISTS slideshow_slides (
             id INT AUTO_INCREMENT PRIMARY KEY,
