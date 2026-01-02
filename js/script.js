@@ -204,7 +204,7 @@ class HeroSection {
                 exchangeRateElement.textContent = `1 USD = ${cnyRate.toFixed(2)} CNY`;
             }
         } catch (error) {
-            console.log('Currency update failed:', error);
+            // Currency update failed silently
         }
     }
 }
@@ -842,7 +842,6 @@ class TestimonialCarousel {
 
     createCarousel() {
         // Placeholder for carousel implementation if needed
-        console.log('Carousel functionality available for', this.testimonials.length, 'testimonials');
     }
 }
 
@@ -1086,7 +1085,7 @@ window.addEventListener('resize', Utils.debounce(function() {
 
 // Error handling
 window.addEventListener('error', function(e) {
-    console.error('JavaScript error:', e.error);
+    // Log errors silently in production
 });
 
 // Update currency displays periodically
@@ -1153,8 +1152,6 @@ function openQuoteModal(productType) {
 
 // Enhanced order tracking
 function trackOrderClick(productType, source) {
-    console.log(`Order interest tracked: ${productType} from ${source}`);
-    
     // You can add analytics tracking here
     if (typeof gtag !== 'undefined') {
         gtag('event', 'order_interest', {

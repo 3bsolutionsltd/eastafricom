@@ -130,7 +130,6 @@ function createPriceCalculator() {
         </div>
     `;
     document.body.appendChild(calculator.firstElementChild);
-    console.log('Price calculator modal created');
 }
 
 function openPriceCalculator() {
@@ -311,5 +310,4 @@ if (document.readyState === 'loading') {
     });
 } else {
     createPriceCalculator();
-    console.log('Price calculator initialized immediately!');
 }

@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix Products - East Africom</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: linear-gradient(135deg, #1a472a 0%, #2d5a3d 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+        h1 {
+            color: #1a472a;
+            margin-bottom: 24px;
+        }
+        .step {
+            background: #f8f9fa;
+            border-left: 4px solid #2d5a3d;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+        .step h3 {
+            color: #1a472a;
+            margin-bottom: 12px;
+        }
+        .btn {
+            background: linear-gradient(135deg, #1a472a 0%, #2d5a3d 100%);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-right: 12px;
+            margin-bottom: 12px;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(45, 90, 61, 0.3);
+        }
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #c3e6cb;
+            display: none;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #f5c6cb;
+            display: none;
+        }
+        .info {
+            background: #e7f3ff;
+            color: #0066cc;
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #b3d9ff;
+        }
+        pre {
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 4px;
+            overflow-x: auto;
+            margin-top: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 Fix Product Display Issues</h1>
+        
+        <div id="successMsg" class="success"></div>
+        <div id="errorMsg" class="error"></div>
+        
+        <div class="info">
+            <strong>⚠️ Issue Found:</strong> Products are only showing featured items. This guide will help you fix the database schema and update all products.
+        </div>
+        
+        <div class="step">
+            <h3>Step 1: Update Database Schema</h3>
+            <p>Add the new <code>defect_free</code> and <code>organic</code> columns to the products table:</p>
+            <button class="btn" onclick="updateSchema()">Update Database Schema</button>
+        </div>
+        
+        <div class="step">
+            <h3>Step 2: Activate All Products</h3>
+            <p>Make sure all products are active so they show on the frontend:</p>
+            <button class="btn" onclick="activateAllProducts()">Activate All Products</button>
+        </div>
+        
+        <div class="step">
+            <h3>Step 3: Set Default Features</h3>
+            <p>Apply default features to all existing products:</p>
+            <button class="btn" onclick="setDefaultFeatures()">Set Defect-Free & Organic for All</button>
+        </div>
+        
+        <div class="step">
+            <h3>Step 4: Verify in Admin Panel</h3>
+            <p>Login to the admin panel to manage individual product features:</p>
+            <a href="admin/login.html" class="btn">Go to Admin Login</a>
+        </div>
+        
+        <div class="step">
+            <h3>Step 5: Check Frontend</h3>
+            <p>View the updated products on the main site:</p>
+            <a href="index.html" class="btn">View Main Site</a>
+        </div>
+    </div>
+
+    <script>
+        async function updateSchema() {
+            const btn = event.target;
+            btn.disabled = true;
+            btn.textContent = 'Updating...';
+            
+            try {
+                const response = await fetch('backend/api/update-products-schema.php');
+                const data = await response.json();
+                
+                if (data.success) {
+                    showSuccess('✅ Database schema updated successfully!\n' + data.changes.join('\n'));
+                    btn.textContent = '✅ Schema Updated';
+                } else {
+                    throw new Error(data.error || 'Schema update failed');
+                }
+            } catch (error) {
+                console.error('Schema update error:', error);
+                showError('❌ Error: ' + error.message);
+                btn.disabled = false;
+                btn.textContent = 'Retry Update';
+            }
+        }
+        
+        async function activateAllProducts() {
+            const btn = event.target;
+            btn.disabled = true;
+            btn.textContent = 'Activating...';
+            
+            try {
+                const response = await fetch('backend/api/products.php?admin=true');
+                const data = await response.json();
+                
+                if (!data.success || !data.data.products) {
+                    throw new Error('Failed to fetch products');
+                }
+                
+                const products = data.data.products;
+                let updated = 0;
+                
+                for (const product of products) {
+                    if (!product.active) {
+                        const updateResponse = await fetch('backend/api/products.php', {
+                            method: 'PUT',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ id: product.id, active: true })
+                        });
+                        
+                        if (updateResponse.ok) updated++;
+                    }
+                }
+                
+                showSuccess(`✅ Activated ${updated} products! Total products: ${products.length}`);
+                btn.textContent = '✅ Products Activated';
+                
+            } catch (error) {
+                console.error('Activation error:', error);
+                showError('❌ Error: ' + error.message);
+                btn.disabled = false;
+                btn.textContent = 'Retry Activation';
+            }
+        }
+        
+        async function setDefaultFeatures() {
+            const btn = event.target;
+            btn.disabled = true;
+            btn.textContent = 'Setting features...';
+            
+            try {
+                const response = await fetch('backend/api/products.php?admin=true');
+                const data = await response.json();
+                
+                if (!data.success || !data.data.products) {
+                    throw new Error('Failed to fetch products');
+                }
+                
+                const products = data.data.products;
+                let updated = 0;
+                
+                for (const product of products) {
+                    const updateResponse = await fetch('backend/api/products.php', {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            id: product.id,
+                            defect_free: true,
+                            organic: true
+                        })
+                    });
+                    
+                    if (updateResponse.ok) updated++;
+                }
+                
+                showSuccess(`✅ Updated ${updated} products with default features!`);
+                btn.textContent = '✅ Features Set';
+                
+            } catch (error) {
+                console.error('Feature update error:', error);
+                showError('❌ Error: ' + error.message);
+                btn.disabled = false;
+                btn.textContent = 'Retry Setting Features';
+            }
+        }
+        
+        function showSuccess(message) {
+            const successMsg = document.getElementById('successMsg');
+            successMsg.textContent = message;
+            successMsg.style.display = 'block';
+            document.getElementById('errorMsg').style.display = 'none';
+        }
+        
+        function showError(message) {
+            const errorMsg = document.getElementById('errorMsg');
+            errorMsg.textContent = message;
+            errorMsg.style.display = 'block';
+            document.getElementById('successMsg').style.display = 'none';
+        }
+    </script>
+</body>
+</html>

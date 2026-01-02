@@ -7,6 +7,13 @@
 // Include database configuration
 require_once '../config/database.php';
 
+// Check if this is a mutation request (POST, PUT, DELETE) and require auth
+$isMutation = in_array($_SERVER['REQUEST_METHOD'], ['POST', 'PUT', 'DELETE']);
+if ($isMutation) {
+    require_once __DIR__ . '/../auth/middleware.php';
+    requireAuth();
+}
+
 // Set CORS headers
 setCORSHeaders();
 

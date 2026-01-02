@@ -872,7 +872,7 @@ p {
 /* Navigation - Fully Green Theme */
 .navbar {
     position: fixed;
-    top: 50px;
+    top: 50px; /* Position below the 50px banner */
     left: 0;
     right: 0;
     background: #fff;
@@ -1223,7 +1223,7 @@ p {
     position: relative;
     z-index: 2;
     width: 100%;
-    padding: 80px var(--container-padding) 2rem; /* Top padding for fixed header */
+    padding: 180px 20px 60px; /* Increased top padding to prevent cutoff */
     color: white;
     display: flex;
     flex-direction: column;
@@ -1233,10 +1233,79 @@ p {
     justify-content: center;
 }
 
+/* Hide static hero text - using dynamic slideshow */
+.hero-content .hero-text {
+    display: none !important;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
 .hero-text {
     text-align: center !important;
     max-width: 900px;
     margin: 0 auto 3rem;
+}
+
+.hero-subtitle {
+    font-size: clamp(1rem, 2vw, 1.3rem);
+    margin-bottom: 1.5rem;
+    opacity: 0.95;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
+}
+
+.hero-title {
+    font-family: var(--font-heading);
+    font-size: clamp(2rem, 4.5vw, 3.5rem);
+    font-weight: 800;
+    margin-bottom: 1.5rem;
+    line-height: 1.2;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
+}
+
+.hero-description {
+    font-size: clamp(0.95rem, 1.8vw, 1.15rem);
+    line-height: 1.7;
+    margin-bottom: 2.5rem;
+    max-width: 750px;
+    margin-left: auto;
+    margin-right: auto;
+    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.6);
+}
+
+.hero-text {
+    text-align: center !important;
+    max-width: 900px;
+    margin: 0 auto 3rem;
+}
+
+/* Laptop-specific responsive adjustments (1024px - 1440px) */
+@media (min-width: 1024px) and (max-width: 1440px) {
+    .hero-content {
+        padding: 220px 20px 80px; /* Extra top padding for laptops */
+        min-height: 100vh;
+    }
+    
+    .hero-title {
+        font-size: 3rem; /* Fixed size for laptops */
+        margin-bottom: 2rem;
+    }
+    
+    .hero-subtitle {
+        font-size: 1.2rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .hero-description {
+        font-size: 1.1rem;
+        margin-bottom: 3rem;
+    }
+}
+
+/* Larger desktop screens */
+@media (min-width: 1441px) {
+    .hero-content {
+        padding: 200px 20px 80px;
+    }
 }
 
 /* Remove duplicate hero-text definition */
@@ -1453,6 +1522,48 @@ section#home.hero.coffee-hero .hero-content .container .hero-text .hero-title {
     border-radius: 6px;
 }
 
+/* Slide Navigation Arrows */
+.slide-nav-arrows {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 5;
+    width: 100%;
+    left: 0;
+    right: 0;
+    pointer-events: none;
+}
+
+.slide-arrow {
+    position: absolute;
+    width: 70px;
+    height: 70px;
+    background: rgba(0, 0, 0, 0.6);
+    border: none;
+    border-radius: 50%;
+    color: #fff;
+    font-size: 26px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    pointer-events: all;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.slide-arrow:hover {
+    background: rgba(0, 0, 0, 0.85);
+    transform: scale(1.15);
+}
+
+.slide-arrow.prev {
+    left: 40px;
+}
+
+.slide-arrow.next {
+    right: 40px;
+}
+
 .scroll-indicator {
     position: absolute;
     bottom: 30px;
@@ -1483,6 +1594,157 @@ section#home.hero.coffee-hero .hero-content .container .hero-text .hero-title {
 }
 
 /* ===== END NEW CLEAN HERO SECTION ===== */
+
+/* ===== SLIDE TEXT CONTENT OVERLAY - ACTIVE ===== */
+.slide-text-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: white;
+    z-index: 3;
+    width: 90%;
+    max-width: 1000px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.6s ease, visibility 0.6s ease;
+}
+
+.slide-text-content.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Slide text elements */
+.slide-chapter {
+    font-size: clamp(0.9rem, 1.5vw, 1.1rem);
+    color: var(--primary-green) !important;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 1rem;
+    font-weight: 600;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
+}
+
+.slide-title {
+    font-family: var(--font-heading);
+    font-size: clamp(2rem, 4.5vw, 3.5rem);
+    font-weight: 800;
+    margin-bottom: 1.5rem;
+    line-height: 1.2;
+    color: white !important;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
+}
+
+.slide-description {
+    font-size: clamp(0.95rem, 1.8vw, 1.15rem);
+    line-height: 1.7;
+    margin-bottom: 2.5rem;
+    max-width: 750px;
+    margin-left: auto;
+    margin-right: auto;
+    color: white !important;
+    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.6);
+}
+
+/* Slide buttons - using cta-button styling */
+.slide-btn-wrap {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-top: 2rem;
+}
+
+.slide-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem 2.5rem;
+    font-size: 1.2rem;
+    font-weight: 600;
+    text-decoration: none;
+    border-radius: 50px;
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.slide-btn.btn-primary {
+    background: var(--gradient-green);
+    color: var(--cream-white);
+    border: 2px solid transparent;
+    padding: 1.2rem 3rem;
+    font-size: 1.1rem;
+    border-radius: var(--border-radius-large);
+    box-shadow: 0 8px 25px rgba(74, 124, 89, 0.3);
+}
+
+.slide-btn.btn-primary:hover {
+    background: var(--gradient-gold);
+    color: var(--primary-coffee);
+    transform: translateY(-4px) scale(1.06);
+    box-shadow: 0 15px 35px rgba(244, 185, 66, 0.4);
+}
+
+.slide-btn.btn-secondary {
+    background: transparent;
+    color: white;
+    border: 2px solid white;
+    padding: 1rem 2.5rem;
+}
+
+.slide-btn.btn-secondary:hover {
+    background: white;
+    color: var(--primary-coffee);
+    transform: translateY(-4px) scale(1.06);
+    box-shadow: 0 15px 35px rgba(255, 255, 255, 0.4);
+}
+
+.slide-btn i {
+    font-size: 1rem;
+    transition: transform 0.3s ease;
+}
+
+.slide-btn:hover i {
+    transform: translateX(5px);
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* ===== END SLIDE TEXT CONTENT OVERLAY ===== */
 
 .gradient-text {
     background: linear-gradient(135deg, var(--secondary-color) 0%, #FFD700 100%);
@@ -1938,6 +2200,91 @@ section#home.hero.coffee-hero .hero-content .container .hero-text .hero-title {
     transform: translateY(-2px);
     box-shadow: 0 12px 35px rgba(106, 180, 62, 0.4);
     color: white !important;
+}
+
+/* View Details Button */
+.view-details-btn {
+    width: 100%;
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    color: white !important;
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 15px;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+}
+
+.view-details-btn:hover {
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
+}
+
+/* Urgency Alert Enhancement */
+.urgency-alert {
+    background: linear-gradient(135deg, #fee2e2, #fecaca);
+    border-left: 4px solid #ef4444;
+    padding: 12px 15px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    animation: urgencyPulse 2s ease-in-out infinite;
+}
+
+.urgency-text {
+    color: #991b1b !important;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.urgency-text strong {
+    color: #7f1d1d;
+}
+
+.urgency-timer {
+    color: #dc2626 !important;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+@keyframes urgencyPulse {
+    0%, 100% {
+        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4);
+    }
+    50% {
+        box-shadow: 0 0 0 8px rgba(239, 68, 68, 0);
+    }
+}
+
+/* Quick Contact Buttons */
+.quick-contact {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.quick-contact-btn {
+    flex: 1;
+    padding: 8px 12px;
+    background: linear-gradient(135deg, #6ab43e, #4a7c2a);
+    color: white !important;
+    text-decoration: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-align: center;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.quick-contact-btn:hover {
+    background: transparent;
+    border-color: #6ab43e;
+    color: #6ab43e !important;
+    transform: translateY(-2px);
 }
 
 /* Particles Effect for Hero */
@@ -5711,6 +6058,57 @@ h1, h2, h3 {
     .nav-link {
         padding: 15px 20px;
         border-radius: 10px;
+    }
+    
+    /* Slideshow responsive styles */
+    .slide-text-content {
+        left: 5%;
+        right: 5%;
+        max-width: 90%;
+        padding: 0 10px;
+    }
+    
+    .slide-chapter {
+        font-size: 16px;
+        margin-bottom: 10px;
+    }
+    
+    .slide-title {
+        font-size: clamp(2rem, 9vw, 3rem);
+        margin-bottom: 30px;
+    }
+    
+    .slide-btn-wrap {
+        flex-direction: row;
+        gap: 15px;
+        margin-top: 30px;
+    }
+    
+    .slide-btn {
+        width: 130px;
+        height: 130px;
+        min-width: 130px;
+        min-height: 130px;
+        font-size: 11px;
+    }
+    
+    .slide-btn i {
+        font-size: 16px;
+    }
+    
+    .slide-arrow {
+        width: 45px;
+        height: 45px;
+        font-size: 18px;
+    }
+    
+    .slide-arrow.prev {
+        left: 15px;
+    }
+    
+    .slide-arrow.next {
+        right: 15px;
+    }
         text-align: center;
         font-size: 1rem;
     }
@@ -5806,7 +6204,7 @@ h1, h2, h3 {
     font-weight: 700;
     margin-bottom: 1rem;
     text-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
-    color: white;
+    color: white !important;
 }
 
 .slide-description {

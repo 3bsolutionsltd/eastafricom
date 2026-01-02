@@ -2,9 +2,16 @@
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE');
-header('Access-Control-Allow-Headers: Content-Type');
+header('Access-Control-Allow-Headers: Content-Type, X-CSRF-Token');
 
 require_once '../config/database.php';
+
+// Check if this is a mutation request (POST, PUT, DELETE) and require auth
+$isMutation = in_array($_SERVER['REQUEST_METHOD'], ['POST', 'PUT', 'DELETE']);
+if ($isMutation) {
+    require_once __DIR__ . '/../auth/middleware.php';
+    requireAuth();
+}
 
 $method = $_SERVER['REQUEST_METHOD'];
 

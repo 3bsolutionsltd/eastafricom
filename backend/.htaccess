@@ -1,0 +1,24 @@
+# Protect sensitive backend files but allow API access
+# Block direct access to config directory
+<FilesMatch "^(config|auth)/">
+    Order deny,allow
+    Deny from all
+</FilesMatch>
+
+# Allow API access
+<FilesMatch "\.(php)$">
+    <If "%{REQUEST_URI} =~ m#/api/#">
+        Order allow,deny
+        Allow from all
+    </If>
+    <If "%{REQUEST_URI} =~ m#/auth/#">
+        Order allow,deny
+        Allow from all
+    </If>
+</FilesMatch>
+
+# Block direct access to .sql, .log, .ini files
+<FilesMatch "\.(sql|log|ini|conf)$">
+    Order deny,allow
+    Deny from all
+</FilesMatch>

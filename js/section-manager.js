@@ -33,7 +33,7 @@
                 }
             }
         } catch (e) {
-            console.warn('Could not load from backend, using localStorage');
+            // Fall back to localStorage silently
         }
         
         // Fall back to localStorage
@@ -42,7 +42,7 @@
             try {
                 return JSON.parse(saved);
             } catch (e) {
-                console.error('Error loading section settings:', e);
+                // Return default settings
             }
         }
         
@@ -64,15 +64,11 @@
     async function applySectionVisibility() {
         const settings = await loadSettings();
         
-        console.log('📋 Section Manager: Applying visibility settings', settings);
-        
         for (const [sectionName, selector] of Object.entries(sectionMap)) {
             const isEnabled = settings[sectionName] !== false;
             const elements = document.querySelectorAll(selector);
             
             if (elements.length > 0) {
-                console.log(`${isEnabled ? '✅' : '❌'} ${sectionName}: ${elements.length} element(s) found`);
-                
                 elements.forEach(element => {
                     if (isEnabled) {
                         element.style.display = '';
@@ -83,12 +79,8 @@
                         element.classList.add('section-hidden');
                     }
                 });
-            } else {
-                console.warn(`⚠️ ${sectionName}: No elements found for selector "${selector}"`);
             }
         }
-        
-        console.log('✅ Section Manager: Visibility applied successfully');
     }
 
     // Initialize on DOM ready
@@ -113,7 +105,6 @@
 
     // Listen for custom event when awards are loaded
     document.addEventListener('awardsLoaded', () => {
-        console.log('📋 Section Manager: Awards loaded, reapplying visibility');
         setTimeout(applySectionVisibility, 100);
     });
 })();

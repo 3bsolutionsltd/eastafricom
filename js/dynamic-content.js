@@ -48,7 +48,6 @@ class DynamicContentManager {
             this.events.dispatchEvent(new CustomEvent('initialized'));
             
         } catch (error) {
-            console.error('❌ Failed to initialize Dynamic Content Manager:', error);
             this.events.dispatchEvent(new CustomEvent('error', { detail: error }));
         }
     }
@@ -57,7 +56,9 @@ class DynamicContentManager {
      * Fetch with caching and retry logic
      */
     async fetchWithCache(endpoint, useCache = true) {
-        const cacheKey = endpoint;
+        // Extract base endpoint without query params for cache key
+        const baseEndpoint = endpoint.split('?')[0];
+        const cacheKey = baseEndpoint;
         const cached = this.cache.get(cacheKey);
         
         // Return cached data if valid
@@ -85,12 +86,9 @@ class DynamicContentManager {
                 return data;
                 
             } catch (error) {
-                console.warn(`Attempt ${attempt}/${this.retryAttempts} failed for ${endpoint}:`, error.message);
-                
                 if (attempt === this.retryAttempts) {
                     // On final failure, return cached data if available
                     if (cached && cached.data) {
-                        console.warn(`Using stale cache for ${endpoint}`);
                         return cached.data;
                     }
                     throw error;
@@ -107,21 +105,23 @@ class DynamicContentManager {
      */
     async loadProducts() {
         try {
-            const data = await this.fetchWithCache('products.php');
+            // Add timestamp to bypass cache for products
+            const timestamp = new Date().getTime();
+            const data = await this.fetchWithCache(`products.php?t=${timestamp}`, false);
             
             if (data && data.data && data.data.products) {
+                const productCount = data.data.products.length;
+                
                 this.updateProductDisplay(data.data.products);
                 // updateCalculatorOptions is handled within updateProductDisplay
                 this.updateInventoryWidget(data.data.products);
                 
-                console.log(`📦 Loaded ${data.data.products.length} products`);
                 this.events.dispatchEvent(new CustomEvent('productsLoaded', { 
                     detail: data.data.products 
                 }));
             }
             
         } catch (error) {
-            console.error('Failed to load products:', error);
             this.handleLoadError('products', error);
         }
     }
@@ -136,14 +136,12 @@ class DynamicContentManager {
             if (data && data.data && data.data.testimonials) {
                 this.updateTestimonialsCarousel(data.data.testimonials);
                 
-                console.log(`💬 Loaded ${data.data.testimonials.length} testimonials`);
                 this.events.dispatchEvent(new CustomEvent('testimonialsLoaded', { 
                     detail: data.data.testimonials 
                 }));
             }
             
         } catch (error) {
-            console.error('Failed to load testimonials:', error);
             this.handleLoadError('testimonials', error);
         }
     }
@@ -158,14 +156,12 @@ class DynamicContentManager {
             if (data && data.data && data.data.activities) {
                 this.updateLiveActivityFeed(data.data.activities);
                 
-                console.log(`🔴 Loaded ${data.data.activities.length} live activities`);
                 this.events.dispatchEvent(new CustomEvent('activityLoaded', { 
                     detail: data.data.activities 
                 }));
             }
             
         } catch (error) {
-            console.error('Failed to load live activity:', error);
             this.handleLoadError('activity', error);
         }
     }
@@ -181,14 +177,12 @@ class DynamicContentManager {
                 this.updateContactInfo(data.data.settings);
                 // this.updateSiteConfiguration(data.data.settings);
                 
-                console.log('⚙️ Site settings loaded');
                 this.events.dispatchEvent(new CustomEvent('settingsLoaded', { 
                     detail: data.data.settings 
                 }));
             }
             
         } catch (error) {
-            console.error('Failed to load settings:', error);
             this.handleLoadError('settings', error);
         }
     }
@@ -213,10 +207,10 @@ class DynamicContentManager {
         }
 
         // Update product cards if they exist
-        // const productGrid = document.querySelector('.products-grid');
-        // if (productGrid) {
-        //     this.updateProductGrid(products, productGrid);
-        // }
+        const productGrid = document.querySelector('.product-grid');
+        if (productGrid) {
+            this.updateProductGrid(products, productGrid);
+        }
 
         // Update individual product elements by data attributes
         products.forEach(product => {
@@ -278,6 +272,86 @@ class DynamicContentManager {
                 <span class="stock-amount">${stockLevel} MT</span>
             `;
         }
+    }
+
+    /**
+     * Update product grid with database products
+     */
+    updateProductGrid(products, productGrid) {
+        // Clear existing products
+        productGrid.innerHTML = '';
+        
+        // Get current language
+        const currentLang = window.geoTargeting?.currentLanguage || 'en';
+        const isChineseUser = currentLang === 'zh';
+        
+        // Group products by category
+        const productsByCategory = {};
+        products.forEach(product => {
+            const category = product.category || 'Other';
+            if (!productsByCategory[category]) {
+                productsByCategory[category] = [];
+            }
+            productsByCategory[category].push(product);
+        });
+        
+        // Generate product cards for each category
+        Object.keys(productsByCategory).forEach(category => {
+            const categoryProducts = productsByCategory[category];
+            
+            categoryProducts.forEach(product => {
+                const card = document.createElement('div');
+                card.className = 'product-card';
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                card.style.transition = '0.6s';
+                
+                // Determine badge text
+                let badgeText = 'Premium';
+                if (product.featured) badgeText = 'Featured';
+                if (product.stock < 50) badgeText = 'Limited';
+                
+                card.innerHTML = `
+                    <div class="product-image">
+                        <img src="${product.image || 'images/coffee_bag_beans.jpeg'}" alt="${product.name}">
+                        <div class="product-badge">${badgeText}</div>
+                    </div>
+                    <div class="product-info">
+                        <h4 class="product-name">${product.name}</h4>
+                        <p class="product-specs">${product.description || product.grade}</p>
+                        <div class="product-pricing">
+                            <span class="price" data-currency="USD" style="${isChineseUser ? 'display: none;' : 'display: inline;'}">$${product.price.toFixed(2)}/kg</span>
+                            <span class="price-cny" data-currency="CNY" style="${isChineseUser ? 'display: inline;' : 'display: none;'}">¥${(product.price * 7.1).toFixed(0)}/kg</span>
+                            <small class="price-note" data-en="FOB Mombasa Port" data-zh="蒙巴萨港FOB">${isChineseUser ? '蒙巴萨港FOB' : 'FOB Mombasa Port'}</small>
+                        </div>
+                        <div class="product-features">
+                            ${product.defect_free ? '<span class="feature-tag defect-free">🛡️ Defect-Free</span>' : ''}
+                            ${product.organic ? '<span class="feature-tag organic">🌿 100% Organic</span>' : ''}
+                            ${product.featured ? '<span class="feature-tag">⭐ Featured</span>' : ''}
+                            ${product.grade ? `<span class="feature-tag">${product.grade}</span>` : ''}
+                        </div>
+                        <div class="product-order-section">
+                            ${product.stock < 100 ? `
+                            <div class="urgency-alert">
+                                <div class="urgency-text">🔥 <strong>High Demand:</strong> Only ${product.stock} MT available</div>
+                                <div class="urgency-timer">⏰ Limited stock alert</div>
+                            </div>
+                            ` : ''}
+                            <button class="order-btn" onclick="openQuoteModal('${product.id}')" data-en="ORDER NOW - Get Quote" data-zh="立即订购 - 获取报价">
+                                <i class="fas fa-shopping-cart"></i> ${isChineseUser ? '立即订购 - 获取报价' : 'ORDER NOW - Get Quote'}
+                            </button>
+                            <div class="quick-contact">
+                                <a href="tel:+256776701003" class="quick-contact-btn" data-en="📞 Call" data-zh="📞 电话">${isChineseUser ? '📞 电话' : '📞 Call'}</a>
+                                <a href="https://wa.me/256776701003" class="quick-contact-btn whatsapp-btn" target="_blank" data-en="💬 WhatsApp" data-zh="💬 微信">${isChineseUser ? '💬 微信' : '💬 WhatsApp'}</a>
+                            </div>
+                        </div>
+                        <button class="view-details-btn" onclick="showProductDetails('${product.id}')">👁️ ${isChineseUser ? '查看详情' : 'View Details'}</button>
+                    </div>
+                `;
+                
+                productGrid.appendChild(card);
+            });
+        });
     }
 
     /**
@@ -476,8 +550,6 @@ class DynamicContentManager {
      * Handle load errors gracefully
      */
     handleLoadError(type, error) {
-        console.warn(`Using fallback data for ${type} due to error:`, error.message);
-        
         // Show user-friendly error message
         const errorBanner = document.createElement('div');
         errorBanner.style.cssText = `
@@ -511,8 +583,6 @@ class DynamicContentManager {
      */
     startAutoRefresh() {
         // Disabled auto-refresh to prevent API errors and reduce console noise
-        console.log('🔇 Auto-refresh disabled - using static content for better performance');
-        
         // Only keep essential functionality without frequent API calls
         // All dynamic content will use fallback/static data
     }
@@ -522,12 +592,11 @@ class DynamicContentManager {
      */
     setupConnectionMonitoring() {
         window.addEventListener('online', () => {
-            console.log('🟢 Connection restored, refreshing data...');
             this.init();
         });
 
         window.addEventListener('offline', () => {
-            console.log('🔴 Connection lost, using cached data...');
+            // Connection lost, using cached data
         });
     }
 
@@ -535,8 +604,6 @@ class DynamicContentManager {
      * Manual refresh method
      */
     async refresh(type = 'all') {
-        console.log(`🔄 Manual refresh triggered for: ${type}`);
-        
         switch (type) {
             case 'products':
                 await this.loadProducts();
@@ -574,7 +641,6 @@ class DynamicContentManager {
         } else {
             this.cache.clear();
         }
-        console.log(`🗑️ Cache cleared ${endpoint ? `for ${endpoint}` : 'completely'}`);
     }
 
     /**
@@ -598,14 +664,13 @@ class DynamicContentManager {
             if (data && data.data && data.data.slides) {
                 this.updateSlideshowContent(data.data.slides);
                 
-                console.log(`🎬 Loaded ${data.data.slides.length} slideshow slides`);
                 this.events.dispatchEvent(new CustomEvent('slideshowLoaded', { 
                     detail: data.data.slides 
                 }));
             }
             
         } catch (error) {
-            console.error('Failed to load slideshow:', error);
+            // Failed to load slideshow
             this.handleLoadError('slideshow', error);
         }
     }
@@ -620,76 +685,24 @@ class DynamicContentManager {
             if (data && data.data && data.data.awards) {
                 this.updateAwardsSection(data.data.awards);
                 
-                console.log(`🏆 Loaded ${data.data.awards.length} awards`);
                 this.events.dispatchEvent(new CustomEvent('awardsLoaded', { 
                     detail: data.data.awards 
                 }));
             }
             
         } catch (error) {
-            console.error('Failed to load awards:', error);
             this.handleLoadError('awards', error);
         }
     }
 
     /**
      * Update slideshow content dynamically
+     * NOTE: Disabled - using simple-hero-slideshow.js instead
      */
     updateSlideshowContent(slides) {
-        // Updating slideshow
-        
-        // Update Swiper slides
-        const swiperWrapper = document.querySelector('.coffee-journey-swiper .swiper-wrapper');
-        if (swiperWrapper && slides.length > 0) {
-            // Found Swiper wrapper, updating slides
-            swiperWrapper.innerHTML = '';
-            
-            slides.forEach((slide, index) => {
-                const swiperSlide = document.createElement('div');
-                swiperSlide.className = 'swiper-slide coffee-slide';
-                swiperSlide.style.backgroundImage = `url('${slide.image_url}')`;
-                swiperSlide.setAttribute('data-swiper-autoplay', slide.autoplay_duration || 6000);
-                swiperSlide.innerHTML = '<div class="slide-overlay"></div>';
-                swiperWrapper.appendChild(swiperSlide);
-            });
-            // Swiper slides updated
-        } else {
-            console.warn('⚠️ Swiper wrapper not found or no slides to display');
-        }
-
-        // Update text content
-        const textContainer = document.querySelector('.hero-text-container');
-        if (textContainer && slides.length > 0) {
-            // Found text container, updating content
-            textContainer.innerHTML = '';
-            
-            slides.forEach((slide, index) => {
-                const textSlide = document.createElement('div');
-                textSlide.className = 'hero-slide-text';
-                textSlide.setAttribute('data-slide', index);
-                textSlide.innerHTML = `
-                    <div class="story-chapter">${slide.chapter}</div>
-                    <h1 class="hero-title" data-en="${slide.title_en}" data-zh="${slide.title_zh}">${slide.title_en}</h1>
-                    <p class="hero-subtitle" data-en="${slide.subtitle_en}" data-zh="${slide.subtitle_zh}">${slide.subtitle_en}</p>
-                    <div class="hero-actions">
-                        <a href="${slide.button_link}" class="cta-button primary" data-en="${slide.button_text_en}" data-zh="${slide.button_text_zh}">${slide.button_text_en}</a>
-                    </div>
-                `;
-                textContainer.appendChild(textSlide);
-            });
-            // Text content updated
-        } else {
-            console.warn('⚠️ Text container not found or no slides to display');
-        }
-
-        // Reinitialize Swiper if it exists
-        if (window.coffeeSwiperInstance) {
-            // Reinitializing Swiper
-            window.coffeeSwiperInstance.update();
-            // Swiper reinitialized
-        } else {
-            console.warn('⚠️ Swiper instance not found - slideshow may need manual initialization');
-        }
+        // Slideshow is now handled by simple-hero-slideshow.js
+        // This function is disabled to avoid conflicts
+        return;
     }
 
     /**
@@ -708,7 +721,6 @@ class DynamicContentManager {
                 awardsSection.className = 'awards-section';
                 testimonialsSection.insertAdjacentElement('afterend', awardsSection);
             } else {
-                console.warn('Could not find testimonials section to insert awards');
                 return;
             }
         }
@@ -818,14 +830,12 @@ class DynamicContentManager {
             if (data && data.data && data.data.certifications) {
                 this.updateCertificationsSection(data.data.certifications);
                 
-                console.log(`🎓 Loaded ${data.data.certifications.length} certifications`);
                 this.events.dispatchEvent(new CustomEvent('certificationsLoaded', { 
                     detail: data.data.certifications 
                 }));
             }
             
         } catch (error) {
-            console.error('Failed to load certifications:', error);
             this.handleLoadError('certifications', error);
         }
     }
@@ -837,7 +847,6 @@ class DynamicContentManager {
         const certificationsGrid = document.querySelector('.certifications-grid');
         
         if (!certificationsGrid) {
-            console.warn('⚠️ Certifications grid not found');
             return;
         }
         
@@ -873,7 +882,6 @@ class DynamicContentManager {
         });
         
         certificationsGrid.innerHTML = certificationsHTML;
-        console.log('✓ Certifications section updated with', certifications.length, 'certifications');
     }
 }
 
@@ -890,8 +898,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (window.location.search.includes('admin=true')) {
         addAdminRefreshButton();
     }
-    
-    console.log('🎯 Dynamic Content Manager ready!');
 });
 
 /**

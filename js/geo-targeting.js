@@ -16,24 +16,36 @@ class GeoTargeting {
             this.setupCurrencyDisplay();
             this.setupEventListeners();
         } catch (error) {
-            console.warn('Geo-targeting initialization failed:', error);
             this.fallbackToInternational();
         }
     }
 
     async detectLocation() {
         try {
-            // Use ip-api.com directly (no CORS restrictions on localhost)
-            const response = await fetch('http://ip-api.com/json/');
-            const fallbackData = await response.json();
-            const data = {
-                country_code: fallbackData.countryCode,
-                country_name: fallbackData.country,
-                city: fallbackData.city,
-                region: fallbackData.region
-            };
+            // Check for mock country in localStorage (for testing)
+            const mockCountry = localStorage.getItem('mockCountry');
             
-            this.userCountry = data.country_code;
+            let data;
+            if (mockCountry) {
+                data = {
+                    country_code: mockCountry,
+                    country_name: mockCountry === 'CN' ? 'China' : mockCountry,
+                    city: 'Mock City',
+                    region: 'Mock Region'
+                };
+                this.userCountry = mockCountry;
+            } else {
+                // Use ip-api.com directly (no CORS restrictions on localhost)
+                const response = await fetch('http://ip-api.com/json/');
+                const fallbackData = await response.json();
+                data = {
+                    country_code: fallbackData.countryCode,
+                    country_name: fallbackData.country,
+                    city: fallbackData.city,
+                    region: fallbackData.region
+                };
+                this.userCountry = data.country_code;
+            }
             
             // Check if user is from China, Hong Kong, or Macau
             if (['CN', 'HK', 'MO'].includes(this.userCountry)) {
@@ -42,10 +54,16 @@ class GeoTargeting {
             }
             
             window.geoData = data;
-            console.log('User location detected:', this.userCountry, this.userRegion);
+            
+            // Dispatch custom event for geo-targeting complete
+            window.dispatchEvent(new CustomEvent('geoTargetingComplete', {
+                detail: { 
+                    country: this.userCountry, 
+                    region: this.userRegion 
+                }
+            }));
             
         } catch (error) {
-            console.warn('IP detection failed, using fallback');
             this.fallbackToInternational();
         }
     }
@@ -127,10 +145,7 @@ class GeoTargeting {
             const response = await fetch('https://api.exchangerate-api.com/v4/latest/USD');
             const data = await response.json();
             this.exchangeRate = data.rates.CNY;
-            
-            console.log('Exchange rate USD to CNY:', this.exchangeRate);
         } catch (error) {
-            console.warn('Exchange rate fetch failed, using fallback');
             this.exchangeRate = 7.2; // Fallback rate
         }
     }
@@ -267,6 +282,14 @@ class GeoTargeting {
         this.userRegion = 'international';
         this.currentLanguage = 'en';
         this.updateCurrency('USD');
+        
+        // Dispatch event even on fallback
+        window.dispatchEvent(new CustomEvent('geoTargetingComplete', {
+            detail: { 
+                country: null, 
+                region: this.userRegion 
+            }
+        }));
     }
 }
 

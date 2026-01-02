@@ -73,8 +73,9 @@
                     'title_zh' => '高原农场采购',
                     'subtitle_en' => "Our journey begins in Uganda's fertile highlands (1,800-2,200m), where volcanic soil and perfect climate create exceptional coffee conditions",
                     'subtitle_zh' => '我们的旅程始于乌干达肥沃的高原（1800-2200米），火山土壤和完美气候创造了卓越的咖啡条件',
-                    'button_text_en' => 'Our Farms',
-                    'button_text_zh' => '我们的农场',
+                    'image_url' => 'images/coffee_bag_beans.jpg',
+                    'button_text_en' => 'READ MORE',
+                    'button_text_zh' => '阅读更多',
                     'button_link' => '#about',
                     'position' => 1
                 ],
@@ -84,8 +85,9 @@
                     'title_zh' => '手工采摘收获',
                     'subtitle_en' => 'Skilled farmers carefully select only the ripest red cherries, ensuring premium quality from the very first step of our coffee journey',
                     'subtitle_zh' => '经验丰富的农民仔细挑选最成熟的红色咖啡果，从咖啡之旅的第一步就确保优质品质',
-                    'button_text_en' => 'Coffee Varieties',
-                    'button_text_zh' => '咖啡品种',
+                    'image_url' => 'images/top-view-coffee-cup-coffee-beans-dark-table-scaled.jpg',
+                    'button_text_en' => 'VIEW PRODUCTS',
+                    'button_text_zh' => '查看产品',
                     'button_link' => '#products',
                     'position' => 2
                 ],
@@ -95,50 +97,18 @@
                     'title_zh' => '传统加工',
                     'subtitle_en' => 'Time-honored washing and drying methods preserve the unique flavor profiles, while modern quality control ensures consistency',
                     'subtitle_zh' => '历史悠久的水洗和干燥方法保持独特的风味谱，现代质量控制确保一致性',
-                    'button_text_en' => 'Our Process',
+                    'image_url' => 'images/coffee_bag_beans.jpeg',
+                    'button_text_en' => 'OUR PROCESS',
                     'button_text_zh' => '我们的流程',
                     'button_link' => '#certifications',
                     'position' => 3
-                ],
-                [
-                    'chapter' => 'Chapter 4',
-                    'title_en' => 'Quality & Export Prep',
-                    'title_zh' => '质量与出口准备',
-                    'subtitle_en' => 'Rigorous cupping, grading, and sorting ensure only AA and AB grade beans meet international standards for export',
-                    'subtitle_zh' => '严格的杯测、分级和分选确保只有AA和AB级咖啡豆符合出口国际标准',
-                    'button_text_en' => 'View Grades',
-                    'button_text_zh' => '查看等级',
-                    'button_link' => '#products',
-                    'position' => 4
-                ],
-                [
-                    'chapter' => 'Chapter 5',
-                    'title_en' => 'Global Shipping',
-                    'title_zh' => '全球运输',
-                    'subtitle_en' => 'Carefully packed in premium jute bags, our coffee travels from Mombasa Port to markets worldwide, maintaining freshness throughout the journey',
-                    'subtitle_zh' => '精心装在优质麻袋中，我们的咖啡从蒙巴萨港运往世界各地市场，在整个旅程中保持新鲜',
-                    'button_text_en' => 'Get Shipping Quote',
-                    'button_text_zh' => '获取运输报价',
-                    'button_link' => '#contact',
-                    'position' => 5
-                ],
-                [
-                    'chapter' => 'Final Chapter',
-                    'title_en' => 'Your Perfect Cup',
-                    'title_zh' => '您的完美一杯',
-                    'subtitle_en' => "From Uganda's misty mountains to your morning ritual - every sip tells the story of passion, tradition, and uncompromising quality",
-                    'subtitle_zh' => '从乌干达雾蒙的山脉到您的晨间仪式 - 每一口都讲述着热情、传统和不妥协品质的故事',
-                    'button_text_en' => 'Start Your Journey',
-                    'button_text_zh' => '开始您的旅程',
-                    'button_link' => '#contact',
-                    'position' => 6
                 ]
             ];
             
             $stmt = $pdo->prepare("
                 INSERT INTO slideshow_slides 
-                (chapter, title_en, title_zh, subtitle_en, subtitle_zh, button_text_en, button_text_zh, button_link, position) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                (chapter, title_en, title_zh, subtitle_en, subtitle_zh, image_url, button_text_en, button_text_zh, button_link, position) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ");
             
             foreach ($slidesData as $slide) {
@@ -148,6 +118,7 @@
                     $slide['title_zh'],
                     $slide['subtitle_en'],
                     $slide['subtitle_zh'],
+                    $slide['image_url'],
                     $slide['button_text_en'],
                     $slide['button_text_zh'],
                     $slide['button_link'],

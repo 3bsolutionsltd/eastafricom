@@ -771,8 +771,6 @@ function createProductComparison() {
     document.body.appendChild(comparisonModal.firstElementChild);
     
     // Compare Products button has been completely removed
-    
-    console.log('ℹ️ Compare Products button disabled as requested');
 }
 
 function openProductComparison() {
@@ -796,6 +794,8 @@ if (document.readyState === 'loading') {
         setTimeout(() => {
             enhanceProductCards();
             createProductComparison();
+            updateContactButtonsGeoTargeting();
+            fadeInProductCards();
         }, 1000);
         // Enhanced product experience features loaded
     });
@@ -806,6 +806,35 @@ if (document.readyState === 'loading') {
     setTimeout(() => {
         enhanceProductCards();
         createProductComparison();
+        updateContactButtonsGeoTargeting();
+        fadeInProductCards();
     }, 1000);
-    console.log('Enhanced product experience features loaded immediately!');
+}
+
+// Update WhatsApp links to WeChat for Chinese users
+function updateContactButtonsGeoTargeting() {
+    const isChineseUser = window.geoTargeting?.userRegion === 'china' || 
+                          ['CN', 'HK', 'MO'].includes(window.geoTargeting?.userCountry);
+    
+    if (isChineseUser) {
+        // Update all WhatsApp buttons to WeChat
+        const whatsappButtons = document.querySelectorAll('.quick-contact-btn[href*="wa.me"]');
+        whatsappButtons.forEach(btn => {
+            btn.href = 'javascript:void(0)';
+            btn.onclick = function() { showWeChatQR(); };
+            btn.innerHTML = '💬 微信';
+            btn.setAttribute('data-zh', '💬 微信');
+        });
+    }
+}
+
+// Fade in product cards with stagger effect
+function fadeInProductCards() {
+    const productCards = document.querySelectorAll('.product-card');
+    productCards.forEach((card, index) => {
+        setTimeout(() => {
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+        }, index * 100); // Stagger by 100ms
+    });
 }

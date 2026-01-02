@@ -15,7 +15,6 @@ class CoffeeSlideshow {
         // Initializing Coffee Journey Swiper slideshow
         
         if (!this.container) {
-            console.error('Swiper container not found!');
             return;
         }
         
@@ -32,8 +31,6 @@ class CoffeeSlideshow {
         
         // Initialize smart UI management
         this.initSmartUIManagement();
-        
-        console.log('Coffee Journey Swiper slideshow initialized');
         
         // Add hover pause functionality with smart UI
         if (this.container) {
@@ -130,7 +127,6 @@ class CoffeeSlideshow {
             this.pause();
             // Enhance focus state
             document.body.classList.add('coffee-slideshow-active');
-            console.log('🎯 Coffee journey slideshow focused - UI minimized');
         } else {
             this.resume();
             // Check if still in hero view before removing focus
@@ -142,7 +138,6 @@ class CoffeeSlideshow {
                     
                     if (!isHeroVisible) {
                         document.body.classList.remove('coffee-slideshow-active');
-                        console.log('👁️ Coffee journey slideshow unfocused - UI restored');
                     }
                 }
             }, 500);
@@ -172,8 +167,6 @@ class CoffeeSlideshow {
         
         const prevSlide = this.currentSlide;
         const nextSlide = (this.currentSlide + 1) % this.slides.length;
-        
-        console.log(`Transitioning from slide ${prevSlide} to slide ${nextSlide}`);
         
         // Start text exit animation
         if (this.textSlides && this.textSlides[prevSlide]) {
@@ -393,7 +386,6 @@ if (!window.coffeeSlideShowInitialized) {
         new CoffeeEffects();
         new CoffeeAroma();
         window.coffeeSlideShowInitialized = true;
-        console.log('✅ Coffee slideshow initialized once');
     });
 }
 
@@ -532,13 +524,11 @@ function toggleFloatingUI() {
     if (floatingUIVisible) {
         document.body.classList.add('floating-ui-visible');
         document.body.classList.remove('coffee-slideshow-active');
-        console.log('🔓 Floating UI forced visible');
         
         // Show notification
         showFloatingUINotification('Floating buttons are now always visible', 'info');
     } else {
         document.body.classList.remove('floating-ui-visible');
-        console.log('🔒 Floating UI smart mode restored');
         
         // Show notification
         showFloatingUINotification('Smart UI mode: Buttons auto-hide during coffee journey', 'success');
@@ -623,8 +613,6 @@ function addSmartUITooltips() {
             chatTrigger.title = 'Live Chat - Auto-minimizes during coffee journey. Hover to access.';
         }
     }
-    
-    console.log('🔧 Smart UI tooltips added');
 }
 
 // Enhanced floating UI management with better user feedback

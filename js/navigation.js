@@ -142,8 +142,6 @@ function toggleLanguage() {
         document.querySelectorAll('[data-zh]').forEach(element => {
             element.textContent = element.getAttribute('data-zh');
         });
-        
-        console.log('🌐 Language switched to Chinese');
     } else {
         // Switch to English
         currentLang.textContent = 'EN';
@@ -154,8 +152,6 @@ function toggleLanguage() {
         document.querySelectorAll('[data-en]').forEach(element => {
             element.textContent = element.getAttribute('data-en');
         });
-        
-        console.log('🌐 Language switched to English');
     }
 }
 

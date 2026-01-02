@@ -1,0 +1,25 @@
+User-agent: *
+Allow: /
+
+# Disallow admin and backend
+Disallow: /admin/
+Disallow: /backend/
+
+# Disallow setup and config files
+Disallow: /setup-
+Disallow: /*-setup.php
+Disallow: /*.sql
+
+# Disallow test files
+Disallow: /test-
+Disallow: /fix-
+Disallow: /debug
+
+# Allow important pages
+Allow: /index.html
+Allow: /images/
+Allow: /css/
+Allow: /js/
+
+# Sitemap
+Sitemap: https://your-domain.com/sitemap.xml

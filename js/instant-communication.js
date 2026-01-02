@@ -704,8 +704,6 @@ class InstantCommunication {
     }
 
     logEvent(eventType, data = {}) {
-        console.log('Communication Event:', eventType, data);
-        
         // Analytics integration
         if (typeof gtag !== 'undefined') {
             gtag('event', eventType, {
@@ -722,8 +720,6 @@ window.instantComm = new InstantCommunication();
 
 // Create WhatsApp button immediately
 function createWhatsAppButtonNow() {
-    console.log('Creating WhatsApp button now...');
-    
     // Remove any existing WhatsApp button
     const existingWhatsApp = document.querySelector('.whatsapp-float');
     if (existingWhatsApp) {
@@ -762,12 +758,11 @@ function createWhatsAppButtonNow() {
     `;
     
     document.body.appendChild(whatsappFloat);
-    console.log('WhatsApp button created successfully!');
 }
 
 // Create live chat widget
 function createLiveChatNow() {
-    console.log('Creating live chat widget now...');
+    // Remove existing chat widget if present
     
     // Remove any existing chat widget
     const existingChat = document.querySelector('.live-chat-widget');
@@ -809,7 +804,6 @@ function createLiveChatNow() {
     `;
     
     document.body.appendChild(chatWidget);
-    console.log('Live chat widget created successfully!');
 }
 
 // Execute immediately if DOM is ready, otherwise wait

@@ -63,13 +63,11 @@ class UrgencyScarcity {
     
     // Urgency Banner at top of page
     createUrgencyBanner() {
-        console.log('Creating urgency banner...');
         const banner = document.createElement('div');
         banner.className = 'urgency-banner';
         banner.id = 'urgencyBanner';
         
         const currentOffer = this.getCurrentBestOffer();
-        console.log('Current offer:', currentOffer);
         
         banner.innerHTML = `
             <div class="urgency-content">
@@ -103,11 +101,9 @@ class UrgencyScarcity {
         
         // Insert at top of page
         document.body.insertBefore(banner, document.body.firstChild);
-        console.log('Urgency banner inserted');
         
         // Add class to body for styling adjustments
         document.body.classList.add('urgency-banner-active');
-        console.log('Body class added');
         
         // Start countdown
         this.startCountdown('bannerCountdown', currentOffer.validUntil);
@@ -543,8 +539,6 @@ class UrgencyScarcity {
     }
     
     logEvent(eventType, data = {}) {
-        console.log('Urgency Event:', eventType, data);
-        
         // Analytics integration
         if (typeof gtag !== 'undefined') {
             gtag('event', eventType, {
@@ -745,11 +739,9 @@ class AdvancedUrgency extends UrgencyScarcity {
 }
 
 // Global initialization - Execute immediately
-console.log('UrgencyScarcity script loading...');
 
 // Create urgency banner immediately when script loads
 function createUrgencyBannerNow() {
-    console.log('Creating urgency banner now...');
     
     // Remove any existing banner
     const existingBanner = document.getElementById('urgencyBanner');
@@ -809,8 +801,6 @@ function createUrgencyBannerNow() {
     
     // Add body padding
     document.body.style.paddingTop = '80px';
-    
-    console.log('Urgency banner created successfully!');
 }
 
 // Urgency banner disabled for clean professional layout

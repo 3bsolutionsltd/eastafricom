@@ -34,7 +34,7 @@ class AdminDashboard {
 
     async testConnection() {
         try {
-            const response = await fetch(`${this.apiBase}/products.php`);
+            const response = await fetch(`${this.apiBase}/products.php?admin=true`);
             if (response.ok) {
                 this.updateConnectionStatus(true);
             } else {
@@ -63,9 +63,9 @@ class AdminDashboard {
 
     async loadDashboardData() {
         try {
-            // Load all data in parallel
+            // Load all data in parallel - use admin=true for products to show inactive ones
             const [products, testimonials, activities, settings, slideshow, awards, certifications, qualityBadges] = await Promise.all([
-                this.fetchData('products.php'),
+                this.fetchData('products.php?admin=true'),
                 this.fetchData('testimonials.php'),
                 this.fetchData('live-activity.php'),
                 this.fetchData('settings.php'),
@@ -316,6 +316,7 @@ class AdminDashboard {
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Stock</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Features</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                         </tr>
@@ -340,9 +341,14 @@ class AdminDashboard {
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">$${product.price}</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${product.stock} MT</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${product.category}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-xs">
+                                    ${product.defect_free ? '<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800 mr-1">🛡️</span>' : ''}
+                                    ${product.organic ? '<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800 mr-1">🌿</span>' : ''}
+                                    ${product.featured ? '<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800">⭐</span>' : ''}
+                                </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full ${product.featured ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}">
-                                        ${product.featured ? 'Featured' : 'Regular'}
+                                    <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full ${product.active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
+                                        ${product.active ? 'Active' : 'Inactive'}
                                     </span>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
@@ -930,16 +936,30 @@ function editProduct(id) {
                                       class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500">${product.description || ''}</textarea>
                         </div>
                         
-                        <div class="flex items-center">
-                            <input type="checkbox" id="edit-featured" name="featured" ${product.featured ? 'checked' : ''} 
-                                   class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
-                            <label for="edit-featured" class="ml-2 block text-sm text-gray-900">Featured Product</label>
-                        </div>
-                        
-                        <div class="flex items-center">
-                            <input type="checkbox" id="edit-active" name="active" ${product.active !== false ? 'checked' : ''} 
-                                   class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
-                            <label for="edit-active" class="ml-2 block text-sm text-gray-900">Active</label>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="flex items-center">
+                                <input type="checkbox" id="edit-defect-free" name="defect_free" ${product.defect_free ? 'checked' : ''} 
+                                       class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                                <label for="edit-defect-free" class="ml-2 block text-sm text-gray-900">🛡️ Defect-Free</label>
+                            </div>
+                            
+                            <div class="flex items-center">
+                                <input type="checkbox" id="edit-organic" name="organic" ${product.organic ? 'checked' : ''} 
+                                       class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                                <label for="edit-organic" class="ml-2 block text-sm text-gray-900">🌿 100% Organic</label>
+                            </div>
+                            
+                            <div class="flex items-center">
+                                <input type="checkbox" id="edit-featured" name="featured" ${product.featured ? 'checked' : ''} 
+                                       class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                                <label for="edit-featured" class="ml-2 block text-sm text-gray-900">⭐ Featured Product</label>
+                            </div>
+                            
+                            <div class="flex items-center">
+                                <input type="checkbox" id="edit-active" name="active" ${product.active !== false ? 'checked' : ''} 
+                                       class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                                <label for="edit-active" class="ml-2 block text-sm text-gray-900">✅ Active</label>
+                            </div>
                         </div>
                         
                         <div class="flex justify-end space-x-3 pt-4">
@@ -981,6 +1001,8 @@ async function saveProductChanges(productId) {
             grade: formData.get('grade'),
             category: formData.get('category'),
             description: formData.get('description'),
+            defect_free: formData.has('defect_free'),
+            organic: formData.has('organic'),
             featured: formData.has('featured'),
             active: formData.has('active')
         };
@@ -1235,8 +1257,20 @@ async function openSlideshowModal(slide = null) {
             </div>
             
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Image URL</label>
-                <input type="text" id="slide-image" value="${slide?.image_url || 'images/coffee_bag_beans.jpg'}" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Slide Image</label>
+                <p class="text-xs text-gray-500 mb-2">📐 Recommended size: <strong>1920x1080px (Full HD)</strong> or <strong>1600x900px</strong> • JPG or PNG • Max 2MB</p>
+                <div class="border-2 border-dashed border-gray-300 rounded-lg p-4 mb-2 hover:border-blue-500 transition-colors">
+                    <input type="file" id="slide-image-file" accept="image/jpeg,image/jpg,image/png" class="hidden" onchange="handleSlideImageUpload(event)">
+                    <button type="button" onclick="document.getElementById('slide-image-file').click()" class="w-full px-4 py-3 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors font-medium">
+                        📁 Upload Image (1920x1080px recommended)
+                    </button>
+                    <div id="image-preview-container" class="mt-3 hidden">
+                        <img id="image-preview" class="w-full h-48 object-cover rounded-lg border border-gray-300">
+                        <p id="image-info" class="text-xs text-gray-500 mt-2"></p>
+                    </div>
+                </div>
+                <label class="block text-xs font-medium text-gray-600 mb-1">Or use image URL:</label>
+                <input type="text" id="slide-image" value="${slide?.image_url || 'images/coffee_bag_beans.jpg'}" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="images/your-image.jpg">
             </div>
             
             <div class="grid grid-cols-2 gap-4">
@@ -1288,6 +1322,72 @@ async function openSlideshowModal(slide = null) {
     });
     
     modal.classList.remove('hidden');
+    
+    // Show preview if editing existing slide with image
+    if (slide?.image_url) {
+        const preview = document.getElementById('image-preview');
+        const container = document.getElementById('image-preview-container');
+        if (preview && container) {
+            preview.src = slide.image_url;
+            container.classList.remove('hidden');
+        }
+    }
+}
+
+function handleSlideImageUpload(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    
+    // Validate file type
+    if (!file.type.match('image/(jpeg|jpg|png)')) {
+        alert('❌ Please upload JPG or PNG image only');
+        return;
+    }
+    
+    // Validate file size (2MB max)
+    if (file.size > 2 * 1024 * 1024) {
+        alert('❌ Image too large! Please use image under 2MB');
+        return;
+    }
+    
+    // Show preview
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const preview = document.getElementById('image-preview');
+        const container = document.getElementById('image-preview-container');
+        const info = document.getElementById('image-info');
+        const imageInput = document.getElementById('slide-image');
+        
+        // Create image to check dimensions
+        const img = new Image();
+        img.onload = function() {
+            preview.src = e.target.result;
+            container.classList.remove('hidden');
+            
+            // Show image info
+            const sizeKB = (file.size / 1024).toFixed(1);
+            info.textContent = `📏 ${img.width}x${img.height}px • ${sizeKB}KB • ${file.name}`;
+            
+            // Warn if not recommended size
+            if (img.width < 1600 || img.height < 900) {
+                info.textContent += ' ⚠️ Image smaller than recommended (1920x1080px)';
+                info.classList.add('text-orange-600');
+            } else if (img.width === 1920 && img.height === 1080) {
+                info.textContent += ' ✅ Perfect size!';
+                info.classList.add('text-green-600');
+            }
+            
+            // Save to images folder (in production, this should upload to server)
+            const imagePath = 'images/slideshow/' + file.name;
+            imageInput.value = imagePath;
+            
+            // Note: In production, implement actual file upload to server here
+            console.log('Image selected:', file.name, `(${img.width}x${img.height})`);
+            console.log('⚠️ Remember to manually copy image to:', imagePath);
+        };
+        img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
 }
 
 async function saveSlide(slideId) {

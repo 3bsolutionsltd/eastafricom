@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Setup Admin Security - East Africom</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: linear-gradient(135deg, #1a472a 0%, #2d5a3d 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .setup-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 600px;
+            padding: 40px;
+        }
+        h1 {
+            color: #1a472a;
+            margin-bottom: 24px;
+            font-size: 28px;
+        }
+        .step {
+            background: #f8f9fa;
+            border-left: 4px solid #2d5a3d;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+        .step h3 {
+            color: #1a472a;
+            margin-bottom: 12px;
+        }
+        .step p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 12px;
+        }
+        .btn {
+            background: linear-gradient(135deg, #1a472a 0%, #2d5a3d 100%);
+            color: white;
+            padding: 14px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-bottom: 12px;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(45, 90, 61, 0.3);
+        }
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #c3e6cb;
+            display: none;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #f5c6cb;
+            display: none;
+        }
+        .credentials {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        .credentials h3 {
+            color: #856404;
+            margin-bottom: 12px;
+        }
+        .credentials code {
+            background: white;
+            padding: 8px 12px;
+            border-radius: 4px;
+            display: block;
+            margin: 8px 0;
+            font-family: monospace;
+            font-size: 14px;
+        }
+        .warning {
+            background: #ff6b6b;
+            color: white;
+            padding: 16px;
+            border-radius: 8px;
+            margin-top: 16px;
+            font-weight: 600;
+        }
+        pre {
+            background: #f8f9fa;
+            padding: 16px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-size: 13px;
+            margin-top: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="setup-container">
+        <h1>🔒 Admin Security Setup</h1>
+        
+        <div id="successMsg" class="success"></div>
+        <div id="errorMsg" class="error"></div>
+        
+        <div class="step">
+            <h3>Step 1: Create Authentication Tables</h3>
+            <p>This will create the necessary database tables for secure admin authentication:</p>
+            <ul style="margin-left: 20px; color: #666; line-height: 1.8;">
+                <li><strong>admin_users</strong> - Store admin accounts with hashed passwords</li>
+                <li><strong>admin_activity_log</strong> - Track all admin actions</li>
+                <li><strong>login_attempts</strong> - Prevent brute force attacks</li>
+            </ul>
+            <button class="btn" onclick="setupTables()">Create Security Tables</button>
+        </div>
+        
+        <div id="credentialsBox" class="credentials" style="display: none;">
+            <h3>⚠️ Default Admin Credentials</h3>
+            <p><strong>Username:</strong> <code id="username">admin</code></p>
+            <p><strong>Password:</strong> <code id="password">admin123</code></p>
+            
+            <div class="warning">
+                🚨 CRITICAL: Change this password immediately after first login!
+            </div>
+        </div>
+        
+        <div class="step" style="margin-top: 24px;">
+            <h3>Step 2: Security Features Enabled</h3>
+            <ul style="margin-left: 20px; color: #666; line-height: 1.8;">
+                <li>✅ Bcrypt password hashing (cost 12)</li>
+                <li>✅ Session timeout (1 hour)</li>
+                <li>✅ Brute force protection (5 attempts / 15 min)</li>
+                <li>✅ Activity logging</li>
+                <li>✅ Secure session cookies</li>
+                <li>✅ CSRF protection</li>
+            </ul>
+        </div>
+        
+        <div class="step">
+            <h3>Step 3: Login to Admin Panel</h3>
+            <p>Once tables are created, you can access the admin panel:</p>
+            <button class="btn" onclick="window.location.href='login.html'">Go to Login Page</button>
+        </div>
+        
+        <div class="step">
+            <h3>📚 Security Best Practices</h3>
+            <ul style="margin-left: 20px; color: #666; line-height: 1.8;">
+                <li>Change default password immediately</li>
+                <li>Use strong passwords (8+ characters, mixed case, numbers, symbols)</li>
+                <li>Don't share admin credentials</li>
+                <li>Review activity logs regularly</li>
+                <li>Keep session active only when needed</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        async function setupTables() {
+            const btn = event.target;
+            btn.disabled = true;
+            btn.textContent = 'Creating tables...';
+            
+            try {
+                const response = await fetch('../backend/auth/setup-admin-tables.php');
+                const data = await response.json();
+                
+                if (data.success) {
+                    document.getElementById('successMsg').textContent = 
+                        '✅ Security tables created successfully!';
+                    document.getElementById('successMsg').style.display = 'block';
+                    
+                    if (data.default_user) {
+                        document.getElementById('credentialsBox').style.display = 'block';
+                        document.getElementById('username').textContent = data.default_user.username;
+                        document.getElementById('password').textContent = data.default_user.password;
+                    }
+                    
+                    btn.textContent = '✅ Tables Created';
+                } else {
+                    throw new Error(data.error || 'Setup failed');
+                }
+            } catch (error) {
+                console.error('Setup error:', error);
+                document.getElementById('errorMsg').textContent = 
+                    '❌ Error: ' + error.message;
+                document.getElementById('errorMsg').style.display = 'block';
+                btn.disabled = false;
+                btn.textContent = 'Retry Setup';
+            }
+        }
+    </script>
+</body>
+</html>

@@ -4,11 +4,20 @@
 // 1. Create Enhanced Urgency Banner - DISABLED
 function createEnhancedBanner() {
     // Red banner removed - using green top banner from index.html instead
-    console.log('Red banner creation skipped - using green theme banner');
 }
 
-// 2. Create Enhanced WhatsApp Button with Tooltip
+// 2. Create Enhanced WhatsApp/WeChat Button with Geo-Targeting
 function createEnhancedWhatsApp() {
+    // Check if user is from China
+    const isChineseUser = window.geoTargeting?.userRegion === 'china' || 
+                          window.geoTargeting?.userCountry === 'CN' ||
+                          ['CN', 'HK', 'MO'].includes(window.geoTargeting?.userCountry);
+    
+    if (isChineseUser) {
+        createEnhancedWeChat();
+        return;
+    }
+    
     const whatsapp = document.createElement('div');
     whatsapp.innerHTML = `
         <div style="position: fixed; bottom: 20px; left: 20px; z-index: 9999;">
@@ -27,7 +36,49 @@ function createEnhancedWhatsApp() {
         </div>
     `;
     document.body.appendChild(whatsapp.firstElementChild);
-    console.log('Enhanced WhatsApp created');
+}
+
+// 2b. Create Enhanced WeChat Button for Chinese Users
+function createEnhancedWeChat() {
+    const wechat = document.createElement('div');
+    wechat.innerHTML = `
+        <div style="position: fixed; bottom: 20px; left: 20px; z-index: 9999;">
+            <div style="position: relative;">
+                <a href="javascript:void(0)" onclick="showWeChatQR()" 
+                   style="display: flex; align-items: center; justify-content: center; width: 60px; height: 60px; background: linear-gradient(135deg, #09b83e, #07a033); border-radius: 50%; color: white; text-decoration: none; font-size: 28px; box-shadow: 0 8px 25px rgba(9,184,62,0.4); animation: whatsappPulse 3s infinite; transition: transform 0.3s ease;"
+                   onmouseover="showWeChatTooltip()" onmouseout="hideWeChatTooltip()" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                    <i class="fab fa-weixin" style="font-size: 28px;"></i>
+                </a>
+                <div id="wechatTooltip" style="position: absolute; right: 75px; top: 50%; transform: translateY(-50%); background: white; padding: 15px; border-radius: 12px; box-shadow: 0 8px 25px rgba(0,0,0,0.15); width: 250px; opacity: 0; visibility: hidden; transition: all 0.3s ease;">
+                    <div style="font-weight: 600; margin-bottom: 8px; color: #333;">💬 与Frank Asiimwe聊天</div>
+                    <div style="font-size: 13px; color: #666; margin-bottom: 10px;">出口经理 • 2分钟内回复</div>
+                    <div style="font-size: 12px; color: #09b83e;">✓ 获取即时报价<br>✓ 查看供应情况<br>✓ 运输详情</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- WeChat QR Code Modal -->
+        <div id="wechatQRModal" onclick="hideWeChatQR()" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 10000; justify-content: center; align-items: center;">
+            <div onclick="event.stopPropagation()" style="background: white; padding: 30px; border-radius: 20px; text-align: center; max-width: 400px; position: relative;">
+                <button onclick="hideWeChatQR()" style="position: absolute; top: 10px; right: 10px; background: none; border: none; font-size: 24px; cursor: pointer; color: #999;">&times;</button>
+                <div style="font-size: 24px; font-weight: 600; margin-bottom: 15px; color: #333;">
+                    <i class="fab fa-weixin" style="color: #09b83e;"></i> 添加微信
+                </div>
+                <div style="margin-bottom: 15px; color: #666;">扫描二维码添加Frank的微信</div>
+                <div style="width: 250px; height: 250px; margin: 0 auto 15px; background: #f5f5f5; display: flex; align-items: center; justify-content: center; border-radius: 10px;">
+                    <div style="text-align: center; color: #999;">
+                        <i class="fas fa-qrcode" style="font-size: 80px; margin-bottom: 10px;"></i>
+                        <div style="font-size: 14px;">WeChat ID: <strong>eastafricom</strong></div>
+                    </div>
+                </div>
+                <div style="font-size: 13px; color: #666; line-height: 1.6;">
+                    或复制微信号: <strong style="color: #09b83e;">eastafricom</strong><br>
+                    我们会在2分钟内回复您
+                </div>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(wechat.firstElementChild);
 }
 
 // 3. Create Enhanced Live Chat with Professional Design
@@ -101,7 +152,6 @@ function createEnhancedChat() {
         </div>
     `;
     document.body.appendChild(chat.firstElementChild);
-    console.log('Enhanced chat created');
 }
 
 // 4. Enhanced Testimonials Section
@@ -243,6 +293,36 @@ function hideWhatsAppTooltip() {
     tooltip.style.visibility = 'hidden';
 }
 
+function showWeChatTooltip() {
+    const tooltip = document.getElementById('wechatTooltip');
+    if (tooltip) {
+        tooltip.style.opacity = '1';
+        tooltip.style.visibility = 'visible';
+    }
+}
+
+function hideWeChatTooltip() {
+    const tooltip = document.getElementById('wechatTooltip');
+    if (tooltip) {
+        tooltip.style.opacity = '0';
+        tooltip.style.visibility = 'hidden';
+    }
+}
+
+function showWeChatQR() {
+    const modal = document.getElementById('wechatQRModal');
+    if (modal) {
+        modal.style.display = 'flex';
+    }
+}
+
+function hideWeChatQR() {
+    const modal = document.getElementById('wechatQRModal');
+    if (modal) {
+        modal.style.display = 'none';
+    }
+}
+
 function claimOffer() {
     alert('🔥 Excellent! Frank will contact you within 2 hours about the November Export Special with FREE quality certification. Check your WhatsApp/email!');
     document.querySelector('#contact').scrollIntoView({ behavior: 'smooth' });
@@ -374,16 +454,38 @@ if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', function() {
         addEnhancedAnimations();
         createEnhancedBanner();
-        createEnhancedWhatsApp();
-        createEnhancedChat();
+        // Wait for geo-targeting before creating WhatsApp/WeChat
+        initializeChatButton();
+        // createEnhancedChat(); // DISABLED: Chat widget removed per user request
         setTimeout(enhanceTestimonialsSection, 500); // Small delay for DOM
         // All enhanced features loaded
     });
 } else {
     addEnhancedAnimations();
     createEnhancedBanner();
-    createEnhancedWhatsApp();
-    createEnhancedChat();
+    // Wait for geo-targeting before creating WhatsApp/WeChat
+    initializeChatButton();
+    // createEnhancedChat(); // DISABLED: Chat widget removed per user request
     setTimeout(enhanceTestimonialsSection, 500);
-    console.log('All enhanced features loaded immediately!');
+}
+
+// Initialize chat button with geo-targeting check
+function initializeChatButton() {
+    // Check if geo-targeting is already loaded
+    if (window.geoTargeting && window.geoTargeting.userCountry) {
+        createEnhancedWhatsApp();
+    } else {
+        // Wait for geo-targeting to complete (max 3 seconds)
+        let attempts = 0;
+        const checkInterval = setInterval(() => {
+            attempts++;
+            if (window.geoTargeting && window.geoTargeting.userCountry) {
+                clearInterval(checkInterval);
+                createEnhancedWhatsApp();
+            } else if (attempts >= 30) { // 30 * 100ms = 3 seconds
+                clearInterval(checkInterval);
+                createEnhancedWhatsApp(); // Create WhatsApp as fallback
+            }
+        }, 100);
+    }
 }

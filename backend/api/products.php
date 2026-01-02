@@ -7,6 +7,13 @@
 // Include database configuration
 require_once '../config/database.php';
 
+// Check if this is a mutation request (POST, PUT, DELETE) and require auth
+$isMutation = in_array($_SERVER['REQUEST_METHOD'], ['POST', 'PUT', 'DELETE']);
+if ($isMutation) {
+    require_once __DIR__ . '/../auth/middleware.php';
+    requireAuth();
+}
+
 // Set CORS headers
 setCORSHeaders();
 
@@ -45,9 +52,14 @@ function handleGetProducts($db) {
         $category = $_GET['category'] ?? null;
         $featured = $_GET['featured'] ?? null;
         $limit = $_GET['limit'] ?? null;
+        $includeInactive = $_GET['admin'] ?? null; // Admin mode shows all products
         
-        // Build query
-        $sql = "SELECT * FROM products WHERE active = TRUE";
+        // Build query - show inactive products only in admin mode
+        if ($includeInactive === 'true') {
+            $sql = "SELECT * FROM products WHERE 1=1"; // Show all products
+        } else {
+            $sql = "SELECT * FROM products WHERE active = TRUE"; // Only active products
+        }
         $params = [];
         
         if ($category) {
@@ -93,6 +105,7 @@ function handleGetProducts($db) {
                 'image' => $product['image_url'],
                 'category' => $product['category'],
                 'featured' => (bool)$product['featured'],
+                'active' => (bool)$product['active'],
                 'lastUpdated' => $product['last_updated']
             ];
         }, $products);
@@ -125,8 +138,8 @@ function handleCreateProduct($db) {
         }
         
         // Insert new product
-        $sql = "INSERT INTO products (name, price, stock_quantity, grade, description, image_url, category, featured) 
-                VALUES (:name, :price, :stock, :grade, :description, :image, :category, :featured)";
+        $sql = "INSERT INTO products (name, price, stock_quantity, grade, description, image_url, category, featured, defect_free, organic) 
+                VALUES (:name, :price, :stock, :grade, :description, :image, :category, :featured, :defect_free, :organic)";
         
         $stmt = $db->prepare($sql);
         $stmt->execute([
@@ -137,7 +150,9 @@ function handleCreateProduct($db) {
             ':description' => $input['description'] ?? '',
             ':image' => $input['image_url'] ?? '',
             ':category' => $input['category'],
-            ':featured' => $input['featured'] ?? false
+            ':featured' => $input['featured'] ?? false,
+            ':defect_free' => $input['defect_free'] ?? true,
+            ':organic' => $input['organic'] ?? true
         ]);
         
         $productId = $db->lastInsertId();
@@ -168,7 +183,11 @@ function handleUpdateProduct($db) {
         $updateFields = [];
         $params = [':id' => $input['id']];
         
-        $allowedFields = ['name', 'price', 'stock_quantity', 'grade', 'description', 'image_url', 'category', 'featured', 'active'];
+        $allowedFields = [
+            'name', 'price', 'stock_quantity', 'grade', 
+            'description', 'image_url', 'category', 
+            'featured', 'active', 'defect_free', 'organic'
+        ];
         
         foreach ($allowedFields as $field) {
             if (isset($input[$field])) {

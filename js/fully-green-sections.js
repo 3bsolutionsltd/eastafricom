@@ -7,7 +7,6 @@ class FullyGreenSections {
     }
 
     init() {
-        console.log('🌿 Initializing Fully Green theme sections...');
         // Disabled duplicate coffee process section to avoid redundancy
         // this.createCoffeeProcessSection();
         // Disabled coffee services section as requested by user
@@ -194,8 +193,6 @@ class FullyGreenSections {
                 icon.classList.add('icon-nature');
             }
         });
-
-        console.log('🌿 Fully Green theme sections created and existing sections enhanced');
     }
 }
 

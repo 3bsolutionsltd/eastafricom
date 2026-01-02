@@ -28,8 +28,6 @@ class TestimonialsManager {
         this.createLiveTestimonialFeed();
         this.setupIntersectionObserver();
         this.startSocialProofAnimations();
-        
-        console.log('✅ Advanced Testimonials & Social Proof System initialized');
     }
 
     getTestimonialsData() {
@@ -631,11 +629,8 @@ window.testimonialsManager = new TestimonialsManager();
 
 // Create enhanced testimonials immediately
 function enhanceTestimonialsNow() {
-    console.log('Enhancing testimonials now...');
-    
     const testimonialsGrid = document.querySelector('.testimonials-grid');
     if (!testimonialsGrid) {
-        console.log('Testimonials grid not found');
         return;
     }
     
@@ -725,7 +720,6 @@ function enhanceTestimonialsNow() {
         </div>`;
         
         testimonialsSection.insertAdjacentHTML('beforeend', successStoriesHTML);
-        console.log('Success stories and social proof added!');
     }
 }
 

@@ -281,8 +281,6 @@ class EastAfricomSecurity {
             ...details
         };
         
-        console.log('Security Event:', event);
-        
         // Send to analytics if available
         if (typeof gtag !== 'undefined') {
             gtag('event', 'security_event', {

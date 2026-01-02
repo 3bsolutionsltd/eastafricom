@@ -462,9 +462,6 @@ function trackConversion(eventType, data = {}) {
         page: window.location.pathname
     };
     
-    // Log to console (in production, this would send to analytics service)
-    console.log('Conversion Event:', event);
-    
     // Store in localStorage for demo purposes
     const events = JSON.parse(localStorage.getItem('conversionEvents') || '[]');
     events.push(event);
@@ -483,7 +480,6 @@ function getSessionId() {
 // 5. Conversion Dashboard (Admin View) - DISABLED per user request
 function createConversionDashboard() {
     // Analytics button disabled - Live Chat is now the only floating button
-    console.log('📊 Analytics dashboard disabled - Clean UI with Live Chat only');
     /*
     const dashboardBtn = document.createElement('button');
     dashboardBtn.innerHTML = '📊 Analytics';
@@ -594,5 +590,4 @@ if (document.readyState === 'loading') {
     }, 2000);
     
     trackConversion('page_view');
-    console.log('Conversion optimization features loaded immediately!');
 }

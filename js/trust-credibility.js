@@ -289,8 +289,6 @@ function createLiveTrustSignals() {
             closeTrustWidget();
         }
     });
-    
-    console.log('Live trust badge created');
 }
 
 // 3. Trust Badge Floating Notifications
@@ -616,5 +614,4 @@ if (document.readyState === 'loading') {
         createLiveTrustSignals();
         createFloatingTrustNotifications();
     }, 1000);
-    console.log('Trust & credibility features loaded immediately!');
 }
