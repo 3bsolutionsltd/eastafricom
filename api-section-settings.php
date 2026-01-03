@@ -20,6 +20,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 // GET - Load settings
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (file_exists($settingsFile)) {
+        // Clear file stat cache to avoid serving stale data
+        clearstatcache(true, $settingsFile);
         $settings = json_decode(file_get_contents($settingsFile), true);
         echo json_encode([
             'success' => true,
