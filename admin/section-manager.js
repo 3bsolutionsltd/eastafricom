@@ -204,23 +204,18 @@ function resetSections() {
 }
 
 // Initialize when admin panel loads
-document.addEventListener('DOMContentLoaded', function() {
-    // Load from backend first
-    SectionManager.loadFromBackend().then(() => {
-        // Initialize immediately if on sections tab
-        SectionManager.initializeAdminPanel();
-        
-        // Then re-initialize every time sections tab is clicked
-        const sectionsTab = document.querySelector('[onclick*="showTab(\'sections\')"]');
-        if (sectionsTab) {
-            sectionsTab.addEventListener('click', function() {
-                setTimeout(() => {
-                    // Reload from backend first
-                    SectionManager.loadFromBackend().then(() => {
-                        SectionManager.initializeAdminPanel();
-                    });
-                }, 50);
-            });
-        }
-    });
+document.addEventListener('DOMContentLoaded', async function() {
+    // Initialize immediately if on sections tab
+    await SectionManager.initializeAdminPanel();
+    
+    // Re-initialize every time sections tab is clicked
+    const sectionsTab = document.querySelector('[onclick*="showTab(\'sections\')"]');
+    if (sectionsTab) {
+        sectionsTab.addEventListener('click', async function() {
+            // Small delay to let tab content render
+            setTimeout(async () => {
+                await SectionManager.initializeAdminPanel();
+            }, 100);
+        });
+    }
 });
