@@ -29,20 +29,14 @@ header('Content-Type: text/html; charset=utf-8');
         <h2>🗄️ Site Settings Table Setup</h2>
 <?php
 
+require_once 'config/database.php';
+
 try {
     // Step 1: Connect to database
     echo "<div class='step'>";
     echo "<strong>Step 1:</strong> Connecting to database...<br>";
     
-    $pdo = new PDO(
-        "mysql:host=localhost;dbname=eastafricom_cms;charset=utf8mb4",
-        "root",
-        "FUdy5X6FYr9HBAcu",
-        [
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
-        ]
-    );
+    $pdo = getDB();
     echo "<span class='success'>✅ Connected to database successfully</span>";
     echo "</div>";
     
