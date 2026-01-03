@@ -35,8 +35,8 @@ class GeoTargeting {
                 };
                 this.userCountry = mockCountry;
             } else {
-                // Use ip-api.com directly (no CORS restrictions on localhost)
-                const response = await fetch('http://ip-api.com/json/');
+                // Use ip-api.com with HTTPS for CSP compliance
+                const response = await fetch('https://ipapi.co/json/');
                 const fallbackData = await response.json();
                 data = {
                     country_code: fallbackData.countryCode,
