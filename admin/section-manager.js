@@ -155,6 +155,7 @@ const SectionManager = {
         const loaded = await this.loadFromBackend();
         
         console.log('🔄 Initializing admin panel with sections:', this.sections);
+        console.log('🔍 DEBUG - this.sections.products value:', this.sections.products, 'type:', typeof this.sections.products);
         
         const settings = this.sections;
         
@@ -162,8 +163,9 @@ const SectionManager = {
         for (const [section, enabled] of Object.entries(settings)) {
             const checkbox = document.getElementById(`toggle-${this.kebabCase(section)}`);
             if (checkbox) {
+                console.log(`🔍 DEBUG - Setting ${section}: enabled=${enabled}, type=${typeof enabled}, checkbox.id=${checkbox.id}`);
                 checkbox.checked = enabled;
-                console.log(`Checkbox toggle-${this.kebabCase(section)} set to:`, enabled);
+                console.log(`Checkbox toggle-${this.kebabCase(section)} set to:`, enabled, 'actual checked:', checkbox.checked);
             } else {
                 console.warn(`Checkbox toggle-${this.kebabCase(section)} not found in DOM`);
             }
