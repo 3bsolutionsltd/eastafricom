@@ -2,6 +2,7 @@
 // Manages visibility of website sections
 
 const SectionManager = {
+    version: '2.0', // Increment this to force localStorage clear
     sections: {
         hero: true,
         trustWidget: true,
@@ -12,6 +13,16 @@ const SectionManager = {
         awards: true,
         testimonials: true,
         contact: true
+    },
+    
+    // Check and clear old localStorage if version changed
+    checkVersion() {
+        const savedVersion = localStorage.getItem('eastafricom_sections_version');
+        if (savedVersion !== this.version) {
+            console.log('🔄 Version changed, clearing old localStorage');
+            localStorage.removeItem('eastafricom_sections');
+            localStorage.setItem('eastafricom_sections_version', this.version);
+        }
     },
 
     // Load settings from localStorage
@@ -229,6 +240,9 @@ function resetSections() {
 // Initialize when admin panel loads
 document.addEventListener('DOMContentLoaded', async function() {
     console.log('📋 Section Manager: DOMContentLoaded fired');
+    
+    // Check version and clear old localStorage if needed
+    SectionManager.checkVersion();
     
     // Initialize immediately if on sections tab
     await SectionManager.initializeAdminPanel();
