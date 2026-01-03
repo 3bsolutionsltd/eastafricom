@@ -27,15 +27,15 @@ const SectionManager = {
         return this.sections;
     },
 
-    // Save settings to localStorage and optionally to backend
-    saveSettings() {
+    // Save settings to localStorage and backend
+    async saveSettings() {
         try {
             localStorage.setItem('eastafricom_sections', JSON.stringify(this.sections));
             
             // Also save to backend for persistence across browsers
-            this.saveToBackend();
+            const saved = await this.saveToBackend();
             
-            return true;
+            return saved;
         } catch (e) {
             console.error('Error saving section settings:', e);
             return false;
@@ -200,8 +200,9 @@ function toggleSection(sectionName, enabled) {
     // Don't show notification for individual toggles - wait for Save button
 }
 
-function saveSections() {
-    if (SectionManager.saveSettings()) {
+async function saveSections() {
+    const saved = await SectionManager.saveSettings();
+    if (saved) {
         showNotification('Section settings saved successfully!', 'success');
     } else {
         showNotification('Error saving section settings', 'error');
