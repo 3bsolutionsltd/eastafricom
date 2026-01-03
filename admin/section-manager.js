@@ -45,7 +45,7 @@ const SectionManager = {
     // Save to backend API
     async saveToBackend() {
         try {
-            const response = await fetch('../api-section-settings.php', {
+            const response = await fetch('/api-section-settings.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -58,29 +58,37 @@ const SectionManager = {
             if (response.ok) {
                 const data = await response.json();
                 if (data.success) {
-                    console.log('Settings saved to backend successfully');
+                    console.log('✅ Settings saved to backend successfully');
+                    return true;
+                } else {
+                    console.error('❌ Backend save failed:', data.error);
+                    return false;
                 }
+            } else {
+                console.error('❌ HTTP error:', response.status);
+                return false;
             }
         } catch (e) {
-            console.warn('Could not save to backend:', e);
-            // Not critical - localStorage still works
+            console.error('❌ Could not save to backend:', e);
+            return false;
         }
     },
 
     // Load from backend on initialization
     async loadFromBackend() {
         try {
-            const response = await fetch('../api-section-settings.php');
+            const response = await fetch('/api-section-settings.php');
             if (response.ok) {
                 const data = await response.json();
                 if (data.success && data.settings) {
                     this.sections = { ...this.sections, ...data.settings };
                     // Also update localStorage
                     localStorage.setItem('eastafricom_sections', JSON.stringify(this.sections));
+                    console.log('✅ Settings loaded from backend');
                 }
             }
         } catch (e) {
-            console.warn('Could not load from backend:', e);
+            console.warn('⚠️ Could not load from backend, using localStorage:', e);
             // Fall back to localStorage
         }
     },
