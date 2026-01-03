@@ -4,11 +4,11 @@
 class EastAfricomSecurity {
     constructor() {
         this.config = {
-            maxFormAttempts: 5,
+            maxFormAttempts: 10,
             timeWindow: 300000, // 5 minutes
-            minFormTime: 3000,   // 3 seconds
-            maxFormTime: 1800000, // 30 minutes
-            requiredInteractions: 2
+            minFormTime: 1000,   // 1 second (reduced from 3)
+            maxFormTime: 3600000, // 60 minutes (increased from 30)
+            requiredInteractions: 1 // Reduced from 2
         };
         
         this.metrics = {
@@ -53,16 +53,21 @@ class EastAfricomSecurity {
     setupFormProtection() {
         const forms = document.querySelectorAll('form');
         forms.forEach(form => {
-            // Track form start time
-            form.addEventListener('focus', () => {
+            // Track form start time on multiple events
+            const startFormTracking = () => {
                 if (this.metrics.formStartTime === 0) {
                     this.metrics.formStartTime = Date.now();
                 }
-            }, true);
+            };
+            
+            form.addEventListener('focus', startFormTracking, true);
+            form.addEventListener('click', startFormTracking);
+            form.addEventListener('touchstart', startFormTracking);
             
             // Track interactions
             form.addEventListener('input', () => {
                 this.metrics.interactionCount++;
+                startFormTracking(); // Also start timing on first input
             });
             
             // Validate on submit
@@ -173,6 +178,12 @@ class EastAfricomSecurity {
     }
     
     validateTiming() {
+        // If formStartTime is 0, user might have refreshed or timing wasn't tracked properly
+        // In this case, allow submission (give benefit of the doubt)
+        if (this.metrics.formStartTime === 0) {
+            return true;
+        }
+        
         const timeTaken = Date.now() - this.metrics.formStartTime;
         return timeTaken >= this.config.minFormTime && timeTaken <= this.config.maxFormTime;
     }
