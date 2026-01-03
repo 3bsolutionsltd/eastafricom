@@ -81,15 +81,19 @@ const SectionManager = {
             if (response.ok) {
                 const data = await response.json();
                 if (data.success && data.settings) {
-                    this.sections = { ...this.sections, ...data.settings };
+                    // Completely replace sections with backend data (don't merge)
+                    this.sections = data.settings;
                     // Also update localStorage
                     localStorage.setItem('eastafricom_sections', JSON.stringify(this.sections));
-                    console.log('✅ Settings loaded from backend');
+                    console.log('✅ Settings loaded from backend:', this.sections);
+                    return true;
                 }
             }
+            console.warn('⚠️ Backend response not OK or missing settings');
+            return false;
         } catch (e) {
-            console.warn('⚠️ Could not load from backend, using localStorage:', e);
-            // Fall back to localStorage
+            console.error('❌ Could not load from backend:', e);
+            return false;
         }
     },
 
@@ -127,7 +131,9 @@ const SectionManager = {
     // Initialize checkboxes in admin panel
     async initializeAdminPanel() {
         // Always reload from backend first to get latest settings
-        await this.loadFromBackend();
+        const loaded = await this.loadFromBackend();
+        
+        console.log('🔄 Initializing admin panel with sections:', this.sections);
         
         const settings = this.sections;
         
@@ -136,6 +142,9 @@ const SectionManager = {
             const checkbox = document.getElementById(`toggle-${this.kebabCase(section)}`);
             if (checkbox) {
                 checkbox.checked = enabled;
+                console.log(`Checkbox toggle-${this.kebabCase(section)} set to:`, enabled);
+            } else {
+                console.warn(`Checkbox toggle-${this.kebabCase(section)} not found in DOM`);
             }
         }
     },
