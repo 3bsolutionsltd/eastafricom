@@ -97,11 +97,12 @@ const SectionManager = {
         }
     },
 
-    // Toggle a specific section
+    // Toggle a specific section (local only - doesn't auto-save)
     toggle(sectionName, enabled) {
         if (this.sections.hasOwnProperty(sectionName)) {
             this.sections[sectionName] = enabled;
-            this.saveSettings();
+            // Update localStorage only (don't save to backend until user clicks Save)
+            localStorage.setItem('eastafricom_sections', JSON.stringify(this.sections));
             return true;
         }
         return false;
@@ -196,7 +197,7 @@ function showNotification(message, type = 'success') {
 
 function toggleSection(sectionName, enabled) {
     SectionManager.toggle(sectionName, enabled);
-    showNotification(`${sectionName} section ${enabled ? 'enabled' : 'disabled'}`, 'success');
+    // Don't show notification for individual toggles - wait for Save button
 }
 
 function saveSections() {
@@ -217,17 +218,23 @@ function resetSections() {
 
 // Initialize when admin panel loads
 document.addEventListener('DOMContentLoaded', async function() {
+    console.log('📋 Section Manager: DOMContentLoaded fired');
+    
     // Initialize immediately if on sections tab
     await SectionManager.initializeAdminPanel();
     
     // Re-initialize every time sections tab is clicked
     const sectionsTab = document.querySelector('[onclick*="showTab(\'sections\')"]');
     if (sectionsTab) {
+        console.log('✅ Found sections tab button, adding click listener');
         sectionsTab.addEventListener('click', async function() {
+            console.log('🖱️ Sections tab clicked, reinitializing...');
             // Small delay to let tab content render
             setTimeout(async () => {
                 await SectionManager.initializeAdminPanel();
             }, 100);
         });
+    } else {
+        console.warn('⚠️ Sections tab button not found');
     }
 });
