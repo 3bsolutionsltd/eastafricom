@@ -4,6 +4,8 @@
  * This will create the database, tables, and populate with Uganda varieties
  */
 
+require_once 'config/database.php';
+
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
@@ -11,26 +13,13 @@ echo "<h2>Complete Database Setup and Population</h2>";
 echo "<div style='font-family: Arial, sans-serif; padding: 20px; background: #f5f5f5;'>";
 
 try {
-    // Step 1: Connect to MySQL server (without specifying database)
-    echo "<p><strong>Step 1:</strong> Connecting to MySQL server...</p>";
-    $pdo = new PDO("mysql:host=localhost", "root", "FUdy5X6FYr9HBAcu", [
-        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-        PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true
-    ]);
-    echo "<p>✅ Connected to MySQL server successfully</p>";
+    // Step 1: Connect using environment-aware configuration
+    echo "<p><strong>Step 1:</strong> Connecting to database...</p>";
+    $pdo = getDB();
+    echo "<p>✅ Connected to database successfully</p>";
     
-    // Step 2: Create database if not exists
-    echo "<p><strong>Step 2:</strong> Creating database...</p>";
-    $pdo->exec("CREATE DATABASE IF NOT EXISTS eastafricom_cms CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
-    echo "<p>✅ Database 'eastafricom_cms' created/verified</p>";
-    
-    // Step 3: Switch to our database
-    echo "<p><strong>Step 3:</strong> Switching to eastafricom_cms database...</p>";
-    $pdo->exec("USE eastafricom_cms");
-    echo "<p>✅ Using eastafricom_cms database</p>";
-    
-    // Step 4: Create products table if not exists
-    echo "<p><strong>Step 4:</strong> Creating products table...</p>";
+    // Step 2: Create products table if not exists
+    echo "<p><strong>Step 2:</strong> Creating products table...</p>";
     $createTable = "
     CREATE TABLE IF NOT EXISTS products (
         id INT AUTO_INCREMENT PRIMARY KEY,
