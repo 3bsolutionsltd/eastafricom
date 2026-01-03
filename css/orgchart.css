@@ -1,0 +1,138 @@
+/* Organizational Chart Styles */
+.org-chart-section {
+    padding: 80px 0;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+}
+
+.org-chart-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.org-chart {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 40px;
+    margin-top: 60px;
+}
+
+/* Level styling */
+.org-level {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 30px;
+    flex-wrap: wrap;
+    width: 100%;
+    position: relative;
+}
+
+/* Branch styling */
+.org-branch {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 40px;
+}
+
+/* Position card */
+.org-position {
+    background: white;
+    border-radius: 12px;
+    padding: 20px 30px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    text-align: center;
+    min-width: 200px;
+    position: relative;
+    transition: all 0.3s ease;
+    border-top: 4px solid #6ab43e;
+}
+
+.org-position:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(106, 180, 62, 0.3);
+}
+
+.org-position.ceo {
+    border-top-color: #2c5f2d;
+    background: linear-gradient(135deg, #fff 0%, #f0f8f0 100%);
+}
+
+.org-position.director {
+    border-top-color: #6ab43e;
+}
+
+.org-position.manager {
+    border-top-color: #8bc34a;
+}
+
+.org-position.staff {
+    border-top-color: #9ccc65;
+}
+
+.position-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #6ab43e, #4a7c2a);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    margin: 0 auto 15px;
+}
+
+.position-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #2c5f2d;
+    margin: 0 0 5px 0;
+}
+
+.position-dept {
+    font-size: 13px;
+    color: #666;
+    font-weight: 500;
+}
+
+/* Connection lines */
+.org-connector {
+    width: 2px;
+    height: 40px;
+    background: #6ab43e;
+    margin: 0 auto;
+}
+
+.org-connector-horizontal {
+    height: 2px;
+    background: #6ab43e;
+    flex: 1;
+    max-width: 150px;
+}
+
+/* Sub-level container */
+.org-sublevel {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .org-level {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .org-position {
+        min-width: 250px;
+    }
+    
+    .org-connector-horizontal {
+        display: none;
+    }
+}
