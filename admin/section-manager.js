@@ -77,14 +77,23 @@ const SectionManager = {
     // Load from backend on initialization
     async loadFromBackend() {
         try {
+            console.log('🔄 Loading settings from backend API...');
             const response = await fetch('/api-section-settings.php');
+            console.log('📡 Response status:', response.status, response.ok);
+            
             if (response.ok) {
                 const data = await response.json();
+                console.log('📦 Received data:', data);
+                
                 if (data.success && data.settings) {
                     // Completely replace sections with backend data (don't merge)
                     this.sections = data.settings;
+                    console.log('✅ Sections updated to:', this.sections);
+                    
                     // Also update localStorage
                     localStorage.setItem('eastafricom_sections', JSON.stringify(this.sections));
+                    console.log('💾 localStorage updated');
+                    
                     console.log('✅ Settings loaded from backend:', this.sections);
                     return true;
                 }
