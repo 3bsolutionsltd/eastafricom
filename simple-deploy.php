@@ -115,6 +115,15 @@ try {
         }
     }
     
+    // Step 6.5: Clear PHP opcache to ensure new files are loaded
+    logMessage("Clearing PHP opcache...");
+    if (function_exists('opcache_reset')) {
+        opcache_reset();
+        logMessage("Opcache cleared successfully");
+    } else {
+        logMessage("Opcache not available - skipping");
+    }
+    
     // Step 7: Clean up temporary files
     logMessage("Cleaning up temporary files...");
     
