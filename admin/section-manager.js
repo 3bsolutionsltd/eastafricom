@@ -125,8 +125,11 @@ const SectionManager = {
     },
 
     // Initialize checkboxes in admin panel
-    initializeAdminPanel() {
-        const settings = this.loadSettings();
+    async initializeAdminPanel() {
+        // Always reload from backend first to get latest settings
+        await this.loadFromBackend();
+        
+        const settings = this.sections;
         
         // Set checkbox states
         for (const [section, enabled] of Object.entries(settings)) {
