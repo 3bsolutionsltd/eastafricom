@@ -1051,11 +1051,21 @@
                         <div class="form-group">
                             <select id="product" name="product" class="form-input" required>
                                 <option value="" data-en="Select Product" data-zh="选择产品">Select Product</option>
-                                <option value="coffee-arabica-aa" data-en="Coffee - Arabica AA Grade" data-zh="咖啡 - 阿拉比卡AA级">Coffee - Arabica AA Grade</option>
-                                <option value="coffee-commercial" data-en="Coffee - Commercial Grade" data-zh="咖啡 - 商业级">Coffee - Commercial Grade</option>
-                                <option value="cocoa-raw" data-en="Cocoa - Raw Beans" data-zh="可可 - 生豆">Cocoa - Raw Beans</option>
-                                <option value="cocoa-powder" data-en="Cocoa - Powder" data-zh="可可 - 粉末">Cocoa - Powder</option>
-                                <option value="mixed" data-en="Mixed Products" data-zh="混合产品">Mixed Products</option>
+                                <optgroup label="Arabica Coffee - Premium Grades">
+                                    <option value="arabica-aa-washed" data-en="Arabica AA Grade - Washed Coffee" data-zh="阿拉比卡AA级-水洗">Arabica AA Grade - Washed Coffee</option>
+                                    <option value="arabica-ab-natural" data-en="Arabica AB Grade - Natural Coffee" data-zh="阿拉比卡AB级-日晒">Arabica AB Grade - Natural Coffee</option>
+                                    <option value="arabica-honey-process" data-en="Arabica Semi-Washed (Honey Process)" data-zh="阿拉比卡-蜜处理">Arabica Semi-Washed (Honey Process)</option>
+                                    <option value="specialty-microlot" data-en="Specialty Microlot - Competition Grade" data-zh="特殊批次-竞赛级">Specialty Microlot - Competition Grade</option>
+                                </optgroup>
+                                <optgroup label="Robusta Coffee - Commercial Grades">
+                                    <option value="robusta-grade1" data-en="Robusta Grade 1 - Washed Coffee" data-zh="罗布斯塔1级-水洗">Robusta Grade 1 - Washed Coffee</option>
+                                    <option value="commercial-blend" data-en="Commercial Blend - Bulk Export" data-zh="商业拼配-散装出口">Commercial Blend - Bulk Export</option>
+                                </optgroup>
+                                <optgroup label="Cocoa Products">
+                                    <option value="raw-cocoa" data-en="Cocoa - Raw Beans" data-zh="可可-生豆">Cocoa - Raw Beans</option>
+                                    <option value="cocoa-powder" data-en="Cocoa - Powder" data-zh="可可-粉末">Cocoa - Powder</option>
+                                </optgroup>
+                                <option value="mixed" data-en="Mixed Products - Custom Order" data-zh="混合产品-定制订单">Mixed Products - Custom Order</option>
                             </select>
                             <label for="product" class="form-label" data-en="Product Interest" data-zh="产品需求">Product Interest</label>
                         </div>

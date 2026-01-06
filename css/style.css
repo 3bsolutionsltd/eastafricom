@@ -6416,3 +6416,26 @@ body.floating-ui-visible .back-to-top {
     75% { transform: translateX(-5px) translateY(5px); }
     100% { transform: translateX(0) translateY(0); }
 }
+
+/* Notification Animations for Order System */
+@keyframes slideIn {
+    from { 
+        transform: translateX(400px);
+        opacity: 0;
+    }
+    to { 
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOut {
+    from { 
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to { 
+        transform: translateX(400px);
+        opacity: 0;
+    }
+}

@@ -1097,7 +1097,7 @@ setInterval(() => {
 
 // Product Order Modal Functions
 function openQuoteModal(productType) {
-    // Pre-fill contact form based on product type
+    // Product mapping for dropdown selection and display names
     const productNames = {
         'arabica-aa-washed': 'Arabica AA Grade - Washed Coffee',
         'arabica-ab-natural': 'Arabica AB Grade - Natural Coffee',
@@ -1121,21 +1121,66 @@ function openQuoteModal(productType) {
             block: 'start'
         });
         
-        // Pre-fill the message field
+        // Pre-fill form fields
         setTimeout(() => {
-            const messageField = document.querySelector('#contact textarea');
-            if (messageField) {
-                messageField.value = `Hello, I would like to get a quote for ${productName}. Please provide pricing and availability details for bulk export orders.`;
-                messageField.focus();
+            // 1. Auto-select product in dropdown
+            const productSelect = document.getElementById('product');
+            console.log('🔍 Product select element:', productSelect);
+            console.log('🔍 Looking for product:', productType);
+            
+            if (productSelect) {
+                // Try exact match first
+                const option = Array.from(productSelect.options).find(opt => opt.value === productType);
+                console.log('🔍 Found option:', option);
+                
+                if (option) {
+                    productSelect.value = productType;
+                    console.log('✅ Product selected:', productSelect.value);
+                    
+                    // Trigger change event
+                    productSelect.dispatchEvent(new Event('change', { bubbles: true }));
+                    
+                    // Add visual feedback - highlight the dropdown
+                    productSelect.style.background = 'linear-gradient(135deg, #E8F5E9 0%, #C8E6C9 100%)';
+                    productSelect.style.borderColor = '#4CAF50';
+                    productSelect.style.borderWidth = '2px';
+                    productSelect.style.transform = 'scale(1.02)';
+                    productSelect.style.transition = 'all 0.3s ease';
+                    
+                    setTimeout(() => {
+                        productSelect.style.background = '';
+                        productSelect.style.borderColor = '';
+                        productSelect.style.borderWidth = '';
+                        productSelect.style.transform = '';
+                    }, 2500);
+                } else {
+                    console.warn('⚠️ No matching option found for:', productType);
+                    console.log('Available options:', Array.from(productSelect.options).map(o => o.value));
+                }
+            } else {
+                console.error('❌ Product select element not found');
             }
             
-            // Add highlight effect to contact form
+            // 2. Pre-fill message field
+            const messageField = document.querySelector('#contact textarea#message');
+            if (messageField) {
+                messageField.value = `Hello, I would like to get a quote for ${productName}.\n\nPlease provide:\n• Current pricing per MT (FOB/CIF)\n• Minimum order quantity\n• Available certifications\n• Packaging options\n• Lead time for delivery\n\nI look forward to your detailed quotation.`;
+                messageField.focus();
+                
+                // Visual feedback on message field
+                messageField.style.borderColor = '#4CAF50';
+                setTimeout(() => {
+                    messageField.style.borderColor = '';
+                }, 2000);
+            }
+            
+            // 3. Add highlight effect to entire contact form
             const contactForm = document.querySelector('.contact-form');
             if (contactForm) {
-                contactForm.style.border = '3px solid #FFD700';
+                contactForm.style.border = '3px solid #4CAF50';
                 contactForm.style.borderRadius = '15px';
                 contactForm.style.transition = 'all 0.3s ease';
-                contactForm.style.boxShadow = '0 0 20px rgba(255, 215, 0, 0.3)';
+                contactForm.style.boxShadow = '0 0 20px rgba(76, 175, 80, 0.3)';
                 
                 setTimeout(() => {
                     contactForm.style.border = '';
@@ -1143,6 +1188,33 @@ function openQuoteModal(productType) {
                     contactForm.style.boxShadow = '';
                 }, 3000);
             }
+            
+            // 4. Show notification to user
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 100px;
+                right: 20px;
+                background: #4CAF50;
+                color: white;
+                padding: 15px 20px;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+                z-index: 10000;
+                font-family: Inter, sans-serif;
+                animation: slideIn 0.3s ease-out;
+            `;
+            notification.innerHTML = `
+                <i class="fas fa-check-circle"></i> 
+                <strong>${productName}</strong> selected!<br>
+                <small>Please complete the form below</small>
+            `;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease-out';
+                setTimeout(() => notification.remove(), 300);
+            }, 4000);
         }, 500);
     }
     
