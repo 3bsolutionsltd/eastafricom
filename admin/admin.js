@@ -474,7 +474,7 @@ class AdminDashboard {
                                     </span>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
-                                    <button onclick='openSlideshowModal(${JSON.stringify(slide).replace(/'/g, "\\'")})' class="text-blue-600 hover:text-blue-900">
+                                    <button onclick="editSlideshowByIndex(${this.data.slideshow.indexOf(slide)})" class="text-blue-600 hover:text-blue-900">
                                         <i class="fas fa-edit"></i>
                                     </button>
                                 </td>
@@ -1226,6 +1226,16 @@ function closeAddProductModal() {
 }
 
 // Slideshow Management Functions
+function editSlideshowByIndex(index) {
+    const slide = admin.data.slideshow[index];
+    if (slide) {
+        openSlideshowModal(slide);
+    } else {
+        console.error('Slide not found at index:', index);
+        admin.showNotification('Slide not found', 'error');
+    }
+}
+
 async function openSlideshowModal(slide = null) {
     const modal = document.getElementById('modal');
     const title = document.getElementById('modal-title');
