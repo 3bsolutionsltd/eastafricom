@@ -42,6 +42,17 @@ try {
  */
 function handleGetSettings($db) {
     try {
+        // Check if table exists first
+        $tableCheck = $db->query("SHOW TABLES LIKE 'site_settings'");
+        if ($tableCheck->rowCount() === 0) {
+            // Table doesn't exist, return empty settings
+            successResponse([
+                'settings' => [],
+                'note' => 'Settings table not found'
+            ]);
+            return;
+        }
+        
         // Get category filter
         $category = $_GET['category'] ?? null;
         

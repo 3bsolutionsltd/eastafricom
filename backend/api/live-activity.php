@@ -38,6 +38,18 @@ try {
  */
 function handleGetActivity($db) {
     try {
+        // Check if table exists first
+        $tableCheck = $db->query("SHOW TABLES LIKE 'live_activity'");
+        if ($tableCheck->rowCount() === 0) {
+            // Table doesn't exist, return empty array
+            successResponse([
+                'activities' => [],
+                'count' => 0,
+                'note' => 'Live activity table not found'
+            ]);
+            return;
+        }
+        
         // Get filter parameters
         $limit = $_GET['limit'] ?? 20;
         $hours = $_GET['hours'] ?? 24; // Activity from last 24 hours by default

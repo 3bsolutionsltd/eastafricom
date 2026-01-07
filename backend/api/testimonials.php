@@ -48,6 +48,18 @@ try {
  */
 function handleGetTestimonials($db) {
     try {
+        // Check if table exists first
+        $tableCheck = $db->query("SHOW TABLES LIKE 'testimonials'");
+        if ($tableCheck->rowCount() === 0) {
+            // Table doesn't exist, return empty array
+            successResponse([
+                'testimonials' => [],
+                'count' => 0,
+                'note' => 'Testimonials table not found'
+            ]);
+            return;
+        }
+        
         // Get filter parameters
         $featured = $_GET['featured'] ?? null;
         $limit = $_GET['limit'] ?? 10;
