@@ -16,6 +16,21 @@ if ($isMutation) {
 try {
     $pdo = getDB();
     
+    // Check if table exists first
+    $tableCheck = $pdo->query("SHOW TABLES LIKE 'awards'");
+    if ($tableCheck->rowCount() === 0) {
+        // Table doesn't exist, return empty array
+        echo json_encode([
+            'success' => true,
+            'data' => [
+                'awards' => [],
+                'total' => 0
+            ],
+            'note' => 'Awards table not found'
+        ]);
+        exit;
+    }
+    
     // Fetch awards ordered by year descending
     $stmt = $pdo->prepare("
         SELECT id, title, organization, year, description, 

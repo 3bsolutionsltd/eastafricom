@@ -1,9 +1,10 @@
 <?php
-header('Content-Type: application/json');
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE');
-header('Access-Control-Allow-Headers: Content-Type, X-CSRF-Token');
+/**
+ * Slideshow API Endpoint
+ * Returns and manages slideshow slides
+ */
 
+// Include database configuration
 require_once '../config/database.php';
 
 // Check if this is a mutation request (POST, PUT, DELETE) and require auth
@@ -47,6 +48,18 @@ try {
 function handleGetSlides($pdo) {
     try {
         $includeInactive = $_GET['admin'] ?? null;
+        
+        // Check if table exists first
+        $tableCheck = $pdo->query("SHOW TABLES LIKE 'slideshow_slides'");
+        if ($tableCheck->rowCount() === 0) {
+            // Table doesn't exist, return empty array
+            successResponse([
+                'slides' => [],
+                'total' => 0,
+                'note' => 'Slideshow table not found'
+            ]);
+            return;
+        }
         
         if ($includeInactive === 'true') {
             $sql = "SELECT * FROM slideshow_slides ORDER BY position ASC";
