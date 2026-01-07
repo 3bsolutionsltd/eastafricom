@@ -51,14 +51,15 @@ class UrgencyScarcity {
     }
     
     init() {
-        // Disabled urgency banner - clean professional layout
+        // Disabled all urgency features for clean professional layout
         // this.createUrgencyBanner();
-        this.addProductUrgencyElements();
-        this.createSeasonalPricingDisplay();
-        this.setupCountdownTimers();
-        this.addInventoryIndicators();
+        // this.addProductUrgencyElements();
+        // this.createSeasonalPricingDisplay();
+        // this.setupCountdownTimers(); // Method doesn't exist - countdown is handled in createSeasonalPricingDisplay
+        // this.addInventoryIndicators();
         // this.createFloatingUrgencyReminder();
-        this.trackUserBehavior();
+        // this.trackUserBehavior();
+        // this.setupAbandonmentTriggers();
     }
     
     // Urgency Banner at top of page
@@ -232,38 +233,40 @@ class UrgencyScarcity {
     
     // Inventory indicators
     addInventoryIndicators() {
-        // Add to hero section
+        // Add to hero section (only if it exists)
         const heroStats = document.querySelector('.hero-stats');
-        const inventoryStats = document.createElement('div');
-        inventoryStats.className = 'inventory-stats';
-        inventoryStats.innerHTML = `
-            <div class="stat-item urgent">
-                <span class="stat-number">23</span>
-                <span class="stat-label">Containers Available This Month</span>
-                <div class="urgency-pulse"></div>
-            </div>
-        `;
-        heroStats.appendChild(inventoryStats);
-        
-        // Add market pressure indicator
-        const marketPressure = document.createElement('div');
-        marketPressure.className = 'market-pressure-alert';
-        marketPressure.innerHTML = `
-            <div class="pressure-content">
-                <div class="pressure-icon">📈</div>
-                <div class="pressure-text">
-                    <strong>Market Alert:</strong> Prices increasing ${this.marketPressure.increasePercentage}% on 
-                    ${this.formatDate(this.marketPressure.priceIncreaseDate)}
+        if (heroStats) {
+            const inventoryStats = document.createElement('div');
+            inventoryStats.className = 'inventory-stats';
+            inventoryStats.innerHTML = `
+                <div class="stat-item urgent">
+                    <span class="stat-number">23</span>
+                    <span class="stat-label">Containers Available This Month</span>
+                    <div class="urgency-pulse"></div>
                 </div>
-                <div class="pressure-countdown" id="priceIncreaseCountdown"></div>
-            </div>
-        `;
+            `;
+            heroStats.appendChild(inventoryStats);
+        }
         
-        // Add after hero section
+        // Add market pressure indicator (only if hero exists)
         const hero = document.querySelector('.hero');
-        hero.parentNode.insertBefore(marketPressure, hero.nextSibling);
-        
-        this.startCountdown('priceIncreaseCountdown', this.marketPressure.priceIncreaseDate, true);
+        if (hero && hero.parentNode) {
+            const marketPressure = document.createElement('div');
+            marketPressure.className = 'market-pressure-alert';
+            marketPressure.innerHTML = `
+                <div class="pressure-content">
+                    <div class="pressure-icon">📈</div>
+                    <div class="pressure-text">
+                        <strong>Market Alert:</strong> Prices increasing ${this.marketPressure.increasePercentage}% on 
+                        ${this.formatDate(this.marketPressure.priceIncreaseDate)}
+                    </div>
+                    <div class="pressure-countdown" id="priceIncreaseCountdown"></div>
+                </div>
+            `;
+            
+            hero.parentNode.insertBefore(marketPressure, hero.nextSibling);
+            this.startCountdown('priceIncreaseCountdown', this.marketPressure.priceIncreaseDate, true);
+        }
     }
     
     // Floating urgency reminder
@@ -548,6 +551,91 @@ class UrgencyScarcity {
             });
         }
     }
+    
+    // Abandonment triggers
+    setupAbandonmentTriggers() {
+        let isLeaving = false;
+        
+        document.addEventListener('mouseleave', (e) => {
+            if (e.clientY <= 0 && !isLeaving) {
+                isLeaving = true;
+                this.showExitIntentUrgency();
+            }
+        });
+        
+        document.addEventListener('mouseenter', () => {
+            isLeaving = false;
+        });
+    }
+    
+    showExitIntentUrgency() {
+        const exitModal = document.createElement('div');
+        exitModal.className = 'exit-intent-modal';
+        exitModal.innerHTML = `
+            <div class="exit-modal-overlay"></div>
+            <div class="exit-modal-content">
+                <div class="exit-header">
+                    <h2>⚡ Wait! Don't Miss Out</h2>
+                    <button onclick="this.closest('.exit-intent-modal').remove()" class="exit-close">×</button>
+                </div>
+                <div class="exit-body">
+                    <p>Before you go, secure your premium coffee supply at harvest season prices!</p>
+                    <div class="exit-offer">
+                        <div class="offer-highlight">🔥 EXCLUSIVE: 15% OFF first order</div>
+                        <div class="offer-details">Valid for next 10 minutes only</div>
+                    </div>
+                    <div class="exit-countdown" id="exitCountdown">10:00</div>
+                </div>
+                <div class="exit-actions">
+                    <button onclick="window.urgencySystem.claimExitOffer()" class="exit-claim-btn">
+                        Claim 15% Discount
+                    </button>
+                    <button onclick="this.closest('.exit-intent-modal').remove()" class="exit-decline-btn">
+                        No thanks, I'll pay full price
+                    </button>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(exitModal);
+        
+        // Start 10-minute countdown
+        this.startExitCountdown();
+    }
+    
+    startExitCountdown() {
+        let timeLeft = 600; // 10 minutes in seconds
+        const countdownElement = document.getElementById('exitCountdown');
+        
+        if (!countdownElement) return;
+        
+        const countdown = setInterval(() => {
+            timeLeft--;
+            
+            if (timeLeft <= 0) {
+                clearInterval(countdown);
+                document.querySelector('.exit-intent-modal')?.remove();
+                return;
+            }
+            
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            countdownElement.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+        }, 1000);
+    }
+    
+    claimExitOffer() {
+        this.logEvent('exit_offer_claimed');
+        
+        // Add discount code to form or redirect to contact
+        const contactSection = document.querySelector('#contact');
+        if (contactSection) {
+            contactSection.scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        // Remove modal
+        document.querySelector('.exit-intent-modal')?.remove();
+    }
 }
 
 // Advanced urgency features
@@ -652,90 +740,6 @@ class AdvancedUrgency extends UrgencyScarcity {
             viewerElement.textContent = newCount;
         }, 15000);
     }
-    
-    // Abandonment triggers
-    setupAbandonmentTriggers() {
-        let isLeaving = false;
-        
-        document.addEventListener('mouseleave', (e) => {
-            if (e.clientY <= 0 && !isLeaving) {
-                isLeaving = true;
-                this.showExitIntentUrgency();
-            }
-        });
-        
-        document.addEventListener('mouseenter', () => {
-            isLeaving = false;
-        });
-    }
-    
-    showExitIntentUrgency() {
-        const exitModal = document.createElement('div');
-        exitModal.className = 'exit-intent-modal';
-        exitModal.innerHTML = `
-            <div class="exit-modal-overlay"></div>
-            <div class="exit-modal-content">
-                <div class="exit-header">
-                    <h2>⚡ Wait! Don't Miss Out</h2>
-                    <button onclick="this.parentElement.parentElement.remove()" class="exit-close">×</button>
-                </div>
-                <div class="exit-body">
-                    <p>Before you go, secure your premium coffee supply at harvest season prices!</p>
-                    <div class="exit-offer">
-                        <div class="offer-highlight">🔥 EXCLUSIVE: 15% OFF first order</div>
-                        <div class="offer-details">Valid for next 10 minutes only</div>
-                    </div>
-                    <div class="exit-countdown" id="exitCountdown">10:00</div>
-                </div>
-                <div class="exit-actions">
-                    <button onclick="urgencySystem.claimExitOffer()" class="exit-claim-btn">
-                        Claim 15% Discount
-                    </button>
-                    <button onclick="this.parentElement.parentElement.remove()" class="exit-decline-btn">
-                        No thanks, I'll pay full price
-                    </button>
-                </div>
-            </div>
-        `;
-        
-        document.body.appendChild(exitModal);
-        
-        // Start 10-minute countdown
-        this.startExitCountdown();
-    }
-    
-    startExitCountdown() {
-        let timeLeft = 600; // 10 minutes in seconds
-        const countdownElement = document.getElementById('exitCountdown');
-        
-        const countdown = setInterval(() => {
-            timeLeft--;
-            
-            if (timeLeft <= 0) {
-                clearInterval(countdown);
-                document.querySelector('.exit-intent-modal')?.remove();
-                return;
-            }
-            
-            const minutes = Math.floor(timeLeft / 60);
-            const seconds = timeLeft % 60;
-            countdownElement.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
-        }, 1000);
-    }
-    
-    claimExitOffer() {
-        this.logEvent('exit_offer_claimed');
-        
-        // Add discount code to form
-        const messageField = document.querySelector('#message');
-        if (messageField) {
-            messageField.value = 'URGENT REQUEST: Please apply 15% exit discount code HARVEST15 to my order. ';
-        }
-        
-        // Close modal and scroll to contact
-        document.querySelector('.exit-intent-modal').remove();
-        document.querySelector('#contact').scrollIntoView({ behavior: 'smooth' });
-    }
 }
 
 // Global initialization - Execute immediately
@@ -811,7 +815,7 @@ function createUrgencyBannerNow() {
 //     createUrgencyBannerNow();
 // }
 
-// window.urgencySystem = new UrgencyScarcity();
+window.urgencySystem = new UrgencyScarcity();
 
 // Export for use in other modules
 if (typeof module !== 'undefined' && module.exports) {

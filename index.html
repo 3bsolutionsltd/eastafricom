@@ -32,6 +32,7 @@
     <!-- CSS -->
     <link rel="stylesheet" href="css/style.css?v=2.0">
     <link rel="stylesheet" href="css/orgchart.css?v=1.0">
+    <link rel="stylesheet" href="css/quotation-modal.css?v=1.0">
     
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -380,209 +381,8 @@
                             🛡️ <strong>Zero Defects Guarantee</strong> • 🌱 <strong>Sustainable Farming</strong> • Complete range of Arabica and Robusta coffee with various processing methods from East Africa's finest regions
                         </p>
                     </div>
-                    <div class="product-grid">
-                        <!-- Arabica AA Grade - Washed -->
-                        <div class="product-card" style="display: block !important; visibility: visible !important; opacity: 1 !important;">
-                            <div class="product-image">
-                                <img src="images/coffee_bag_beans.jpeg" alt="Premium Arabica AA Grade Coffee Package">
-                                <div class="product-badge">Premium</div>
-                            </div>
-                            <div class="product-info">
-                                <h4 class="product-name" data-en="Arabica AA Grade - Washed" data-zh="阿拉比卡AA级 - 水洗处理">Arabica AA Grade - Washed</h4>
-                                <p class="product-specs" data-en="Screen 18+, Altitude 1800-2200m, Fully Washed Process" data-zh="筛网18+，海拔1800-2200米，完全水洗处理">Screen 18+, Altitude 1800-2200m, Fully Washed Process</p>
-                                <div class="product-pricing">
-                                    <span class="price" data-currency="USD">$4.50-6.20/kg</span>
-                                    <span class="price-cny" data-currency="CNY" style="display: none;">¥32-44/kg</span>
-                                    <small class="price-note" data-en="FOB Mombasa Port" data-zh="蒙巴萨港FOB">FOB Mombasa Port</small>
-                                </div>
-                                <div class="product-features">
-                                    <span class="feature-tag defect-free">🛡️ Defect-Free</span>
-                                    <span class="feature-tag organic">🌿 100% Organic</span>
-                                    <span class="feature-tag">Fair Trade</span>
-                                    <span class="feature-tag">Specialty Grade</span>
-                                    <span class="feature-tag">Washed Process</span>
-                                </div>
-                                <div class="product-order-section">
-                                    <div class="urgency-alert">
-                                        <div class="urgency-text">🔥 <strong>High Demand:</strong> Only 3 containers left this month</div>
-                                        <div class="urgency-timer">⏰ Prices increase in <span id="priceIncreaseTimer">5 days</span></div>
-                                    </div>
-                                    <button class="order-btn" onclick="openQuoteModal('arabica-aa-washed')" data-en="ORDER NOW - Get Quote" data-zh="立即订购 - 获取报价">
-                                        <i class="fas fa-shopping-cart"></i> ORDER NOW - Get Quote
-                                    </button>
-                                    <div class="quick-contact">
-                                        <a href="tel:+256776701003" class="quick-contact-btn" data-en="📞 Call" data-zh="📞 电话">📞 Call</a>
-                                        <a href="https://wa.me/256776701003" class="quick-contact-btn" target="_blank" data-en="💬 WhatsApp" data-zh="💬 微信">💬 WhatsApp</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Arabica AB Grade - Natural -->
-                        <div class="product-card" style="display: block !important; visibility: visible !important; opacity: 1 !important;">
-                            <div class="product-image">
-                                <img src="images/coffee_bag_beans.jpeg" alt="Arabica AB Grade Natural Process Coffee Package">
-                                <div class="product-badge">Specialty</div>
-                            </div>
-                            <div class="product-info">
-                                <h4 class="product-name" data-en="Arabica AB Grade - Natural" data-zh="阿拉比卡AB级 - 自然处理">Arabica AB Grade - Natural</h4>
-                                <p class="product-specs" data-en="Screen 15-17, Altitude 1600-2000m, Natural Dry Process" data-zh="筛网15-17，海拔1600-2000米，自然干燥处理">Screen 15-17, Altitude 1600-2000m, Natural Dry Process</p>
-                                <div class="product-pricing">
-                                    <span class="price" data-currency="USD">$4.00-5.80/kg</span>
-                                    <span class="price-cny" data-currency="CNY" style="display: none;">¥28-41/kg</span>
-                                    <small class="price-note" data-en="FOB Mombasa Port" data-zh="蒙巴萨港FOB">FOB Mombasa Port</small>
-                                </div>
-                                <div class="product-features">
-                                    <span class="feature-tag defect-free">🛡️ Defect-Free</span>
-                                    <span class="feature-tag organic">🌿 100% Organic</span>
-                                    <span class="feature-tag">Natural Process</span>
-                                    <span class="feature-tag">Fruity Notes</span>
-                                    <span class="feature-tag">Single Origin</span>
-                                </div>
-                                <div class="product-order-section">
-                                    <button class="order-btn" onclick="openQuoteModal('arabica-ab-natural')" data-en="ORDER NOW - Get Quote" data-zh="立即订购 - 获取报价">
-                                        <i class="fas fa-shopping-cart"></i> ORDER NOW - Get Quote
-                                    </button>
-                                    <div class="quick-contact">
-                                        <a href="tel:+256776701003" class="quick-contact-btn" data-en="📞 Call" data-zh="📞 电话">📞 Call</a>
-                                        <a href="https://wa.me/256776701003" class="quick-contact-btn" target="_blank" data-en="💬 WhatsApp" data-zh="💬 微信">💬 WhatsApp</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Arabica - Semi-Washed/Honey Process -->
-                        <div class="product-card" style="display: block !important; visibility: visible !important; opacity: 1 !important;">
-                            <div class="product-image">
-                                <img src="images/coffee_bag_beans.jpeg" alt="Arabica Semi-Washed Honey Process Coffee Package">
-                                <div class="product-badge">Unique</div>
-                            </div>
-                            <div class="product-info">
-                                <h4 class="product-name" data-en="Arabica - Semi-Washed (Honey)" data-zh="阿拉比卡 - 半水洗(蜜处理)">Arabica - Semi-Washed (Honey)</h4>
-                                <p class="product-specs" data-en="Screen 16+, Altitude 1700-2100m, Honey/Pulped Natural Process" data-zh="筛网16+，海拔1700-2100米，蜜处理/去果肉自然处理">Screen 16+, Altitude 1700-2100m, Honey/Pulped Natural Process</p>
-                                <div class="product-pricing">
-                                    <span class="price" data-currency="USD">$4.80-6.50/kg</span>
-                                    <span class="price-cny" data-currency="CNY" style="display: none;">¥34-46/kg</span>
-                                    <small class="price-note" data-en="FOB Mombasa Port" data-zh="蒙巴萨港FOB">FOB Mombasa Port</small>
-                                </div>
-                                <div class="product-features">
-                                    <span class="feature-tag defect-free">🛡️ Defect-Free</span>
-                                    <span class="feature-tag organic">🌿 100% Organic</span>
-                                    <span class="feature-tag">Honey Process</span>
-                                    <span class="feature-tag">Sweet Notes</span>
-                                    <span class="feature-tag">Limited Edition</span>
-                                </div>
-                                <div class="product-order-section">
-                                    <button class="order-btn" onclick="openQuoteModal('arabica-honey-process')" data-en="ORDER NOW - Get Quote" data-zh="立即订购 - 获取报价">
-                                        <i class="fas fa-shopping-cart"></i> ORDER NOW - Get Quote
-                                    </button>
-                                    <div class="quick-contact">
-                                        <a href="tel:+256776701003" class="quick-contact-btn" data-en="📞 Call" data-zh="📞 电话">📞 Call</a>
-                                        <a href="https://wa.me/256776701003" class="quick-contact-btn" target="_blank" data-en="💬 WhatsApp" data-zh="💬 微信">💬 WhatsApp</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Robusta Grade 1 -->
-                        <div class="product-card" style="display: block !important; visibility: visible !important; opacity: 1 !important;">
-                            <div class="product-image">
-                                <img src="images/coffee_bag_beans.jpeg" alt="Premium Robusta Grade 1 Coffee Package">
-                                <div class="product-badge">Strong</div>
-                            </div>
-                            <div class="product-info">
-                                <h4 class="product-name" data-en="Robusta Grade 1 - Washed" data-zh="罗布斯塔1级 - 水洗">Robusta Grade 1 - Washed</h4>
-                                <p class="product-specs" data-en="Screen 18+, 800-1200m Altitude, High Caffeine Content" data-zh="筛网18+，海拔800-1200米，高咖啡因含量">Screen 18+, 800-1200m Altitude, High Caffeine Content</p>
-                                <div class="product-pricing">
-                                    <span class="price" data-currency="USD">$2.80-4.20/kg</span>
-                                    <span class="price-cny" data-currency="CNY" style="display: none;">¥20-30/kg</span>
-                                    <small class="price-note" data-en="FOB Mombasa Port" data-zh="蒙巴萨港FOB">FOB Mombasa Port</small>
-                                </div>
-                                <div class="product-features">
-                                    <span class="feature-tag defect-free">🛡️ Defect-Free</span>
-                                    <span class="feature-tag organic">🌿 100% Organic</span>
-                                    <span class="feature-tag">High Caffeine</span>
-                                    <span class="feature-tag">Strong Body</span>
-                                    <span class="feature-tag">Commercial Grade</span>
-                                </div>
-                                <div class="product-order-section">
-                                    <button class="order-btn" onclick="openQuoteModal('robusta-grade1')" data-en="ORDER NOW - Get Quote" data-zh="立即订购 - 获取报价">
-                                        <i class="fas fa-shopping-cart"></i> ORDER NOW - Get Quote
-                                    </button>
-                                    <div class="quick-contact">
-                                        <a href="tel:+256776701003" class="quick-contact-btn" data-en="📞 Call" data-zh="📞 电话">📞 Call</a>
-                                        <a href="https://wa.me/256776701003" class="quick-contact-btn" target="_blank" data-en="💬 WhatsApp" data-zh="💬 微信">💬 WhatsApp</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Specialty Microlot -->
-                        <div class="product-card" style="display: block !important; visibility: visible !important; opacity: 1 !important;">
-                            <div class="product-image">
-                                <img src="images/coffee_bag_beans.jpeg" alt="Specialty Microlot Coffee Package">
-                                <div class="product-badge">Exclusive</div>
-                            </div>
-                            <div class="product-info">
-                                <h4 class="product-name" data-en="Specialty Microlot - Competition Grade" data-zh="特色微批次 - 竞赛级">Specialty Microlot - Competition Grade</h4>
-                                <p class="product-specs" data-en="Single Farm, 2000m+ Altitude, Cup Score 85+" data-zh="单一农场，海拔2000米+，杯测分数85+">Single Farm, 2000m+ Altitude, Cup Score 85+</p>
-                                <div class="product-pricing">
-                                    <span class="price" data-currency="USD">$8.50-12.00/kg</span>
-                                    <span class="price-cny" data-currency="CNY" style="display: none;">¥60-85/kg</span>
-                                    <small class="price-note" data-en="FOB Mombasa Port" data-zh="蒙巴萨港FOB">FOB Mombasa Port</small>
-                                </div>
-                                <div class="product-features">
-                                    <span class="feature-tag defect-free">🛡️ Defect-Free</span>
-                                    <span class="feature-tag organic">🌿 100% Organic</span>
-                                    <span class="feature-tag">85+ Cup Score</span>
-                                    <span class="feature-tag">Single Farm</span>
-                                    <span class="feature-tag">Traceable</span>
-                                </div>
-                                <div class="product-order-section">
-                                    <button class="order-btn" onclick="openQuoteModal('specialty-microlot')" data-en="ORDER NOW - Get Quote" data-zh="立即订购 - 获取报价">
-                                        <i class="fas fa-shopping-cart"></i> ORDER NOW - Get Quote
-                                    </button>
-                                    <div class="quick-contact">
-                                        <a href="tel:+256776701003" class="quick-contact-btn" data-en="📞 Call" data-zh="📞 电话">📞 Call</a>
-                                        <a href="https://wa.me/256776701003" class="quick-contact-btn" target="_blank" data-en="💬 WhatsApp" data-zh="💬 微信">💬 WhatsApp</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Commercial Blend -->
-                        <div class="product-card" style="display: block !important; visibility: visible !important; opacity: 1 !important;">
-                            <div class="product-image">
-                                <img src="images/coffee_bag_beans.jpeg" alt="Commercial Grade Coffee Blend Package">
-                                <div class="product-badge">Bulk</div>
-                            </div>
-                            <div class="product-info">
-                                <h4 class="product-name" data-en="Commercial Blend - Bulk Export" data-zh="商业拼配 - 散装出口">Commercial Blend - Bulk Export</h4>
-                                <p class="product-specs" data-en="Screen 15-17, Mixed Origins, Consistent Quality" data-zh="筛网15-17，混合产地，稳定品质">Screen 15-17, Mixed Origins, Consistent Quality</p>
-                                <div class="product-pricing">
-                                    <span class="price" data-currency="USD">$3.20-4.80/kg</span>
-                                    <span class="price-cny" data-currency="CNY" style="display: none;">¥23-34/kg</span>
-                                    <small class="price-note" data-en="FOB Mombasa Port" data-zh="蒙巴萨港FOB">FOB Mombasa Port</small>
-                                </div>
-                                <div class="product-features">
-                                    <span class="feature-tag defect-free">🛡️ Defect-Free</span>
-                                    <span class="feature-tag organic">🌿 100% Organic</span>
-                                    <span class="feature-tag">Bulk Orders</span>
-                                    <span class="feature-tag">Cost Effective</span>
-                                    <span class="feature-tag">Fast Delivery</span>
-                                </div>
-                                <div class="product-order-section">
-                                    <button class="order-btn" onclick="openQuoteModal('commercial-blend')" data-en="ORDER NOW - Get Quote" data-zh="立即订购 - 获取报价">
-                                        <i class="fas fa-shopping-cart"></i> ORDER NOW - Get Quote
-                                    </button>
-                                    <div class="quick-contact">
-                                        <a href="tel:+256776701003" class="quick-contact-btn" data-en="📞 Call" data-zh="📞 电话">📞 Call</a>
-                                        <a href="https://wa.me/256776701003" class="quick-contact-btn" target="_blank" data-en="💬 WhatsApp" data-zh="💬 微信">💬 WhatsApp</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <!-- Products loaded dynamically from database via dynamic-products.js -->
+                    <div class="product-grid"></div>
                 </div>
 
 
@@ -1201,7 +1001,7 @@
     <!-- <script src="js/instant-communication.js"></script> -->
     <!-- Urgency & Scarcity Module -->
     <!-- Advanced Urgency & Scarcity Features (DISABLED - Using Enhanced Version) -->
-    <!-- <script src="js/urgency-scarcity.js"></script> -->
+    <script src="js/urgency-scarcity.js"></script>
     <!-- Advanced Testimonials & Social Proof Module (DISABLED - Using Enhanced Version) -->
     <!-- <script src="js/testimonials.js"></script> -->
     
@@ -1210,6 +1010,9 @@
     
     <!-- Section Manager - Enable/Disable Sections -->
     <script src="js/section-manager.js"></script>
+    
+    <!-- Professional B2B Quotation Modal -->
+    <script src="js/quotation-modal.js"></script>
     
     <!-- ENHANCED FEATURES -->
     <script src="js/simple-features.js"></script>
@@ -1223,7 +1026,9 @@
     <script src="js/dynamic-content.js"></script>
     <!-- Section Visibility Manager -->
     <script src="js/section-manager.js"></script>
-
+    
+    <!-- Dynamic Products from Database -->
+    <script src="js/dynamic-products.js"></script>
     
     <!-- Enhanced Navigation -->
     <script src="js/navigation.js"></script>

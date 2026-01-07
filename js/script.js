@@ -1096,7 +1096,25 @@ setInterval(() => {
 }, 300000); // Update every 5 minutes
 
 // Product Order Modal Functions
+// DEPRECATED: Old function - now redirects to new modal system
 function openQuoteModal(productType) {
+    console.log('🔄 Redirecting to new database quotation modal system...');
+    
+    // Check if database modal function exists (from dynamic-products.js)
+    if (typeof window.openDatabaseQuotationModal === 'function') {
+        window.openDatabaseQuotationModal(productType);
+        return;
+    }
+    
+    // Check if new modal function exists (for hardcoded products)
+    if (typeof openQuotationModal === 'function') {
+        openQuotationModal(productType);
+        return;
+    }
+    
+    // Fallback to old behavior if new modal not loaded
+    console.warn('⚠️ New modal not available, using fallback...');
+    
     // Product mapping for dropdown selection and display names
     const productNames = {
         'arabica-aa-washed': 'Arabica AA Grade - Washed Coffee',

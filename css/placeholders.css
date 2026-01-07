@@ -787,6 +787,11 @@ body.urgency-banner-active .navbar {
     width: 90%;
     overflow: hidden;
     animation: scaleIn 0.3s ease;
+    /* Fix blurry text rendering */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    transform: translateZ(0);
+    backface-visibility: hidden;
 }
 
 .exit-header {
@@ -801,6 +806,10 @@ body.urgency-banner-active .navbar {
     margin: 0;
     font-size: 24px;
     font-weight: 700;
+    /* Ensure crisp text */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
 }
 
 .exit-close {

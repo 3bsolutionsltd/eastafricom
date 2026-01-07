@@ -29,7 +29,7 @@ class DynamicContentManager {
         try {
             // Load all dynamic content in parallel
             await Promise.all([
-                this.loadProducts(),
+                // this.loadProducts(), // DISABLED: Now using dynamic-products.js instead
                 this.loadTestimonials(),
                 this.loadLiveActivity(),
                 this.loadSettings(),
@@ -606,7 +606,8 @@ class DynamicContentManager {
     async refresh(type = 'all') {
         switch (type) {
             case 'products':
-                await this.loadProducts();
+                // await this.loadProducts(); // DISABLED: Using dynamic-products.js instead
+                console.log('Product refresh disabled - using dynamic-products.js');
                 break;
             case 'testimonials':
                 await this.loadTestimonials();
