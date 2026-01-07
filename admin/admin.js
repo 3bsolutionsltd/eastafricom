@@ -69,7 +69,7 @@ class AdminDashboard {
                 this.fetchData('testimonials.php'),
                 this.fetchData('live-activity.php'),
                 this.fetchData('settings.php'),
-                this.fetchData('slideshow.php'),
+                this.fetchData('slideshow.php?admin=true'),
                 this.fetchData('awards.php'),
                 this.fetchData('certifications.php'),
                 this.fetchData('quality-badges.php')
@@ -451,6 +451,7 @@ class AdminDashboard {
                     <thead class="bg-gray-50">
                         <tr>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Position</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Preview</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Chapter</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
@@ -462,6 +463,16 @@ class AdminDashboard {
                             <tr>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-blue-100 text-blue-800 font-semibold">${slide.position}</span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center">
+                                        ${slide.image_url ? 
+                                            `<img src="../${slide.image_url}" alt="${slide.title_en}" class="w-24 h-16 object-cover rounded border border-gray-300" onerror="this.src='../images/coffee_bag_beans.jpg'">` : 
+                                            `<div class="w-24 h-16 bg-gray-200 rounded flex items-center justify-center">
+                                                <i class="fas fa-image text-gray-400"></i>
+                                            </div>`
+                                        }
+                                    </div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${slide.chapter}</td>
                                 <td class="px-6 py-4">
@@ -1349,7 +1360,7 @@ async function openSlideshowModal(slide = null) {
     }
 }
 
-function handleSlideImageUpload(event) {
+async function handleSlideImageUpload(event) {
     const file = event.target.files[0];
     if (!file) return;
     
@@ -1365,9 +1376,9 @@ function handleSlideImageUpload(event) {
         return;
     }
     
-    // Show preview
+    // Show preview first
     const reader = new FileReader();
-    reader.onload = function(e) {
+    reader.onload = async function(e) {
         const preview = document.getElementById('image-preview');
         const container = document.getElementById('image-preview-container');
         const info = document.getElementById('image-info');
@@ -1375,7 +1386,7 @@ function handleSlideImageUpload(event) {
         
         // Create image to check dimensions
         const img = new Image();
-        img.onload = function() {
+        img.onload = async function() {
             preview.src = e.target.result;
             container.classList.remove('hidden');
             
@@ -1392,13 +1403,34 @@ function handleSlideImageUpload(event) {
                 info.classList.add('text-green-600');
             }
             
-            // Save to images folder (in production, this should upload to server)
-            const imagePath = 'images/slideshow/' + file.name;
-            imageInput.value = imagePath;
-            
-            // Note: In production, implement actual file upload to server here
-            console.log('Image selected:', file.name, `(${img.width}x${img.height})`);
-            console.log('⚠️ Remember to manually copy image to:', imagePath);
+            // Upload image to server
+            info.textContent += ' • Uploading...';
+            try {
+                const formData = new FormData();
+                formData.append('image', file);
+                
+                const response = await fetch(`${admin.apiBase}/slideshow-image.php`, {
+                    method: 'POST',
+                    credentials: 'same-origin',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    imageInput.value = result.image_url;
+                    info.textContent = `📏 ${img.width}x${img.height}px • ${sizeKB}KB • ✅ Uploaded!`;
+                    info.classList.add('text-green-600');
+                    console.log('✅ Image uploaded:', result.image_url);
+                } else {
+                    throw new Error(result.error || 'Upload failed');
+                }
+            } catch (error) {
+                console.error('Upload error:', error);
+                info.textContent = `❌ Upload failed: ${error.message}`;
+                info.classList.add('text-red-600');
+                alert('❌ Failed to upload image: ' + error.message);
+            }
         };
         img.src = e.target.result;
     };
@@ -1422,11 +1454,31 @@ async function saveSlide(slideId) {
         active: document.getElementById('slide-active').checked ? 1 : 0
     };
     
-    admin.showNotification(`Slide ${slideId ? 'updated' : 'added'} successfully! (Database setup required)`, 'success');
-    closeModal();
-    
-    // Note: Actual API endpoint would need to be created for POST/PUT operations
-    console.log('Slide data to save:', slideData);
+    try {
+        const method = slideId ? 'PUT' : 'POST';
+        const response = await fetch(`${admin.apiBase}/slideshow.php`, {
+            method: method,
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'same-origin',
+            body: JSON.stringify(slideData)
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            admin.showNotification(`Slide ${slideId ? 'updated' : 'added'} successfully!`, 'success');
+            closeModal();
+            await admin.loadDashboardData();
+            admin.renderSlideshowTable();
+        } else {
+            throw new Error(result.error || result.message || 'Failed to save slide');
+        }
+    } catch (error) {
+        console.error('Error saving slide:', error);
+        admin.showNotification('Error: ' + error.message, 'error');
+    }
 }
 
 // Awards Management Functions

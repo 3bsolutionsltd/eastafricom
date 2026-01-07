@@ -14,17 +14,23 @@ class SimpleHeroSlideshow {
     
     async loadSlideshow() {
         try {
+            console.log('🎬 Loading slideshow from API...');
             const response = await fetch('backend/api/slideshow.php');
             const result = await response.json();
             
-            if (result.success && result.data.slides.length > 0) {
+            console.log('📊 Slideshow API response:', result);
+            
+            if (result.success && result.data.slides && result.data.slides.length > 0) {
+                console.log(`✅ Loaded ${result.data.slides.length} slides from database`);
                 this.slidesData = result.data.slides;
                 this.buildSlideshow();
                 this.init();
             } else {
+                console.warn('⚠️ No slides in database, using fallback');
                 this.useFallbackSlides();
             }
         } catch (error) {
+            console.error('❌ Slideshow API error:', error);
             this.useFallbackSlides();
         }
     }

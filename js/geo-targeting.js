@@ -35,16 +35,38 @@ class GeoTargeting {
                 };
                 this.userCountry = mockCountry;
             } else {
-                // Use ip-api.com with HTTPS for CSP compliance
-                const response = await fetch('https://ipapi.co/json/');
-                const fallbackData = await response.json();
-                data = {
-                    country_code: fallbackData.countryCode,
-                    country_name: fallbackData.country,
-                    city: fallbackData.city,
-                    region: fallbackData.region
-                };
-                this.userCountry = data.country_code;
+                // Use ip-api.com (free, CORS-enabled API)
+                try {
+                    const response = await fetch('https://ip-api.com/json/', {
+                        method: 'GET',
+                        headers: {
+                            'Accept': 'application/json'
+                        }
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error('IP API request failed');
+                    }
+                    
+                    const apiData = await response.json();
+                    
+                    if (apiData.status === 'success') {
+                        data = {
+                            country_code: apiData.countryCode,
+                            country_name: apiData.country,
+                            city: apiData.city,
+                            region: apiData.regionName
+                        };
+                        this.userCountry = data.country_code;
+                    } else {
+                        throw new Error('IP API returned error status');
+                    }
+                } catch (apiError) {
+                    console.warn('Geo-targeting API unavailable, using default settings:', apiError.message);
+                    // Fallback to international without error
+                    this.fallbackToInternational();
+                    return;
+                }
             }
             
             // Check if user is from China, Hong Kong, or Macau
@@ -64,6 +86,7 @@ class GeoTargeting {
             }));
             
         } catch (error) {
+            console.warn('Geo-targeting failed, using default settings:', error.message);
             this.fallbackToInternational();
         }
     }
