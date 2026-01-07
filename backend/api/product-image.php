@@ -1,15 +1,18 @@
 <?php
 /**
  * Product Image Upload API
- * Handle product image uploads
+ * Handle product image uploads (Admin only)
  */
 
-header('Content-Type: application/json');
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: POST, DELETE');
-header('Access-Control-Allow-Headers: Content-Type');
-
+// Include database configuration
 require_once '../config/database.php';
+
+// Require authentication for all methods
+require_once __DIR__ . '/../auth/middleware.php';
+requireAuth();
+
+// Set CORS headers
+setCORSHeaders();
 
 // Handle OPTIONS request
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {

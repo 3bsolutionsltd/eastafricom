@@ -53,6 +53,14 @@ function createProductCard(product) {
     // Create product slug for quotation modal
     const productSlug = createProductSlug(product.name, product.id);
     
+    // Safely get prices with fallbacks
+    const priceMin = product.price_min || product.price || product.basePrice || 4.5;
+    const priceMax = product.price_max || (priceMin * 1.3) || 6.5;
+    
+    // Format prices to 2 decimal places
+    const formattedPriceMin = parseFloat(priceMin).toFixed(2);
+    const formattedPriceMax = parseFloat(priceMax).toFixed(2);
+    
     card.innerHTML = `
         <div class="product-image">
             <img src="${product.image || 'images/coffee_bag_beans.jpeg'}" alt="${product.name}">
@@ -62,7 +70,7 @@ function createProductCard(product) {
             <h4 class="product-name">${product.name}</h4>
             <p class="product-specs">${product.description || product.specifications || ''}</p>
             <div class="product-pricing">
-                <span class="price" data-currency="USD">$${product.price_min}-${product.price_max}/kg</span>
+                <span class="price" data-currency="USD">$${formattedPriceMin}-${formattedPriceMax}/kg</span>
                 <small class="price-note">FOB Mombasa Port</small>
             </div>
             <div class="product-features">
@@ -176,18 +184,22 @@ function openDatabaseQuotationModal(productId) {
 
 // Open quotation modal with full product data
 function openQuotationModalWithProduct(product) {
+    // Safely get price with fallback
+    const priceMin = parseFloat(product.price_min || product.price || product.basePrice || 4.5);
+    const basePrice = isNaN(priceMin) ? 4500 : priceMin * 1000; // Convert kg to MT
+    
     // Create a quotation-compatible product object
     const quotationProduct = {
         id: product.id,
         name: product.name,
         category: product.category,
-        basePrice: parseFloat(product.price_min) * 1000, // Convert kg to MT
+        basePrice: basePrice,
         minOrder: 1,
         tiers: [
-            { min: 1, max: 19, price: parseFloat(product.price_min) * 1000 },
-            { min: 20, max: 49, price: parseFloat(product.price_min) * 950 },
-            { min: 50, max: 99, price: parseFloat(product.price_min) * 900 },
-            { min: 100, max: Infinity, price: parseFloat(product.price_min) * 850 }
+            { min: 1, max: 19, price: basePrice },
+            { min: 20, max: 49, price: basePrice * 0.95 },
+            { min: 50, max: 99, price: basePrice * 0.90 },
+            { min: 100, max: Infinity, price: basePrice * 0.85 }
         ],
         certifications: product.certifications ? 
             (Array.isArray(product.certifications) ? product.certifications : product.certifications.split(',').map(c => c.trim())) : 

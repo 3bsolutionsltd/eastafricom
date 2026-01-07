@@ -642,6 +642,7 @@ class AdminDashboard {
                 headers: {
                     'Content-Type': 'application/json',
                 },
+                credentials: 'same-origin',
                 body: JSON.stringify(formData)
             });
 
@@ -836,6 +837,7 @@ async function saveProduct(event) {
         const response = await fetch(`${admin.apiBase}/products.php`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
+            credentials: 'same-origin',
             body: JSON.stringify(data)
         });
         
@@ -1012,6 +1014,7 @@ async function saveProductChanges(productId) {
             headers: {
                 'Content-Type': 'application/json',
             },
+            credentials: 'same-origin',
             body: JSON.stringify(updateData)
         });
 
@@ -1058,6 +1061,7 @@ async function deleteProductConfirmed(productId) {
             headers: {
                 'Content-Type': 'application/json',
             },
+            credentials: 'same-origin',
             body: JSON.stringify({ id: productId })
         });
 
@@ -1193,6 +1197,7 @@ async function saveNewProduct() {
             headers: {
                 'Content-Type': 'application/json',
             },
+            credentials: 'same-origin',
             body: JSON.stringify(productData)
         });
 
@@ -1634,6 +1639,7 @@ async function saveCertification(certId) {
             headers: {
                 'Content-Type': 'application/json'
             },
+            credentials: 'same-origin',
             body: JSON.stringify(certData)
         });
         
@@ -1660,7 +1666,8 @@ async function deleteCertification(certId) {
     
     try {
         const response = await fetch(`${admin.apiBase}/certifications.php?id=${certId}`, {
-            method: 'DELETE'
+            method: 'DELETE',
+            credentials: 'same-origin'
         });
         
         const result = await response.json();
@@ -1744,6 +1751,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     headers: {
                         'Content-Type': 'application/json'
                     },
+                    credentials: 'same-origin',
                     body: JSON.stringify(contactData)
                 });
                 
@@ -1849,7 +1857,8 @@ function openImageUploadModal(productId, productName) {
         try {
             const response = await fetch(`${admin.apiBase}/product-image.php`, {
                 method: 'POST',
-                body: formData
+                body: formData,
+                credentials: 'same-origin'
             });
             
             const result = await response.json();
@@ -1880,6 +1889,7 @@ async function deleteProductImage(productId) {
             headers: {
                 'Content-Type': 'application/json'
             },
+            credentials: 'same-origin',
             body: JSON.stringify({ product_id: productId })
         });
         
