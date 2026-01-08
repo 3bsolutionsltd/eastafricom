@@ -86,6 +86,13 @@ function handleGetSlides($pdo) {
  */
 function handleCreateSlide($pdo) {
     try {
+        // Check if table exists first
+        $tableCheck = $pdo->query("SHOW TABLES LIKE 'slideshow_slides'");
+        if ($tableCheck->rowCount() === 0) {
+            errorResponse('Slideshow table not found. Please create the table first.');
+            return;
+        }
+        
         $input = json_decode(file_get_contents('php://input'), true);
         
         $required = ['chapter', 'title_en', 'title_zh', 'subtitle_en', 'subtitle_zh'];
@@ -135,6 +142,13 @@ function handleCreateSlide($pdo) {
  */
 function handleUpdateSlide($pdo) {
     try {
+        // Check if table exists first
+        $tableCheck = $pdo->query("SHOW TABLES LIKE 'slideshow_slides'");
+        if ($tableCheck->rowCount() === 0) {
+            errorResponse('Slideshow table not found. Please create the table first.');
+            return;
+        }
+        
         $input = json_decode(file_get_contents('php://input'), true);
         
         if (!isset($input['id'])) {
