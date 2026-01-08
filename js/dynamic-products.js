@@ -6,7 +6,14 @@
 // Load products from backend
 async function loadProducts() {
     try {
-        const response = await fetch('backend/api/products.php');
+        // Add cache-busting timestamp
+        const timestamp = new Date().getTime();
+        const response = await fetch(`backend/api/products.php?_t=${timestamp}`, {
+            cache: 'no-store',
+            headers: {
+                'Cache-Control': 'no-cache'
+            }
+        });
         const data = await response.json();
         
         // Extract products from the API response structure

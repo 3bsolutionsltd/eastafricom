@@ -64,8 +64,8 @@ function handleGetTestimonials($db) {
         $featured = $_GET['featured'] ?? null;
         $limit = $_GET['limit'] ?? 10;
         
-        // Build query
-        $sql = "SELECT * FROM testimonials WHERE active = TRUE";
+        // Build query - use active = 1 for MySQL compatibility
+        $sql = "SELECT * FROM testimonials WHERE active = 1";
         $params = [];
         
         if ($featured !== null) {
