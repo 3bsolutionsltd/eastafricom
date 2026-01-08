@@ -84,6 +84,11 @@ class AdminDashboard {
             this.data.certifications = certifications?.data?.certifications || [];
             this.data.qualityBadges = qualityBadges?.data?.badges || [];
 
+            // Debug: Log product status
+            const activeCount = this.data.products.filter(p => p.active).length;
+            const inactiveCount = this.data.products.filter(p => !p.active).length;
+            console.log(`📊 Products loaded: ${activeCount} active, ${inactiveCount} inactive`);
+
             this.updateDashboard();
             
         } catch (error) {
