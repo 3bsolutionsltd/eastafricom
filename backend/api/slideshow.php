@@ -179,11 +179,21 @@ function handleUpdateSlide($pdo) {
         $stmt = $pdo->prepare($sql);
         $stmt->execute($params);
         
+        // Check if slide exists even if no changes were made
         if ($stmt->rowCount() === 0) {
-            errorResponse('Slide not found or no changes made', 404);
+            // Verify the slide exists
+            $checkStmt = $pdo->prepare("SELECT id FROM slideshow_slides WHERE id = :id");
+            $checkStmt->execute([':id' => $input['id']]);
+            
+            if ($checkStmt->rowCount() === 0) {
+                errorResponse('Slide not found', 404);
+            } else {
+                // Slide exists but no changes were made - still success
+                successResponse(['message' => 'Slide updated successfully (no changes detected)']);
+            }
+        } else {
+            successResponse(['message' => 'Slide updated successfully']);
         }
-        
-        successResponse(['message' => 'Slide updated successfully']);
         
     } catch (PDOException $e) {
         errorResponse('Failed to update slide: ' . $e->getMessage());
