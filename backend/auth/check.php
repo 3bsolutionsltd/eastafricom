@@ -6,20 +6,28 @@
 
 header('Content-Type: application/json');
 
-require_once __DIR__ . '/auth.php';
+try {
+    require_once __DIR__ . '/auth.php';
 
-$auth = new Auth();
+    $auth = new Auth();
 
-if ($auth->isAuthenticated()) {
-    $user = $auth->getCurrentUser();
-    echo json_encode([
-        'authenticated' => true,
-        'user' => $user
-    ]);
-} else {
-    http_response_code(401);
+    if ($auth->isAuthenticated()) {
+        $user = $auth->getCurrentUser();
+        echo json_encode([
+            'authenticated' => true,
+            'user' => $user
+        ]);
+    } else {
+        http_response_code(401);
+        echo json_encode([
+            'authenticated' => false,
+            'message' => 'Not authenticated'
+        ]);
+    }
+} catch (Exception $e) {
+    http_response_code(500);
     echo json_encode([
         'authenticated' => false,
-        'message' => 'Not authenticated'
+        'error' => 'Auth system error: ' . $e->getMessage()
     ]);
 }
