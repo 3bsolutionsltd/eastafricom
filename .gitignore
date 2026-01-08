@@ -25,9 +25,10 @@ Thumbs.db
 *~
 *.bak
 
-# Test files
+# Test files  
+# Note: Diagnostic files like direct-api-test.php are NOT ignored
 test-*.html
-*-test.php
+# *-test.php  (commented out to allow diagnostic files)
 *-test.js
 api-diagnostics.php
 test-connection.php
