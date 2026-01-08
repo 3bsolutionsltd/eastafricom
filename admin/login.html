@@ -282,7 +282,7 @@
                 if (data.success) {
                     showAlert('Login successful! Redirecting...', 'success');
                     setTimeout(() => {
-                        window.location.href = 'index.html';
+                        window.location.href = 'index.php';
                     }, 500);
                 } else {
                     showAlert(data.message || 'Login failed', 'error');
@@ -302,7 +302,7 @@
                 const data = await response.json();
                 
                 if (data.authenticated) {
-                    window.location.href = 'index.html';
+                    window.location.href = 'index.php';
                 }
             } catch (error) {
                 console.error('Auth check error:', error);
