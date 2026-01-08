@@ -72,10 +72,37 @@ class DynamicContentManager {
                 const response = await fetch(`${this.apiBaseUrl}/${endpoint}`);
                 
                 if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    // Try to get error message from response
+                    let errorMessage = `HTTP ${response.status}: ${response.statusText}`;
+                    let errorDetails = null;
+                    try {
+                        const errorData = await response.json();
+                        errorDetails = errorData;
+                        if (errorData.message) {
+                            errorMessage += ` - ${errorData.message}`;
+                        }
+                    } catch (e) {
+                        // Try to get text response
+                        try {
+                            const text = await response.text();
+                            if (text && text.length < 200) {
+                                errorMessage += ` - ${text}`;
+                            }
+                        } catch (textError) {
+                            // Response is not readable
+                        }
+                    }
+                    console.error(`API Error for ${endpoint}:`, errorMessage);
+                    if (errorDetails) console.error('Error details:', errorDetails);
+                    throw new Error(errorMessage);
                 }
                 
                 const data = await response.json();
+                
+                // Check if response indicates success
+                if (data.success === false) {
+                    throw new Error(data.message || 'API returned unsuccessful response');
+                }
                 
                 // Cache successful response
                 this.cache.set(cacheKey, {
@@ -86,9 +113,12 @@ class DynamicContentManager {
                 return data;
                 
             } catch (error) {
+                console.error(`Fetch attempt ${attempt}/${this.retryAttempts} failed for ${endpoint}:`, error.message);
+                
                 if (attempt === this.retryAttempts) {
                     // On final failure, return cached data if available
                     if (cached && cached.data) {
+                        console.warn(`Using cached data for ${endpoint} after fetch failure`);
                         return cached.data;
                     }
                     throw error;
@@ -131,7 +161,9 @@ class DynamicContentManager {
      */
     async loadTestimonials() {
         try {
-            const data = await this.fetchWithCache('testimonials.php?featured=true&limit=10');
+            // Add timestamp to bypass cache
+            const timestamp = new Date().getTime();
+            const data = await this.fetchWithCache(`testimonials.php?featured=true&limit=10&t=${timestamp}`, false);
             
             if (data && data.data && data.data.testimonials) {
                 this.updateTestimonialsCarousel(data.data.testimonials);

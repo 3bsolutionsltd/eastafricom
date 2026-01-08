@@ -7,19 +7,32 @@
 // Include database configuration
 require_once '../config/database.php';
 
+// Set CORS headers first
+setCORSHeaders();
+
 // Check if this is a mutation request (POST, PUT, DELETE) and require auth
 $isMutation = in_array($_SERVER['REQUEST_METHOD'], ['POST', 'PUT', 'DELETE']);
 if ($isMutation) {
-    require_once __DIR__ . '/../auth/middleware.php';
-    requireAuth();
+    if (file_exists(__DIR__ . '/../auth/middleware.php')) {
+        require_once __DIR__ . '/../auth/middleware.php';
+        requireAuth();
+    } else {
+        http_response_code(503);
+        echo json_encode([
+            'success' => false,
+            'message' => 'Authentication system not available'
+        ]);
+        exit;
+    }
 }
-
-// Set CORS headers
-setCORSHeaders();
 
 try {
     // Get database connection
     $db = getDB();
+    
+    if (!$db) {
+        throw new Exception('Database connection failed');
+    }
     
     // Handle different HTTP methods
     switch ($_SERVER['REQUEST_METHOD']) {

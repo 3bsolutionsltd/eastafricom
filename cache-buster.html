@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔥 Cache Buster</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 800px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        h1 {
+            color: #f5576c;
+            margin-bottom: 10px;
+            font-size: 2.5rem;
+        }
+        
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+        }
+        
+        .alert {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        
+        .alert strong {
+            color: #856404;
+        }
+        
+        .steps {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .step {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: start;
+        }
+        
+        .step-number {
+            background: #f5576c;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+        
+        .step-content {
+            flex: 1;
+        }
+        
+        .step-title {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        
+        .step-desc {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+        
+        button {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(245, 87, 108, 0.3);
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(245, 87, 108, 0.4);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        button.secondary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .result {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 10px;
+            display: none;
+        }
+        
+        .result.success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            display: block;
+        }
+        
+        .result.error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            display: block;
+        }
+        
+        .result.info {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            display: block;
+        }
+        
+        code {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+        
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            overflow-x: auto;
+            margin: 10px 0;
+        }
+        
+        .keyboard-shortcut {
+            display: inline-block;
+            background: #fff;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            padding: 2px 8px;
+            font-family: monospace;
+            font-size: 0.85rem;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔥 Cache Buster</h1>
+        <p class="subtitle">Clear all caches and force fresh content</p>
+        
+        <div class="alert">
+            <strong>⚠️ Cache Issue Detected!</strong><br>
+            Your browser or CDN is serving old cached files. Follow these steps to clear everything.
+        </div>
+        
+        <div class="steps">
+            <h3 style="margin-bottom: 15px; color: #333;">Manual Cache Clearing Steps:</h3>
+            
+            <div class="step">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <div class="step-title">Open Developer Tools</div>
+                    <div class="step-desc">
+                        Press <span class="keyboard-shortcut">F12</span> or 
+                        <span class="keyboard-shortcut">Ctrl+Shift+I</span> (Windows/Linux) or 
+                        <span class="keyboard-shortcut">Cmd+Option+I</span> (Mac)
+                    </div>
+                </div>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <div class="step-title">Hard Refresh</div>
+                    <div class="step-desc">
+                        <strong>Chrome/Edge:</strong> <span class="keyboard-shortcut">Ctrl+Shift+R</span> or <span class="keyboard-shortcut">Ctrl+F5</span><br>
+                        <strong>Firefox:</strong> <span class="keyboard-shortcut">Ctrl+Shift+R</span> or <span class="keyboard-shortcut">Ctrl+F5</span><br>
+                        <strong>Safari:</strong> <span class="keyboard-shortcut">Cmd+Option+R</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <div class="step-title">Clear Site Data (Recommended)</div>
+                    <div class="step-desc">
+                        In DevTools, go to <strong>Application</strong> tab → <strong>Storage</strong> → 
+                        Click <strong>"Clear site data"</strong> button
+                    </div>
+                </div>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">4</div>
+                <div class="step-content">
+                    <div class="step-title">Disable Cache (While DevTools is Open)</div>
+                    <div class="step-desc">
+                        In DevTools, go to <strong>Network</strong> tab → 
+                        Check <strong>"Disable cache"</strong> checkbox
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <h3 style="margin-bottom: 15px; color: #333;">Quick Actions:</h3>
+        
+        <div class="button-group">
+            <button onclick="testAPI()">Test API Now</button>
+            <button onclick="clearLocalCache()" class="secondary">Clear Local Storage</button>
+            <button onclick="showCacheInfo()" class="secondary">Show Cache Info</button>
+        </div>
+        
+        <div id="result" class="result"></div>
+        
+        <div class="steps" style="margin-top: 30px;">
+            <h3 style="margin-bottom: 15px; color: #333;">For Production (live.eastafricom.com):</h3>
+            
+            <div class="step">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <div class="step-title">Upload Updated Files</div>
+                    <div class="step-desc">
+                        Make sure these files are uploaded to production:<br>
+                        • <code>backend/api/testimonials.php</code><br>
+                        • <code>backend/config/database.php</code><br>
+                        • <code>js/dynamic-content.js</code>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <div class="step-title">Check Database Table</div>
+                    <div class="step-desc">
+                        Verify testimonials table exists:<br>
+                        <div class="code-block">SHOW TABLES LIKE 'testimonials';</div>
+                        If missing, run: <code>backend/database/create-testimonials-table.sql</code>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <div class="step-title">Test Production API</div>
+                    <div class="step-desc">
+                        Open in new tab:<br>
+                        <code>https://live.eastafricom.com/backend/api/diagnostics.php</code>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">4</div>
+                <div class="step-content">
+                    <div class="step-title">Clear CDN Cache (If Applicable)</div>
+                    <div class="step-desc">
+                        If using Cloudflare or other CDN:<br>
+                        • Log into CDN dashboard<br>
+                        • Purge all cache or specific URLs<br>
+                        • Wait 2-3 minutes for propagation
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function testAPI() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.className = 'result info';
+            resultDiv.innerHTML = '🔄 Testing API with cache-busting timestamp...';
+            
+            try {
+                // Add timestamp to bypass cache
+                const timestamp = new Date().getTime();
+                const url = `/backend/api/testimonials.php?featured=true&limit=10&t=${timestamp}`;
+                
+                console.log('Testing URL:', url);
+                
+                const response = await fetch(url);
+                const contentType = response.headers.get('content-type');
+                
+                let data;
+                let errorText = '';
+                
+                if (contentType && contentType.includes('application/json')) {
+                    data = await response.json();
+                } else {
+                    errorText = await response.text();
+                }
+                
+                if (response.ok && data && data.success) {
+                    resultDiv.className = 'result success';
+                    resultDiv.innerHTML = `
+                        <strong>✅ SUCCESS!</strong><br>
+                        Status: ${response.status} ${response.statusText}<br>
+                        Testimonials loaded: ${data.data?.count || 0}<br>
+                        Environment: ${data.environment || 'unknown'}<br>
+                        <br>
+                        <strong>Cache is now cleared! Refresh your main page.</strong>
+                    `;
+                } else {
+                    resultDiv.className = 'result error';
+                    let errorMsg = errorText || data?.message || 'Unknown error';
+                    resultDiv.innerHTML = `
+                        <strong>❌ ERROR</strong><br>
+                        Status: ${response.status} ${response.statusText}<br>
+                        Error: ${errorMsg}<br>
+                        <br>
+                        <strong>Possible Issues:</strong><br>
+                        1. Files not deployed to production yet<br>
+                        2. Database table doesn't exist<br>
+                        3. Database connection issue<br>
+                        4. PHP syntax error in testimonials.php<br>
+                        <br>
+                        <strong>Check:</strong> <code>/backend/api/diagnostics.php</code>
+                    `;
+                    console.error('API Response:', data || errorText);
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = `
+                    <strong>❌ REQUEST FAILED</strong><br>
+                    Error: ${error.message}<br>
+                    <br>
+                    This usually means:<br>
+                    • Network error<br>
+                    • API endpoint doesn't exist<br>
+                    • Server is down<br>
+                    • CORS blocking the request
+                `;
+                console.error('Fetch Error:', error);
+            }
+        }
+        
+        function clearLocalCache() {
+            const resultDiv = document.getElementById('result');
+            
+            try {
+                // Clear localStorage
+                localStorage.clear();
+                
+                // Clear sessionStorage
+                sessionStorage.clear();
+                
+                // Try to clear IndexedDB
+                if (window.indexedDB) {
+                    indexedDB.databases().then(dbs => {
+                        dbs.forEach(db => {
+                            indexedDB.deleteDatabase(db.name);
+                        });
+                    }).catch(() => {});
+                }
+                
+                resultDiv.className = 'result success';
+                resultDiv.innerHTML = `
+                    <strong>✅ Local storage cleared!</strong><br>
+                    • localStorage: Cleared<br>
+                    • sessionStorage: Cleared<br>
+                    • IndexedDB: Attempted to clear<br>
+                    <br>
+                    Now press <span class="keyboard-shortcut">Ctrl+Shift+R</span> to hard refresh!
+                `;
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = `
+                    <strong>❌ Error clearing storage</strong><br>
+                    ${error.message}
+                `;
+            }
+        }
+        
+        function showCacheInfo() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.className = 'result info';
+            
+            let info = '<strong>Cache Information:</strong><br><br>';
+            
+            // Check localStorage
+            info += `<strong>localStorage items:</strong> ${localStorage.length}<br>`;
+            
+            // Check sessionStorage
+            info += `<strong>sessionStorage items:</strong> ${sessionStorage.length}<br>`;
+            
+            // Check if service worker is registered
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.getRegistrations().then(registrations => {
+                    info += `<strong>Service Workers:</strong> ${registrations.length}<br>`;
+                    resultDiv.innerHTML = info;
+                });
+            } else {
+                info += '<strong>Service Workers:</strong> Not supported<br>';
+            }
+            
+            // Cache API
+            if ('caches' in window) {
+                caches.keys().then(names => {
+                    info += `<strong>Cache Storage:</strong> ${names.length} cache(s)<br>`;
+                    if (names.length > 0) {
+                        info += '<br>Cache names:<br>';
+                        names.forEach(name => {
+                            info += `• ${name}<br>`;
+                        });
+                    }
+                    resultDiv.innerHTML = info;
+                });
+            } else {
+                info += '<strong>Cache Storage:</strong> Not supported<br>';
+                resultDiv.innerHTML = info;
+            }
+        }
+        
+        // Auto-run test on page load
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                const urlParams = new URLSearchParams(window.location.search);
+                if (urlParams.get('autotest') === 'true') {
+                    testAPI();
+                }
+            }, 500);
+        });
+    </script>
+</body>
+</html>

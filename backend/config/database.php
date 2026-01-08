@@ -127,24 +127,36 @@ function setCORSHeaders() {
 }
 
 function successResponse($data = [], $message = 'Success') {
-    $database = new Database();
+    try {
+        $database = new Database();
+        $environment = $database->getEnvironment();
+    } catch (Exception $e) {
+        $environment = 'unknown';
+    }
+    
     echo json_encode([
         'success' => true,
         'message' => $message,
         'data' => $data,
-        'environment' => $database->getEnvironment(),
+        'environment' => $environment,
         'timestamp' => date('Y-m-d H:i:s')
     ]);
     exit;
 }
 
 function errorResponse($message = 'An error occurred', $code = 400) {
-    $database = new Database();
+    try {
+        $database = new Database();
+        $environment = $database->getEnvironment();
+    } catch (Exception $e) {
+        $environment = 'unknown';
+    }
+    
     http_response_code($code);
     echo json_encode([
         'success' => false,
         'message' => $message,
-        'environment' => $database->getEnvironment(),
+        'environment' => $environment,
         'timestamp' => date('Y-m-d H:i:s')
     ]);
     exit;
