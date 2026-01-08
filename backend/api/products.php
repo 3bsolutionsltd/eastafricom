@@ -58,7 +58,8 @@ function handleGetProducts($db) {
         if ($includeInactive === 'true') {
             $sql = "SELECT * FROM products WHERE 1=1"; // Show all products
         } else {
-            $sql = "SELECT * FROM products WHERE active = TRUE"; // Only active products
+            // Public mode - only show active products
+            $sql = "SELECT * FROM products WHERE active = 1";
         }
         $params = [];
         
