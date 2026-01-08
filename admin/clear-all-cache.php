@@ -103,7 +103,7 @@ $results[] = '✅ New cache version: ' . $newVersion;
             <li>Open admin panel in a new incognito/private window</li>
         </ol>
         
-        <a href="index.html?v=<?php echo $newVersion; ?>" class="button">Back to Admin Panel</a>
+        <a href="index.php?v=<?php echo $newVersion; ?>" class="button">Back to Admin Panel</a>
     </div>
 </body>
 </html>
