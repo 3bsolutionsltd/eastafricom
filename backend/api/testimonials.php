@@ -51,7 +51,7 @@ function handleGetTestimonials($db) {
         // Check if table exists first
         $tableCheck = $db->query("SHOW TABLES LIKE 'testimonials'");
         if ($tableCheck->rowCount() === 0) {
-            // Table doesn't exist, return empty array
+            // Table doesn't exist, return empty array (with 200 OK status)
             successResponse([
                 'testimonials' => [],
                 'count' => 0,

@@ -200,15 +200,23 @@ function handleUpdateProduct($db) {
             errorResponse('No fields to update');
         }
         
+        // First check if product exists
+        $checkStmt = $db->prepare("SELECT id FROM products WHERE id = :id");
+        $checkStmt->execute([':id' => $input['id']]);
+        
+        if ($checkStmt->rowCount() === 0) {
+            errorResponse('Product not found', 404);
+        }
+        
         $sql = "UPDATE products SET " . implode(', ', $updateFields) . " WHERE id = :id";
         $stmt = $db->prepare($sql);
         $stmt->execute($params);
         
-        if ($stmt->rowCount() === 0) {
-            errorResponse('Product not found or no changes made', 404);
-        }
-        
-        successResponse(['message' => 'Product updated successfully']);
+        // Success even if no rows changed (same values)
+        successResponse([
+            'message' => 'Product updated successfully',
+            'rowsAffected' => $stmt->rowCount()
+        ]);
         
     } catch (Exception $e) {
         errorResponse('Failed to update product: ' . $e->getMessage());

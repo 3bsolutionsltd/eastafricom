@@ -94,7 +94,16 @@ class AdminDashboard {
 
     async fetchData(endpoint) {
         try {
-            const response = await fetch(`${this.apiBase}/${endpoint}`);
+            // Add cache-busting timestamp
+            const separator = endpoint.includes('?') ? '&' : '?';
+            const cacheBuster = `${separator}_t=${Date.now()}`;
+            const response = await fetch(`${this.apiBase}/${endpoint}${cacheBuster}`, {
+                cache: 'no-store',
+                headers: {
+                    'Cache-Control': 'no-cache, no-store, must-revalidate',
+                    'Pragma': 'no-cache'
+                }
+            });
             if (!response.ok) {
                 throw new Error(`HTTP ${response.status}: ${response.statusText}`);
             }
@@ -847,8 +856,12 @@ async function saveProduct(event) {
     try {
         const response = await fetch(`${admin.apiBase}/products.php`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 
+                'Content-Type': 'application/json',
+                'Cache-Control': 'no-cache'
+            },
             credentials: 'same-origin',
+            cache: 'no-store',
             body: JSON.stringify(data)
         });
         
@@ -1014,18 +1027,20 @@ async function saveProductChanges(productId) {
             grade: formData.get('grade'),
             category: formData.get('category'),
             description: formData.get('description'),
-            defect_free: formData.has('defect_free'),
-            organic: formData.has('organic'),
-            featured: formData.has('featured'),
-            active: formData.has('active')
+            defect_free: document.getElementById('edit-defect-free')?.checked || false,
+            organic: document.getElementById('edit-organic')?.checked || false,
+            featured: document.getElementById('edit-featured')?.checked || false,
+            active: document.getElementById('edit-active')?.checked || false
         };
 
         const response = await fetch(`${admin.apiBase}/products.php`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
+                'Cache-Control': 'no-cache'
             },
             credentials: 'same-origin',
+            cache: 'no-store',
             body: JSON.stringify(updateData)
         });
 
@@ -1071,8 +1086,10 @@ async function deleteProductConfirmed(productId) {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
+                'Cache-Control': 'no-cache'
             },
             credentials: 'same-origin',
+            cache: 'no-store',
             body: JSON.stringify({ id: productId })
         });
 
@@ -1465,9 +1482,11 @@ async function saveSlide(slideId) {
         const response = await fetch(`${admin.apiBase}/slideshow.php`, {
             method: method,
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Cache-Control': 'no-cache'
             },
             credentials: 'same-origin',
+            cache: 'no-store',
             body: JSON.stringify(slideData)
         });
         
