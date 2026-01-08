@@ -717,8 +717,8 @@
     <!-- Notification Container -->
     <div id="notifications"></div>
 
-    <script src="section-manager.js?v=6.0"></script>
-    <script src="admin.js?v=2.1"></script>
+    <script src="section-manager.js?v=<?php echo time(); ?>"></script>
+    <script src="admin.js?v=<?php echo time(); ?>"></script>
     <script>
         // Update user info in header
         window.updateUserInfo = function(user) {
