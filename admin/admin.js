@@ -1354,7 +1354,13 @@ async function openSlideshowModal(slide = null) {
         const preview = document.getElementById('image-preview');
         const container = document.getElementById('image-preview-container');
         if (preview && container) {
-            preview.src = slide.image_url;
+            // Ensure image path is relative to admin folder
+            const imagePath = slide.image_url.startsWith('http') 
+                ? slide.image_url 
+                : slide.image_url.startsWith('../') 
+                    ? slide.image_url 
+                    : `../${slide.image_url}`;
+            preview.src = imagePath;
             container.classList.remove('hidden');
         }
     }
