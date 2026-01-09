@@ -4,6 +4,9 @@
  * East Africom - Coffee & Cocoa Export
  */
 
+// Start output buffering to catch any stray output
+ob_start();
+
 // Disable error display and only log errors
 ini_set('display_errors', 0);
 error_reporting(E_ALL);
@@ -246,6 +249,11 @@ try {
 }
 */
 
+// Clean output buffer BEFORE sending JSON
+if (ob_get_level()) {
+    ob_end_clean();
+}
+
 // Return success response
 // Always return success if data was received, even if email fails
 // This ensures JSON response is always valid
@@ -256,8 +264,4 @@ echo json_encode([
     'emailSent' => $mailSent
 ]);
 
-// Clean output buffer to ensure only JSON is returned
-if (ob_get_level()) {
-    ob_end_clean();
-}
-?>
+exit;
