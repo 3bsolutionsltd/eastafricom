@@ -192,21 +192,24 @@ function openDatabaseQuotationModal(productId) {
 // Open quotation modal with full product data
 function openQuotationModalWithProduct(product) {
     // Safely get price with fallback
-    const priceMin = parseFloat(product.price_min || product.price || product.basePrice || 4.5);
-    const basePrice = isNaN(priceMin) ? 4500 : priceMin * 1000; // Convert kg to MT
+    // Database stores prices as USD per MT already, no conversion needed
+    const basePrice = parseFloat(product.price || product.price_min || product.basePrice || 4500);
+    
+    // Validate price is reasonable (between $500 and $50,000 per MT)
+    const validatedPrice = (basePrice >= 500 && basePrice <= 50000) ? basePrice : 4500;
     
     // Create a quotation-compatible product object
     const quotationProduct = {
         id: product.id,
         name: product.name,
         category: product.category,
-        basePrice: basePrice,
+        basePrice: validatedPrice, // Price is already in USD per MT
         minOrder: 1,
         tiers: [
-            { min: 1, max: 19, price: basePrice },
-            { min: 20, max: 49, price: basePrice * 0.95 },
-            { min: 50, max: 99, price: basePrice * 0.90 },
-            { min: 100, max: Infinity, price: basePrice * 0.85 }
+            { min: 1, max: 19, price: validatedPrice },
+            { min: 20, max: 49, price: Math.round(validatedPrice * 0.95) },
+            { min: 50, max: 99, price: Math.round(validatedPrice * 0.90) },
+            { min: 100, max: Infinity, price: Math.round(validatedPrice * 0.85) }
         ],
         certifications: product.certifications ? 
             (Array.isArray(product.certifications) ? product.certifications : product.certifications.split(',').map(c => c.trim())) : 
@@ -215,6 +218,8 @@ function openQuotationModalWithProduct(product) {
         screen: product.screen_size || 'Standard',
         cupScore: product.cup_score || 'Premium Quality'
     };
+    
+    console.log('Opening quotation modal with validated price:', validatedPrice);
     
     // If the openQuotationModal function exists from quotation-modal.js, use it
     if (typeof window.openQuotationModalDirect === 'function') {

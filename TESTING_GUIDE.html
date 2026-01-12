@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quotation System - Visual Testing Guide</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #f5f7fa;
+            padding: 2rem;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            padding: 3rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+        h1 {
+            color: #10b981;
+            margin-bottom: 0.5rem;
+            font-size: 2.5rem;
+        }
+        .subtitle {
+            color: #666;
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+        .test-case {
+            background: #f8f9fa;
+            border-left: 5px solid #10b981;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border-radius: 8px;
+        }
+        .test-case h2 {
+            color: #10b981;
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+        }
+        .test-steps {
+            background: white;
+            padding: 1rem;
+            border-radius: 6px;
+            margin-top: 1rem;
+        }
+        .test-steps ol {
+            margin-left: 1.5rem;
+        }
+        .test-steps li {
+            margin-bottom: 0.8rem;
+            color: #333;
+        }
+        .expected {
+            background: #d1fae5;
+            padding: 1rem;
+            border-radius: 6px;
+            margin-top: 1rem;
+            border-left: 4px solid #10b981;
+        }
+        .expected strong {
+            color: #065f46;
+        }
+        .warning {
+            background: #fef3c7;
+            padding: 1rem;
+            border-radius: 6px;
+            margin: 2rem 0;
+            border-left: 4px solid #f59e0b;
+        }
+        .warning strong {
+            color: #92400e;
+        }
+        .comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        .comparison-item {
+            background: white;
+            padding: 1rem;
+            border-radius: 6px;
+        }
+        .comparison-item h4 {
+            margin-bottom: 0.5rem;
+            color: #059669;
+        }
+        .success-check {
+            color: #10b981;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+        .fail-check {
+            color: #dc2626;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            background: white;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #059669;
+        }
+        code {
+            background: #1f2937;
+            color: #10b981;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+        .btn {
+            display: inline-block;
+            background: #10b981;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            margin: 10px 10px 10px 0;
+            transition: all 0.3s;
+        }
+        .btn:hover {
+            background: #059669;
+            transform: translateY(-2px);
+        }
+        .btn-secondary {
+            background: #6b7280;
+        }
+        .btn-secondary:hover {
+            background: #4b5563;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Quotation System - Visual Testing Guide</h1>
+        <p class="subtitle">Step-by-step testing instructions for all new features</p>
+        
+        <div class="warning">
+            <strong>⚠️ Before Testing:</strong><br>
+            Make sure you've run the database setup first!
+            <a href="backend/setup-quotations-table.php" class="btn" style="margin-top: 10px;">Run Setup Now</a>
+        </div>
+
+        <!-- Test Case 1 -->
+        <div class="test-case">
+            <h2>Test Case 1: Unit Selection (kg, lbs, MT, tons)</h2>
+            <div class="test-steps">
+                <strong>Steps to Test:</strong>
+                <ol>
+                    <li>Open your website homepage: <code>index.html</code></li>
+                    <li>Click "Get Quotation" on any product</li>
+                    <li>Look for a dropdown labeled "Measuring Unit"</li>
+                    <li>Verify you see these 4 options:
+                        <ul>
+                            <li>Kilograms (kg)</li>
+                            <li>Metric Tons (MT)</li>
+                            <li>Pounds (lbs)</li>
+                            <li>Tons (US)</li>
+                        </ul>
+                    </li>
+                    <li>Select different units and watch the form update</li>
+                </ol>
+            </div>
+            <div class="expected">
+                <strong>✅ Expected Result:</strong><br>
+                • Unit selector appears above quantity field<br>
+                • All 4 units are listed<br>
+                • Minimum order hint updates when you change unit<br>
+                • Default selection is "kg (Kilograms)"
+            </div>
+        </div>
+
+        <!-- Test Case 2 -->
+        <div class="test-case">
+            <h2>Test Case 2: Minimum Order Updates</h2>
+            <div class="test-steps">
+                <strong>Steps to Test:</strong>
+                <ol>
+                    <li>In the quotation modal, change unit to "kg"</li>
+                    <li>Note the minimum order (should be 25 kg)</li>
+                    <li>Change unit to "MT"</li>
+                    <li>Note the minimum order (should be 1 MT)</li>
+                    <li>Change unit to "lbs"</li>
+                    <li>Note the minimum order (should be 55 lbs)</li>
+                </ol>
+            </div>
+            <div class="expected">
+                <strong>✅ Expected Minimum Orders:</strong>
+                <table>
+                    <tr>
+                        <th>Unit</th>
+                        <th>Minimum Order</th>
+                        <th>Reason</th>
+                    </tr>
+                    <tr>
+                        <td>kg</td>
+                        <td>25 kg</td>
+                        <td>Smaller orders accessible</td>
+                    </tr>
+                    <tr>
+                        <td>MT</td>
+                        <td>1 MT</td>
+                        <td>Standard bulk minimum</td>
+                    </tr>
+                    <tr>
+                        <td>lbs</td>
+                        <td>55 lbs</td>
+                        <td>Equivalent to ~25 kg</td>
+                    </tr>
+                    <tr>
+                        <td>tons (US)</td>
+                        <td>1 ton</td>
+                        <td>Bulk order unit</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- Test Case 3 -->
+        <div class="test-case">
+            <h2>Test Case 3: Price Calculation Accuracy</h2>
+            <div class="test-steps">
+                <strong>Steps to Test:</strong>
+                <ol>
+                    <li>Select "kg" as unit</li>
+                    <li>Enter quantity: 25 kg</li>
+                    <li>Verify the price estimate shows:
+                        <ul>
+                            <li>Base Price: $4,500/MT (or product's base price)</li>
+                            <li>Your Quantity: 25 kg</li>
+                            <li>Equivalent: 0.025 MT</li>
+                            <li>Total Estimate: $112.50 (4500 × 0.025)</li>
+                        </ul>
+                    </li>
+                    <li>Change quantity to 50 kg</li>
+                    <li>Total should update to $225.00 (4500 × 0.050)</li>
+                </ol>
+            </div>
+            <div class="expected">
+                <strong>✅ Expected Calculations:</strong><br>
+                <strong>Formula:</strong> Total = (Price per MT) × (Quantity in kg ÷ 1000)<br><br>
+                <strong>Examples:</strong>
+                <div class="comparison">
+                    <div class="comparison-item">
+                        <h4>25 kg at $4,500/MT:</h4>
+                        • Equivalent: 0.025 MT<br>
+                        • Total: $112.50
+                    </div>
+                    <div class="comparison-item">
+                        <h4>1000 kg at $4,500/MT:</h4>
+                        • Equivalent: 1.000 MT<br>
+                        • Total: $4,500.00
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Test Case 4 -->
+        <div class="test-case">
+            <h2>Test Case 4: Volume Discounts</h2>
+            <div class="test-steps">
+                <strong>Steps to Test (Using Arabica AA product):</strong>
+                <ol>
+                    <li>Select unit: "kg"</li>
+                    <li>Enter quantity: 10,000 kg (10 MT)</li>
+                    <li>Price should be $4,500/MT (no discount)</li>
+                    <li>Change to 20,000 kg (20 MT)</li>
+                    <li>Price should drop to $4,350/MT</li>
+                    <li>A green discount badge should appear!</li>
+                    <li>Change to 50,000 kg (50 MT)</li>
+                    <li>Price should drop to $4,200/MT</li>
+                </ol>
+            </div>
+            <div class="expected">
+                <strong>✅ Expected Discount Tiers (Arabica AA):</strong>
+                <table>
+                    <tr>
+                        <th>Quantity (MT)</th>
+                        <th>Price per MT</th>
+                        <th>Discount</th>
+                    </tr>
+                    <tr>
+                        <td>1 - 19 MT</td>
+                        <td>$4,500</td>
+                        <td>None</td>
+                    </tr>
+                    <tr>
+                        <td>20 - 49 MT</td>
+                        <td>$4,350</td>
+                        <td>3.3% 🎉</td>
+                    </tr>
+                    <tr>
+                        <td>50 - 99 MT</td>
+                        <td>$4,200</td>
+                        <td>6.7% 🎉</td>
+                    </tr>
+                    <tr>
+                        <td>100+ MT</td>
+                        <td>$4,000</td>
+                        <td>11.1% 🎉</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- Test Case 5 -->
+        <div class="test-case">
+            <h2>Test Case 5: Form Submission & Database</h2>
+            <div class="test-steps">
+                <strong>Steps to Test:</strong>
+                <ol>
+                    <li>Fill out the complete quotation form:
+                        <ul>
+                            <li>Select unit: kg</li>
+                            <li>Quantity: 100 kg</li>
+                            <li>Company: Test Company Ltd</li>
+                            <li>Country: Kenya</li>
+                            <li>Contact Name: John Doe</li>
+                            <li>Email: test@example.com</li>
+                            <li>Phone: +254700000000</li>
+                        </ul>
+                    </li>
+                    <li>Click "Send Quotation Request"</li>
+                    <li>Wait for success message</li>
+                    <li>Open: <code>backend/view-quotations.php</code></li>
+                    <li>Verify your test quotation appears in the table</li>
+                    <li>Click "View" to see all details</li>
+                    <li>Verify the unit shows as "kg" (not MT!)</li>
+                </ol>
+            </div>
+            <div class="expected">
+                <strong>✅ Expected Result:</strong><br>
+                • Success toast message appears<br>
+                • Modal closes automatically<br>
+                • Quotation appears in admin interface<br>
+                • Unit field shows selected unit (kg, lbs, MT, or tons)<br>
+                • All form data saved correctly<br>
+                • Status shows as "pending"
+            </div>
+        </div>
+
+        <!-- Test Case 6 -->
+        <div class="test-case">
+            <h2>Test Case 6: Admin Interface</h2>
+            <div class="test-steps">
+                <strong>Steps to Test:</strong>
+                <ol>
+                    <li>Navigate to <code>backend/view-quotations.php</code></li>
+                    <li>Verify dashboard statistics show correct numbers</li>
+                    <li>Test the status filter dropdown</li>
+                    <li>Test the search box (search for your test company)</li>
+                    <li>Click "View" on a quotation</li>
+                    <li>Update the status to "Quoted"</li>
+                    <li>Add some admin notes</li>
+                    <li>Enter a quoted price</li>
+                    <li>Click "Update Status"</li>
+                    <li>Verify changes are saved</li>
+                </ol>
+            </div>
+            <div class="expected">
+                <strong>✅ Expected Features:</strong><br>
+                • Clean, professional dashboard<br>
+                • Statistics cards at top<br>
+                • Filterable and searchable table<br>
+                • Modal popup with full details<br>
+                • Status can be updated<br>
+                • Notes can be added<br>
+                • Email links work<br>
+                • All data displays correctly
+            </div>
+        </div>
+
+        <!-- Test Case 7 -->
+        <div class="test-case">
+            <h2>Test Case 7: Cross-Unit Comparison</h2>
+            <div class="test-steps">
+                <strong>Verify These Equivalents:</strong>
+                <ol>
+                    <li>25 kg should equal 0.025 MT</li>
+                    <li>1000 kg should equal 1.000 MT</li>
+                    <li>55 lbs should equal ~0.025 MT</li>
+                    <li>2204.62 lbs should equal ~1.000 MT</li>
+                    <li>1 US ton should equal ~0.907 MT</li>
+                </ol>
+            </div>
+            <div class="expected">
+                <strong>✅ Conversion Reference Table:</strong>
+                <table>
+                    <tr>
+                        <th>Your Input</th>
+                        <th>Unit</th>
+                        <th>Equivalent MT</th>
+                        <th>Price (at $4500/MT)</th>
+                    </tr>
+                    <tr>
+                        <td>25</td>
+                        <td>kg</td>
+                        <td>0.025</td>
+                        <td>$112.50</td>
+                    </tr>
+                    <tr>
+                        <td>100</td>
+                        <td>kg</td>
+                        <td>0.100</td>
+                        <td>$450.00</td>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td>MT</td>
+                        <td>1.000</td>
+                        <td>$4,500.00</td>
+                    </tr>
+                    <tr>
+                        <td>55</td>
+                        <td>lbs</td>
+                        <td>0.025</td>
+                        <td>$112.47</td>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td>US ton</td>
+                        <td>0.907</td>
+                        <td>$4,082.33</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- Quick Links -->
+        <div style="background: #f0fdf4; padding: 2rem; border-radius: 8px; margin-top: 3rem; text-align: center;">
+            <h3 style="color: #10b981; margin-bottom: 1rem;">🚀 Quick Access Links</h3>
+            <a href="index.html" class="btn">Test Website</a>
+            <a href="backend/view-quotations.php" class="btn">Admin Interface</a>
+            <a href="backend/setup-quotations-table.php" class="btn btn-secondary">Database Setup</a>
+        </div>
+
+        <!-- Troubleshooting -->
+        <div class="warning" style="margin-top: 2rem;">
+            <strong>🔧 Troubleshooting Tips:</strong><br><br>
+            <strong>Unit selector not appearing?</strong><br>
+            • Clear browser cache (Ctrl+Shift+Delete)<br>
+            • Check JavaScript console for errors (F12)<br>
+            • Verify quotation-modal.js was updated<br><br>
+            <strong>Prices showing incorrectly?</strong><br>
+            • Check browser console for calculation errors<br>
+            • Verify conversion factors are correct<br>
+            • Try hard refresh (Ctrl+F5)<br><br>
+            <strong>Admin page shows no data?</strong><br>
+            • Run database setup script<br>
+            • Check database connection in config/database.php<br>
+            • Submit a test quotation first
+        </div>
+    </div>
+</body>
+</html>

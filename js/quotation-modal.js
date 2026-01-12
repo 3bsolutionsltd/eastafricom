@@ -3,7 +3,15 @@
  * East Africom - Coffee & Cocoa Export
  */
 
-// Product database with pricing tiers
+// Unit conversion factors (all relative to kg)
+const UNIT_CONVERSIONS = {
+    'kg': { label: 'Kilograms (kg)', factor: 1, minOrder: 25 },
+    'MT': { label: 'Metric Tons (MT)', factor: 1000, minOrder: 1 },
+    'lbs': { label: 'Pounds (lbs)', factor: 0.453592, minOrder: 55 },
+    'tons': { label: 'Tons (US)', factor: 907.185, minOrder: 1 }
+};
+
+// Product database with pricing tiers (prices in USD per MT)
 const productDatabase = {
     'arabica-aa-washed': {
         name: 'Arabica AA Grade - Washed Coffee',
@@ -218,14 +226,27 @@ function createAndShowModal(product, productId) {
                         <div class="product-specs">
                             <span><i class="fas fa-certificate"></i> ${cupScore}</span>
                             <span><i class="fas fa-box"></i> Min: ${minOrder} MT</span>
-                            <span><i class="fas fa-dollar-sign"></i> From $${validBasePrice.toLocaleString()}/MT</span>
+                            <span><i class="fas fa-dollar-sign"></i> From $${validBasePrice.toLocaleString('en-US', {minimumFractionDigits: 0, maximumFractionDigits: 0})}/MT</span>
                         </div>
+                    </div>
+
+                    <!-- Unit Selection -->
+                    <div class="form-section">
+                        <label class="form-label">
+                            <i class="fas fa-balance-scale"></i> Measuring Unit
+                        </label>
+                        <select id="unit-${productId}" class="form-control" onchange="updateUnitAndCalculate('${productId}')" style="padding: 0.7rem; width: 100%; border: 1px solid #ddd; border-radius: 6px;">
+                            <option value="kg" selected>Kilograms (kg) - Recommended for smaller orders</option>
+                            <option value="MT">Metric Tons (MT) - Standard for bulk orders</option>
+                            <option value="lbs">Pounds (lbs) - US customary unit</option>
+                            <option value="tons">Tons (US) - US customary unit</option>
+                        </select>
                     </div>
 
                     <!-- Quantity Calculator -->
                     <div class="form-section">
                         <label class="form-label">
-                            <i class="fas fa-calculator"></i> Quantity (Metric Tons)
+                            <i class="fas fa-calculator"></i> Quantity
                         </label>
                         <div class="quantity-input-group">
                             <button type="button" onclick="adjustQuantity('${productId}', -1)" class="qty-btn">
@@ -234,8 +255,8 @@ function createAndShowModal(product, productId) {
                             <input 
                                 type="number" 
                                 id="quantity-${productId}" 
-                                value="${minOrder}" 
-                                min="${minOrder}" 
+                                value="25" 
+                                min="25" 
                                 step="1"
                                 oninput="calculatePrice('${productId}')"
                                 class="quantity-input"
@@ -244,26 +265,30 @@ function createAndShowModal(product, productId) {
                                 <i class="fas fa-plus"></i>
                             </button>
                         </div>
-                        <small class="form-hint">Minimum order: ${minOrder} MT</small>
+                        <small class="form-hint" id="min-order-hint-${productId}">Minimum order: 25 kg</small>
                     </div>
 
                     <!-- Price Estimate -->
                     <div id="price-estimate-${productId}" class="price-estimate-card">
                         <div class="price-row">
-                            <span>Unit Price:</span>
-                            <strong class="unit-price">$${validBasePrice.toLocaleString()}/MT</strong>
+                            <span>Base Price:</span>
+                            <strong class="unit-price">$${validBasePrice.toLocaleString('en-US', {minimumFractionDigits: 0, maximumFractionDigits: 0})}/MT</strong>
                         </div>
                         <div class="price-row">
-                            <span>Quantity:</span>
-                            <strong class="quantity-display">${minOrder} MT</strong>
+                            <span>Your Quantity:</span>
+                            <strong class="quantity-display">25 kg</strong>
+                        </div>
+                        <div class="price-row">
+                            <span>Equivalent:</span>
+                            <strong class="equivalent-display">0.025 MT</strong>
                         </div>
                         <div class="price-row total-row">
                             <span>Total Estimate:</span>
-                            <strong class="total-price">$${(validBasePrice * minOrder).toLocaleString()}</strong>
+                            <strong class="total-price">$${(validBasePrice * 0.025).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</strong>
                         </div>
                         <small class="price-note">
                             <i class="fas fa-info-circle"></i> 
-                            Price subject to final confirmation. Volume discounts available.
+                            Price subject to final confirmation. Volume discounts available for larger orders.
                         </small>
                     </div>
 
@@ -404,9 +429,34 @@ function closeQuotationModal() {
     }
 }
 
+// Update unit and recalculate
+function updateUnitAndCalculate(productId) {
+    const unitSelect = document.getElementById(`unit-${productId}`);
+    const quantityInput = document.getElementById(`quantity-${productId}`);
+    const minOrderHint = document.getElementById(`min-order-hint-${productId}`);
+    const unit = unitSelect.value;
+    const unitInfo = UNIT_CONVERSIONS[unit];
+    
+    // Update minimum order based on unit
+    quantityInput.min = unitInfo.minOrder;
+    minOrderHint.textContent = `Minimum order: ${unitInfo.minOrder} ${unit}`;
+    
+    // Adjust quantity if below minimum
+    if (parseFloat(quantityInput.value) < unitInfo.minOrder) {
+        quantityInput.value = unitInfo.minOrder;
+    }
+    
+    // Recalculate price
+    calculatePrice(productId);
+}
+
 // Adjust quantity
 function adjustQuantity(productId, delta) {
     const input = document.getElementById(`quantity-${productId}`);
+    const unitSelect = document.getElementById(`unit-${productId}`);
+    const unit = unitSelect ? unitSelect.value : 'kg';
+    const unitInfo = UNIT_CONVERSIONS[unit];
+    
     // Get product from registry (supports both database and hardcoded products)
     const product = window.productRegistry?.[productId] || productDatabase[productId];
     
@@ -415,8 +465,8 @@ function adjustQuantity(productId, delta) {
         return;
     }
     
-    const currentValue = parseInt(input.value) || product.minOrder;
-    const newValue = Math.max(product.minOrder, currentValue + delta);
+    const currentValue = parseFloat(input.value) || unitInfo.minOrder;
+    const newValue = Math.max(unitInfo.minOrder, currentValue + delta);
     input.value = newValue;
     calculatePrice(productId);
 }
@@ -432,35 +482,45 @@ function calculatePrice(productId) {
     }
     
     const quantityInput = document.getElementById(`quantity-${productId}`);
-    const quantity = parseInt(quantityInput.value) || product.minOrder || 1;
+    const unitSelect = document.getElementById(`unit-${productId}`);
+    const quantity = parseFloat(quantityInput.value) || 25;
+    const unit = unitSelect ? unitSelect.value : 'kg';
+    const unitInfo = UNIT_CONVERSIONS[unit];
+    
+    // Convert quantity to MT for price calculation
+    const quantityInMT = (quantity * unitInfo.factor) / 1000;
 
-    // Find applicable tier (if tiers exist)
-    let unitPrice = product.basePrice || product.price || 4500; // Fallback pricing
+    // Find applicable tier based on MT (if tiers exist)
+    let unitPricePerMT = product.basePrice || product.price || 4500; // Fallback pricing
     
     // Validate that unitPrice is a number
-    if (isNaN(unitPrice) || unitPrice <= 0) {
+    if (isNaN(unitPricePerMT) || unitPricePerMT <= 0) {
         console.warn('Invalid basePrice for product:', productId, 'Using default 4500');
-        unitPrice = 4500;
+        unitPricePerMT = 4500;
     }
     
     if (product.tiers && Array.isArray(product.tiers)) {
-        const tier = product.tiers.find(t => quantity >= t.min && quantity <= t.max);
+        const tier = product.tiers.find(t => quantityInMT >= t.min && quantityInMT <= t.max);
         if (tier && tier.price && !isNaN(tier.price)) {
-            unitPrice = tier.price;
+            unitPricePerMT = tier.price;
         }
     }
-    const totalPrice = unitPrice * quantity;
+    
+    // Calculate total price
+    const totalPrice = unitPricePerMT * quantityInMT;
 
     // Update display
     const estimateCard = document.getElementById(`price-estimate-${productId}`);
     if (estimateCard) {
-        estimateCard.querySelector('.unit-price').textContent = `$${unitPrice.toLocaleString()}/MT`;
-        estimateCard.querySelector('.quantity-display').textContent = `${quantity} MT`;
-        estimateCard.querySelector('.total-price').textContent = `$${totalPrice.toLocaleString()}`;
+        estimateCard.querySelector('.unit-price').textContent = `$${unitPricePerMT.toLocaleString('en-US', {minimumFractionDigits: 0, maximumFractionDigits: 0})}/MT`;
+        estimateCard.querySelector('.quantity-display').textContent = `${quantity} ${unit}`;
+        estimateCard.querySelector('.equivalent-display').textContent = `${quantityInMT.toFixed(3)} MT`;
+        estimateCard.querySelector('.total-price').textContent = `$${totalPrice.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
 
         // Add discount badge if applicable
-        if (unitPrice < product.basePrice) {
-            const discount = Math.round((1 - unitPrice / product.basePrice) * 100);
+        const basePrice = product.basePrice || product.price || 4500;
+        if (unitPricePerMT < basePrice) {
+            const discount = Math.round((1 - unitPricePerMT / basePrice) * 100);
             if (!estimateCard.querySelector('.discount-badge')) {
                 const badge = document.createElement('div');
                 badge.className = 'discount-badge';
@@ -503,6 +563,8 @@ function handleQuotationSubmit(event, productId) {
     const form = event.target;
     const product = window.productRegistry?.[productId] || productDatabase[productId];
     const formData = new FormData(form);
+    const unitSelect = document.getElementById(`unit-${productId}`);
+    const unit = unitSelect ? unitSelect.value : 'kg';
     
     // Get selected certifications
     const certifications = Array.from(form.querySelectorAll('input[name="certifications"]:checked'))
@@ -513,6 +575,7 @@ function handleQuotationSubmit(event, productId) {
         product: product.name,
         productId: productId,
         quantity: form.querySelector(`#quantity-${productId}`).value,
+        unit: unit,
         shipping: formData.get('shipping'),
         certifications: certifications,
         company: formData.get('company'),

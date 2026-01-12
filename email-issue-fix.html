@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Troubleshooting - East Africom</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 3rem;
+        }
+        h1 {
+            color: #dc2626;
+            margin-bottom: 0.5rem;
+            font-size: 2rem;
+        }
+        .subtitle {
+            color: #666;
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+        .status-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        .status-card {
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .status-working {
+            background: #d1fae5;
+            border: 2px solid #10b981;
+        }
+        .status-broken {
+            background: #fee2e2;
+            border: 2px solid #dc2626;
+        }
+        .status-icon {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+        .status-label {
+            font-weight: 600;
+            color: #333;
+        }
+        .solution {
+            background: #f8f9fa;
+            border-left: 4px solid #10b981;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-radius: 8px;
+        }
+        .solution h3 {
+            color: #10b981;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .solution-number {
+            background: #10b981;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+        .btn {
+            display: inline-block;
+            background: #10b981;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            margin: 10px 10px 10px 0;
+            transition: all 0.3s;
+        }
+        .btn:hover {
+            background: #059669;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.4);
+        }
+        .btn-danger {
+            background: #dc2626;
+        }
+        .btn-danger:hover {
+            background: #b91c1c;
+        }
+        .warning-box {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 1rem;
+            border-radius: 6px;
+            margin: 1rem 0;
+        }
+        .info-box {
+            background: #dbeafe;
+            border-left: 4px solid #3b82f6;
+            padding: 1rem;
+            border-radius: 6px;
+            margin: 1rem 0;
+        }
+        .steps {
+            background: white;
+            padding: 1rem;
+            border-radius: 6px;
+            margin-top: 1rem;
+        }
+        .steps ol {
+            margin-left: 1.5rem;
+        }
+        .steps li {
+            margin-bottom: 0.8rem;
+        }
+        code {
+            background: #1f2937;
+            color: #10b981;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📧 Email Delivery Issue Detected</h1>
+        <p class="subtitle">Customer emails work, but company emails to Frank are not being received</p>
+        
+        <!-- Status Overview -->
+        <div class="status-grid">
+            <div class="status-card status-working">
+                <div class="status-icon">✅</div>
+                <div class="status-label">Customer Emails</div>
+                <p style="color: #065f46; margin-top: 0.5rem;">Working Correctly</p>
+            </div>
+            <div class="status-card status-broken">
+                <div class="status-icon">❌</div>
+                <div class="status-label">Company Emails</div>
+                <p style="color: #991b1b; margin-top: 0.5rem;">Not Reaching Frank</p>
+            </div>
+        </div>
+
+        <!-- Problem Explanation -->
+        <div class="warning-box">
+            <strong>⚠️ Why This Happens:</strong><br>
+            Customer emails work because they're sent TO the person who filled the form. Company emails to Frank require proper SMTP server configuration which may not be set up locally.
+        </div>
+
+        <!-- Good News -->
+        <div class="info-box">
+            <strong>✅ Good News - No Quotations Are Lost!</strong><br>
+            All quotation requests are saved to the database. Frank can view them anytime at the admin interface.
+        </div>
+
+        <!-- Solution 1 -->
+        <div class="solution">
+            <h3><span class="solution-number">1</span> Run Email Diagnostic Tool</h3>
+            <p>First, let's diagnose the exact problem with your email configuration.</p>
+            <div class="steps">
+                <p><strong>This tool will:</strong></p>
+                <ul>
+                    <li>Check your PHP mail settings</li>
+                    <li>Send a test email to Frank</li>
+                    <li>Show any error messages</li>
+                    <li>Provide specific fix recommendations</li>
+                </ul>
+            </div>
+            <a href="backend/test-email-config.php" class="btn" target="_blank">🔍 Run Email Diagnostic</a>
+        </div>
+
+        <!-- Solution 2 -->
+        <div class="solution">
+            <h3><span class="solution-number">2</span> Use Test Mail Server Tool (Recommended for Local)</h3>
+            <p>The easiest solution for local WAMP development:</p>
+            <div class="steps">
+                <ol>
+                    <li>Download <strong>Test Mail Server Tool</strong> (free for Windows)</li>
+                    <li>Run the application - it will capture all emails</li>
+                    <li>Keep it running in the background</li>
+                    <li>Submit a quotation from your website</li>
+                    <li>Check Test Mail Server Tool to see both emails!</li>
+                </ol>
+            </div>
+            <a href="https://www.toolheap.com/test-mail-server-tool/" class="btn" target="_blank">📥 Download Tool</a>
+        </div>
+
+        <!-- Solution 3 -->
+        <div class="solution">
+            <h3><span class="solution-number">3</span> View Quotations in Admin Interface</h3>
+            <p>Even without email, all quotations are saved and accessible:</p>
+            <div class="steps">
+                <p><strong>Frank can always:</strong></p>
+                <ul>
+                    <li>View all quotation requests</li>
+                    <li>See complete customer information</li>
+                    <li>Track quotation status</li>
+                    <li>Email customers directly from the interface</li>
+                    <li>Export or print quotation details</li>
+                </ul>
+            </div>
+            <a href="backend/view-quotations.php" class="btn" target="_blank">📋 Open Admin Interface</a>
+        </div>
+
+        <!-- Solution 4 -->
+        <div class="solution">
+            <h3><span class="solution-number">4</span> Read Full Documentation</h3>
+            <p>Detailed troubleshooting guide with all solutions:</p>
+            <a href="EMAIL_FIX_GUIDE.md" class="btn" target="_blank">📖 Read Fix Guide</a>
+        </div>
+
+        <!-- Quick Actions -->
+        <div style="background: #f0fdf4; padding: 2rem; border-radius: 12px; margin-top: 2rem; text-align: center;">
+            <h3 style="color: #10b981; margin-bottom: 1.5rem;">⚡ Quick Actions</h3>
+            <a href="backend/test-email-config.php" class="btn btn-danger">Test Email Now</a>
+            <a href="backend/view-quotations.php" class="btn">View Quotations</a>
+            <a href="backend/setup-quotations-table.php" class="btn">Setup Database</a>
+        </div>
+
+        <!-- Important Notes -->
+        <div style="margin-top: 2rem; padding: 1.5rem; background: #e0e7ff; border-radius: 8px;">
+            <h4 style="color: #4338ca; margin-bottom: 0.5rem;">📝 Important Notes:</h4>
+            <ul style="margin-left: 1.5rem; color: #3730a3;">
+                <li>Customer confirmation emails ARE working (this is good!)</li>
+                <li>All quotations ARE being saved to database (nothing is lost!)</li>
+                <li>Frank can access all requests via admin interface</li>
+                <li>Email to Frank can be fixed with proper SMTP configuration</li>
+                <li>For production deployment on Hostinger, emails should work automatically</li>
+            </ul>
+        </div>
+
+        <!-- Footer -->
+        <div style="text-align: center; margin-top: 2rem; color: #666; padding-top: 2rem; border-top: 1px solid #e5e7eb;">
+            <p>Need more help? Check the <a href="EMAIL_FIX_GUIDE.md" style="color: #10b981;">Email Fix Guide</a></p>
+        </div>
+    </div>
+</body>
+</html>

@@ -198,6 +198,9 @@ class AdminDashboard {
             case 'activity':
                 this.renderActivityTable();
                 break;
+            case 'quotations':
+                this.loadQuotations();
+                break;
             case 'settings':
                 this.renderSettingsForm();
                 break;
@@ -725,6 +728,185 @@ class AdminDashboard {
                 this.loadDashboardData();
             }
         }, 30000);
+    }
+
+    async loadQuotations() {
+        const container = document.getElementById('quotations-content');
+        
+        try {
+            container.innerHTML = `
+                <div class="flex items-center justify-center py-8">
+                    <div class="loader"></div>
+                    <span class="ml-3 text-gray-500">Loading quotations...</span>
+                </div>
+            `;
+
+            const response = await fetch('../backend/api/quotations.php');
+            const data = await response.json();
+
+            if (!data.success) {
+                throw new Error(data.message || 'Failed to load quotations');
+            }
+
+            const quotations = data.data.quotations || [];
+            const stats = data.data.statistics || {};
+
+            this.renderQuotationsView(container, quotations, stats);
+
+        } catch (error) {
+            console.error('Failed to load quotations:', error);
+            container.innerHTML = `
+                <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4">
+                    <div class="flex">
+                        <i class="fas fa-exclamation-triangle text-yellow-400 mr-3"></i>
+                        <div>
+                            <h3 class="text-sm font-medium text-yellow-800">Unable to load quotations</h3>
+                            <p class="mt-2 text-sm text-yellow-700">${error.message}</p>
+                            <p class="mt-2 text-sm text-yellow-700">Make sure the quotation_requests table is set up.</p>
+                            <a href="../setup-quotation-system.html" target="_blank" class="mt-3 inline-block px-4 py-2 bg-yellow-600 text-white rounded hover:bg-yellow-700">
+                                <i class="fas fa-wrench mr-2"></i>Run Database Setup
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+    }
+
+    renderQuotationsView(container, quotations, stats) {
+        if (quotations.length === 0) {
+            container.innerHTML = `
+                <div class="text-center py-12">
+                    <i class="fas fa-inbox text-gray-300 text-6xl mb-4"></i>
+                    <h3 class="text-lg font-medium text-gray-900 mb-2">No Quotations Yet</h3>
+                    <p class="text-gray-500">Quotation requests will appear here once customers submit them.</p>
+                </div>
+            `;
+            return;
+        }
+
+        container.innerHTML = `
+            <!-- Statistics -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-4">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-blue-600 font-medium">Total Requests</p>
+                            <p class="text-2xl font-bold text-blue-900">${stats.total || 0}</p>
+                        </div>
+                        <i class="fas fa-file-invoice text-blue-300 text-3xl"></i>
+                    </div>
+                </div>
+                <div class="bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-lg p-4">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-yellow-600 font-medium">Pending</p>
+                            <p class="text-2xl font-bold text-yellow-900">${stats.pending || 0}</p>
+                        </div>
+                        <i class="fas fa-clock text-yellow-300 text-3xl"></i>
+                    </div>
+                </div>
+                <div class="bg-gradient-to-br from-green-50 to-green-100 rounded-lg p-4">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-green-600 font-medium">Responded</p>
+                            <p class="text-2xl font-bold text-green-900">${stats.responded || 0}</p>
+                        </div>
+                        <i class="fas fa-check-circle text-green-300 text-3xl"></i>
+                    </div>
+                </div>
+                <div class="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-4">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-purple-600 font-medium">Today</p>
+                            <p class="text-2xl font-bold text-purple-900">${stats.today || 0}</p>
+                        </div>
+                        <i class="fas fa-calendar-day text-purple-300 text-3xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filter Bar -->
+            <div class="flex flex-wrap gap-3 mb-4">
+                <select id="status-filter" class="px-4 py-2 border border-gray-300 rounded-lg" onchange="filterQuotations()">
+                    <option value="">All Statuses</option>
+                    <option value="pending">Pending</option>
+                    <option value="responded">Responded</option>
+                    <option value="converted">Converted</option>
+                    <option value="archived">Archived</option>
+                </select>
+                <input type="text" id="search-filter" placeholder="Search by name, email, or product..." class="px-4 py-2 border border-gray-300 rounded-lg flex-1" oninput="filterQuotations()">
+                <button onclick="admin.loadQuotations()" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
+                    <i class="fas fa-sync-alt mr-2"></i>Refresh
+                </button>
+            </div>
+
+            <!-- Quotations Table -->
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Customer</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Product</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Quantity</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="quotations-tbody" class="bg-white divide-y divide-gray-200">
+                        ${quotations.map(q => this.renderQuotationRow(q)).join('')}
+                    </tbody>
+                </table>
+            </div>
+        `;
+    }
+
+    renderQuotationRow(quotation) {
+        const statusColors = {
+            pending: 'bg-yellow-100 text-yellow-800',
+            responded: 'bg-blue-100 text-blue-800',
+            converted: 'bg-green-100 text-green-800',
+            archived: 'bg-gray-100 text-gray-800'
+        };
+
+        const statusColor = statusColors[quotation.status] || 'bg-gray-100 text-gray-800';
+        const date = new Date(quotation.created_at).toLocaleDateString('en-US', { 
+            year: 'numeric', 
+            month: 'short', 
+            day: 'numeric' 
+        });
+
+        return `
+            <tr class="quotation-row hover:bg-gray-50" data-id="${quotation.id}" data-status="${quotation.status}" data-searchable="${quotation.customer_name} ${quotation.customer_email} ${quotation.product_name}">
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${date}</td>
+                <td class="px-6 py-4">
+                    <div class="text-sm font-medium text-gray-900">${quotation.customer_name}</div>
+                    <div class="text-sm text-gray-500">${quotation.customer_email}</div>
+                    ${quotation.customer_phone ? `<div class="text-sm text-gray-500">${quotation.customer_phone}</div>` : ''}
+                </td>
+                <td class="px-6 py-4">
+                    <div class="text-sm font-medium text-gray-900">${quotation.product_name}</div>
+                    <div class="text-sm text-gray-500">${quotation.product_category || 'N/A'}</div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    ${quotation.quantity} ${quotation.unit || 'MT'}
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                    <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${statusColor}">
+                        ${quotation.status}
+                    </span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm">
+                    <button onclick="viewQuotationDetail(${quotation.id})" class="text-blue-600 hover:text-blue-900 mr-3">
+                        <i class="fas fa-eye"></i> View
+                    </button>
+                    <button onclick="updateQuotationStatus(${quotation.id})" class="text-green-600 hover:text-green-900">
+                        <i class="fas fa-edit"></i> Update
+                    </button>
+                </td>
+            </tr>
+        `;
     }
 }
 
@@ -2130,4 +2312,259 @@ async function deleteQualityBadge(badgeId) {
     } catch (error) {
         admin.showNotification('Error: ' + error.message, 'error');
     }
+}
+// Quotations Management Functions
+async function viewQuotationDetail(id) {
+    try {
+        const response = await fetch(`../backend/api/quotations.php?id=${id}`);
+        const data = await response.json();
+        
+        if (!data.success) {
+            throw new Error(data.message || 'Failed to load quotation');
+        }
+        
+        const q = data.data.quotation;
+        const date = new Date(q.created_at).toLocaleString('en-US', { 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+        
+        document.getElementById('modal-title').textContent = 'Quotation Request Details';
+        document.getElementById('modal-content').innerHTML = `
+            <div class="space-y-4">
+                <!-- Customer Information -->
+                <div class="bg-gray-50 rounded-lg p-4">
+                    <h4 class="font-semibold text-gray-900 mb-3 flex items-center">
+                        <i class="fas fa-user text-blue-500 mr-2"></i>
+                        Customer Information
+                    </h4>
+                    <div class="grid grid-cols-2 gap-3 text-sm">
+                        <div>
+                            <span class="text-gray-500">Name:</span>
+                            <p class="font-medium">${q.customer_name}</p>
+                        </div>
+                        <div>
+                            <span class="text-gray-500">Email:</span>
+                            <p class="font-medium">${q.customer_email}</p>
+                        </div>
+                        ${q.customer_phone ? `
+                        <div>
+                            <span class="text-gray-500">Phone:</span>
+                            <p class="font-medium">${q.customer_phone}</p>
+                        </div>
+                        ` : ''}
+                        ${q.customer_company ? `
+                        <div>
+                            <span class="text-gray-500">Company:</span>
+                            <p class="font-medium">${q.customer_company}</p>
+                        </div>
+                        ` : ''}
+                        ${q.customer_country ? `
+                        <div>
+                            <span class="text-gray-500">Country:</span>
+                            <p class="font-medium">${q.customer_country}</p>
+                        </div>
+                        ` : ''}
+                    </div>
+                </div>
+                
+                <!-- Order Details -->
+                <div class="bg-gray-50 rounded-lg p-4">
+                    <h4 class="font-semibold text-gray-900 mb-3 flex items-center">
+                        <i class="fas fa-coffee text-green-500 mr-2"></i>
+                        Order Details
+                    </h4>
+                    <div class="grid grid-cols-2 gap-3 text-sm">
+                        <div>
+                            <span class="text-gray-500">Product:</span>
+                            <p class="font-medium">${q.product_name}</p>
+                        </div>
+                        <div>
+                            <span class="text-gray-500">Category:</span>
+                            <p class="font-medium">${q.product_category || 'N/A'}</p>
+                        </div>
+                        <div>
+                            <span class="text-gray-500">Quantity:</span>
+                            <p class="font-medium text-lg">${q.quantity} ${q.unit || 'MT'}</p>
+                        </div>
+                        <div>
+                            <span class="text-gray-500">Status:</span>
+                            <p class="font-medium">
+                                <span class="px-2 py-1 text-xs rounded-full ${getStatusColor(q.status)}">${q.status}</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                ${q.message ? `
+                <div class="bg-gray-50 rounded-lg p-4">
+                    <h4 class="font-semibold text-gray-900 mb-2 flex items-center">
+                        <i class="fas fa-comment text-purple-500 mr-2"></i>
+                        Customer Message
+                    </h4>
+                    <p class="text-sm text-gray-700 whitespace-pre-wrap">${q.message}</p>
+                </div>
+                ` : ''}
+                
+                ${q.admin_notes ? `
+                <div class="bg-yellow-50 rounded-lg p-4 border-l-4 border-yellow-400">
+                    <h4 class="font-semibold text-gray-900 mb-2 flex items-center">
+                        <i class="fas fa-sticky-note text-yellow-500 mr-2"></i>
+                        Admin Notes
+                    </h4>
+                    <p class="text-sm text-gray-700 whitespace-pre-wrap">${q.admin_notes}</p>
+                </div>
+                ` : ''}
+                
+                <!-- Email Status -->
+                <div class="bg-gray-50 rounded-lg p-4">
+                    <h4 class="font-semibold text-gray-900 mb-2 flex items-center">
+                        <i class="fas fa-envelope text-indigo-500 mr-2"></i>
+                        Email Status
+                    </h4>
+                    <div class="flex items-center space-x-2 text-sm">
+                        <i class="fas fa-${q.email_sent ? 'check-circle text-green-500' : 'exclamation-circle text-red-500'}"></i>
+                        <span>${q.email_sent ? 'Email sent successfully' : 'Email failed to send'}</span>
+                    </div>
+                </div>
+                
+                <!-- Meta Information -->
+                <div class="text-xs text-gray-500 pt-2 border-t">
+                    <p>Request ID: #${q.id}</p>
+                    <p>Submitted: ${date}</p>
+                </div>
+                
+                <!-- Actions -->
+                <div class="flex space-x-3 pt-4">
+                    <button onclick="closeModal(); updateQuotationStatus(${q.id})" class="flex-1 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+                        <i class="fas fa-edit mr-2"></i>Update Status
+                    </button>
+                    <a href="mailto:${q.customer_email}?subject=Re: Quotation Request for ${q.product_name}" 
+                       class="flex-1 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 text-center">
+                        <i class="fas fa-reply mr-2"></i>Reply via Email
+                    </a>
+                </div>
+            </div>
+        `;
+        
+        document.getElementById('modal').classList.remove('hidden');
+        
+    } catch (error) {
+        admin.showNotification('Error loading quotation: ' + error.message, 'error');
+    }
+}
+
+async function updateQuotationStatus(id) {
+    try {
+        const response = await fetch(`../backend/api/quotations.php?id=${id}`);
+        const data = await response.json();
+        
+        if (!data.success) {
+            throw new Error(data.message || 'Failed to load quotation');
+        }
+        
+        const q = data.data.quotation;
+        
+        document.getElementById('modal-title').textContent = 'Update Quotation Status';
+        document.getElementById('modal-content').innerHTML = `
+            <form id="update-quotation-form" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
+                    <select id="quotation-status" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                        <option value="pending" ${q.status === 'pending' ? 'selected' : ''}>Pending</option>
+                        <option value="responded" ${q.status === 'responded' ? 'selected' : ''}>Responded</option>
+                        <option value="converted" ${q.status === 'converted' ? 'selected' : ''}>Converted to Order</option>
+                        <option value="archived" ${q.status === 'archived' ? 'selected' : ''}>Archived</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Admin Notes</label>
+                    <textarea id="quotation-notes" rows="4" 
+                              class="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                              placeholder="Add internal notes about this quotation...">${q.admin_notes || ''}</textarea>
+                </div>
+                <div class="flex space-x-3">
+                    <button type="button" onclick="closeModal()" 
+                            class="flex-1 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
+                        Cancel
+                    </button>
+                    <button type="submit" 
+                            class="flex-1 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
+                        <i class="fas fa-save mr-2"></i>Save Changes
+                    </button>
+                </div>
+            </form>
+        `;
+        
+        document.getElementById('modal').classList.remove('hidden');
+        
+        document.getElementById('update-quotation-form').onsubmit = async (e) => {
+            e.preventDefault();
+            await saveQuotationUpdate(id);
+        };
+        
+    } catch (error) {
+        admin.showNotification('Error loading quotation: ' + error.message, 'error');
+    }
+}
+
+async function saveQuotationUpdate(id) {
+    try {
+        const status = document.getElementById('quotation-status').value;
+        const notes = document.getElementById('quotation-notes').value;
+        
+        const response = await fetch('../backend/api/quotations.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                id: id,
+                status: status,
+                admin_notes: notes
+            })
+        });
+        
+        const result = await response.json();
+        
+        if (!result.success) {
+            throw new Error(result.message || 'Failed to update quotation');
+        }
+        
+        admin.showNotification('Quotation updated successfully', 'success');
+        closeModal();
+        admin.loadQuotations();
+        
+    } catch (error) {
+        admin.showNotification('Error updating quotation: ' + error.message, 'error');
+    }
+}
+
+function filterQuotations() {
+    const statusFilter = document.getElementById('status-filter').value.toLowerCase();
+    const searchFilter = document.getElementById('search-filter').value.toLowerCase();
+    const rows = document.querySelectorAll('.quotation-row');
+    
+    rows.forEach(row => {
+        const status = row.dataset.status;
+        const searchable = row.dataset.searchable.toLowerCase();
+        
+        const statusMatch = !statusFilter || status === statusFilter;
+        const searchMatch = !searchFilter || searchable.includes(searchFilter);
+        
+        row.style.display = (statusMatch && searchMatch) ? '' : 'none';
+    });
+}
+
+function getStatusColor(status) {
+    const colors = {
+        'pending': 'bg-yellow-100 text-yellow-800',
+        'responded': 'bg-blue-100 text-blue-800',
+        'converted': 'bg-green-100 text-green-800',
+        'archived': 'bg-gray-100 text-gray-800'
+    };
+    return colors[status] || 'bg-gray-100 text-gray-800';
 }

@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deployment Checklist</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 2.5rem;
+        }
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+        }
+        .section {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+        .section h2 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+        .checklist {
+            list-style: none;
+        }
+        .checklist li {
+            padding: 15px;
+            margin: 10px 0;
+            background: white;
+            border-radius: 8px;
+            border: 2px solid #e9ecef;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: start;
+        }
+        .checklist li:hover {
+            border-color: #667eea;
+            transform: translateX(5px);
+        }
+        .checklist li.checked {
+            background: #d4edda;
+            border-color: #28a745;
+        }
+        .checklist li input[type="checkbox"] {
+            width: 24px;
+            height: 24px;
+            margin-right: 15px;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+        .file-list {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            margin: 15px 0;
+        }
+        .file-list div {
+            padding: 5px 0;
+            border-bottom: 1px solid #444;
+        }
+        .file-list div:last-child {
+            border-bottom: none;
+        }
+        .priority-high {
+            border-left: 4px solid #dc3545 !important;
+        }
+        .priority-medium {
+            border-left: 4px solid #ffc107 !important;
+        }
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            margin: 5px;
+            transition: transform 0.2s;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+        .progress {
+            margin: 20px 0;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            text-align: center;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 30px;
+            background: #e9ecef;
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.5s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        .status {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+        .status-done {
+            background: #d4edda;
+            color: #155724;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Deployment Checklist</h1>
+        <p class="subtitle">Follow these steps to deploy the cache fix to production</p>
+        
+        <div class="progress">
+            <h3>Overall Progress</h3>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressBar" style="width: 0%;">0%</div>
+            </div>
+            <p id="progressText">0 of 12 steps completed</p>
+        </div>
+        
+        <div class="section priority-high">
+            <h2>📦 Step 1: Prepare Files <span class="status status-pending" id="status1">Pending</span></h2>
+            <p><strong>Files that MUST be uploaded to production:</strong></p>
+            <div class="file-list">
+                <div>✓ backend/api/testimonials.php (CRITICAL - Fixed syntax error)</div>
+                <div>✓ backend/config/database.php (CRITICAL - Improved error handling)</div>
+                <div>✓ js/dynamic-content.js (CRITICAL - Added cache busting)</div>
+            </div>
+            <ul class="checklist">
+                <li onclick="toggleCheck(this)">
+                    <input type="checkbox">
+                    <span>Located all 3 critical files in local workspace</span>
+                </li>
+                <li onclick="toggleCheck(this)">
+                    <input type="checkbox">
+                    <span>Verified files were recently modified (today's date)</span>
+                </li>
+            </ul>
+        </div>
+        
+        <div class="section priority-medium">
+            <h2>🧪 Step 2: Test Locally <span class="status status-pending" id="status2">Pending</span></h2>
+            <ul class="checklist">
+                <li onclick="toggleCheck(this)">
+                    <input type="checkbox">
+                    <span>Opened: <code>http://localhost/eastafricom/direct-api-test.php</code></span>
+                </li>
+                <li onclick="toggleCheck(this)">
+                    <input type="checkbox">
+                    <span>Verified all tests show GREEN checkmarks</span>
+                </li>
+                <li onclick="toggleCheck(this)">
+                    <input type="checkbox">
+                    <span>Confirmed testimonials table exists (or created it)</span>
+                </li>
+            </ul>
+            <a href="http://localhost/eastafricom/direct-api-test.php" target="_blank" class="btn">Open Test Page</a>
+        </div>
+        
+        <div class="section priority-high">
+            <h2>📤 Step 3: Upload to Production <span class="status status-pending" id="status3">Pending</span></h2>
+            <ul class="checklist">
+                <li onclick="toggleCheck(this)">
+                    <input type="checkbox">
+                    <span>Uploaded <code>backend/api/testimonials.php</code> to production</span>
+                </li>
+                <li onclick="toggleCheck(this)">
+                    <input type="checkbox">
+                    <span>Uploaded <code>backend/config/database.php</code> to production</span>
+                </li>
+                <li onclick="toggleCheck(this)">
+                    <input type="checkbox">
+                    <span>Uploaded <code>js/dynamic-content.js</code> to production</span>
+                </li>
+            </ul>
+            <p style="margin-top: 15px; color: #666;">
+                <strong>Tip:</strong> Use FTP client (FileZilla), cPanel File Manager, or run the PowerShell deployment script
+            </p>
+        </div>
+        
+        <div class="section priority-high">
+            <h2>🗄️ Step 4: Check Database <span class="status status-pending" id="status4">Pending</span></h2>
+            <ul class="checklist">
+                <li onclick="toggleCheck(this)">
+                    <input type="checkbox">
+                    <span>Accessed production phpMyAdmin or database manager</span>
+                </li>
+                <li onclick="toggleCheck(this)">
+                    <input type="checkbox">
+                    <span>Verified <code>testimonials</code> table exists</span>
+                </li>
+                <li onclick="toggleCheck(this)">
+                    <input type="checkbox">
+                    <span>If missing: Ran <code>create-testimonials-table.sql</code></span>
+                </li>
+            </ul>
+        </div>
+        
+        <div class="section priority-medium">
+            <h2>☁️ Step 5: Clear CDN Cache <span class="status status-pending" id="status5">Pending</span></h2>
+            <ul class="checklist">
+                <li onclick="toggleCheck(this)">
+                    <input type="checkbox">
+                    <span>Logged into CDN dashboard (Cloudflare/other)</span>
+                </li>
+                <li onclick="toggleCheck(this)">
+                    <input type="checkbox">
+                    <span>Purged all cache OR purged specific JS/API files</span>
+                </li>
+                <li onclick="toggleCheck(this)">
+                    <input type="checkbox">
+                    <span>Waited 2-3 minutes for cache propagation</span>
+                </li>
+            </ul>
+            <p style="margin-top: 15px; color: #666;">
+                <strong>Note:</strong> If not using a CDN, check this section as complete
+            </p>
+        </div>
+        
+        <div class="section priority-high">
+            <h2>🧹 Step 6: Clear Browser Cache <span class="status status-pending" id="status6">Pending</span></h2>
+            <ul class="checklist">
+                <li onclick="toggleCheck(this)">
+                    <input type="checkbox">
+                    <span>Pressed <kbd>Ctrl+Shift+Delete</kbd> and cleared all cache</span>
+                </li>
+                <li onclick="toggleCheck(this)">
+                    <input type="checkbox">
+                    <span>Hard refreshed with <kbd>Ctrl+Shift+R</kbd></span>
+                </li>
+                <li onclick="toggleCheck(this)">
+                    <input type="checkbox">
+                    <span>Opened DevTools (F12) and enabled "Disable cache"</span>
+                </li>
+            </ul>
+        </div>
+        
+        <div class="section priority-high">
+            <h2>✅ Step 7: Test Production <span class="status status-pending" id="status7">Pending</span></h2>
+            <ul class="checklist">
+                <li onclick="toggleCheck(this)">
+                    <input type="checkbox">
+                    <span>Visited: <code>https://live.eastafricom.com/direct-api-test.php</code></span>
+                </li>
+                <li onclick="toggleCheck(this)">
+                    <input type="checkbox">
+                    <span>All tests show GREEN checkmarks</span>
+                </li>
+                <li onclick="toggleCheck(this)">
+                    <input type="checkbox">
+                    <span>API returns testimonials data (count > 0)</span>
+                </li>
+            </ul>
+            <a href="https://live.eastafricom.com/direct-api-test.php" target="_blank" class="btn">Test Production</a>
+            <a href="https://live.eastafricom.com/backend/api/testimonials.php?featured=true&limit=10" target="_blank" class="btn">Test API Direct</a>
+        </div>
+        
+        <div class="section priority-high">
+            <h2>🎯 Step 8: Verify Main Site <span class="status status-pending" id="status8">Pending</span></h2>
+            <ul class="checklist">
+                <li onclick="toggleCheck(this)">
+                    <input type="checkbox">
+                    <span>Opened <code>https://live.eastafricom.com</code></span>
+                </li>
+                <li onclick="toggleCheck(this)">
+                    <input type="checkbox">
+                    <span>Opened browser console (F12) - NO 400 errors</span>
+                </li>
+                <li onclick="toggleCheck(this)">
+                    <input type="checkbox">
+                    <span>Testimonials carousel appears on homepage</span>
+                </li>
+                <li onclick="toggleCheck(this)">
+                    <input type="checkbox">
+                    <span>Console shows: "✅ Loaded X testimonials from database"</span>
+                </li>
+            </ul>
+        </div>
+        
+        <div class="section" style="background: #d4edda; border-left-color: #28a745;">
+            <h2>🎉 Deployment Complete!</h2>
+            <p>Once all checkboxes are checked, your deployment is complete and the cache issue is resolved!</p>
+            <button class="btn" onclick="downloadReport()" style="margin-top: 15px;">Download Deployment Report</button>
+        </div>
+    </div>
+
+    <script>
+        function toggleCheck(li) {
+            const checkbox = li.querySelector('input[type="checkbox"]');
+            checkbox.checked = !checkbox.checked;
+            if (checkbox.checked) {
+                li.classList.add('checked');
+            } else {
+                li.classList.remove('checked');
+            }
+            updateProgress();
+            saveProgress();
+        }
+        
+        function updateProgress() {
+            const total = document.querySelectorAll('.checklist input[type="checkbox"]').length;
+            const checked = document.querySelectorAll('.checklist input[type="checkbox"]:checked').length;
+            const percentage = Math.round((checked / total) * 100);
+            
+            document.getElementById('progressBar').style.width = percentage + '%';
+            document.getElementById('progressBar').textContent = percentage + '%';
+            document.getElementById('progressText').textContent = `${checked} of ${total} steps completed`;
+            
+            // Update section statuses
+            for (let i = 1; i <= 8; i++) {
+                const section = document.querySelectorAll('.section')[i-1];
+                const checkboxes = section.querySelectorAll('input[type="checkbox"]');
+                const sectionChecked = Array.from(checkboxes).every(cb => cb.checked);
+                const status = document.getElementById('status' + i);
+                
+                if (sectionChecked && checkboxes.length > 0) {
+                    status.textContent = 'Done';
+                    status.className = 'status status-done';
+                }
+            }
+        }
+        
+        function saveProgress() {
+            const checkboxes = document.querySelectorAll('.checklist input[type="checkbox"]');
+            const progress = Array.from(checkboxes).map(cb => cb.checked);
+            localStorage.setItem('deploymentProgress', JSON.stringify(progress));
+        }
+        
+        function loadProgress() {
+            const saved = localStorage.getItem('deploymentProgress');
+            if (saved) {
+                const progress = JSON.parse(saved);
+                const checkboxes = document.querySelectorAll('.checklist input[type="checkbox"]');
+                checkboxes.forEach((cb, index) => {
+                    if (progress[index]) {
+                        cb.checked = true;
+                        cb.parentElement.classList.add('checked');
+                    }
+                });
+                updateProgress();
+            }
+        }
+        
+        function downloadReport() {
+            const timestamp = new Date().toISOString();
+            const checkboxes = document.querySelectorAll('.checklist input[type="checkbox"]');
+            const total = checkboxes.length;
+            const checked = document.querySelectorAll('.checklist input[type="checkbox"]:checked').length;
+            
+            let report = `East Africom - Cache Fix Deployment Report\n`;
+            report += `Generated: ${timestamp}\n`;
+            report += `Progress: ${checked}/${total} steps completed (${Math.round((checked/total)*100)}%)\n\n`;
+            
+            document.querySelectorAll('.section').forEach((section, index) => {
+                const title = section.querySelector('h2').textContent;
+                report += `${title}\n`;
+                section.querySelectorAll('.checklist li').forEach(li => {
+                    const checked = li.querySelector('input').checked;
+                    const text = li.querySelector('span').textContent;
+                    report += `  [${checked ? 'X' : ' '}] ${text}\n`;
+                });
+                report += `\n`;
+            });
+            
+            const blob = new Blob([report], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `deployment-report-${Date.now()}.txt`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+        
+        // Load saved progress on page load
+        window.addEventListener('load', loadProgress);
+    </script>
+</body>
+</html>

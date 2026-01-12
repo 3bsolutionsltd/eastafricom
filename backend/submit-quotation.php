@@ -47,6 +47,7 @@ foreach ($required as $field) {
 $product = htmlspecialchars($data['product']);
 $productId = htmlspecialchars($data['productId']);
 $quantity = htmlspecialchars($data['quantity']);
+$unit = htmlspecialchars($data['unit'] ?? 'kg'); // Default to kg
 $shipping = htmlspecialchars($data['shipping'] ?? 'FOB');
 $company = htmlspecialchars($data['company']);
 $country = htmlspecialchars($data['country'] ?? 'Not specified');
@@ -98,7 +99,7 @@ $message = "
             <div class='section'>
                 <div class='section-title'>📦 PRODUCT DETAILS</div>
                 <div class='info-row'><span class='label'>Product:</span> <span class='value'>$product</span></div>
-                <div class='info-row'><span class='label'>Quantity:</span> <span class='value'>$quantity MT (Metric Tons)</span></div>
+                <div class='info-row'><span class='label'>Quantity:</span> <span class='value'>$quantity $unit</span></div>
                 <div class='info-row'><span class='label'>Shipping Terms:</span> <span class='value'>$shipping</span></div>
                 <div class='info-row'><span class='label'>Certifications:</span> <span class='value'>$certifications</span></div>
             </div>
@@ -143,17 +144,39 @@ $headers .= "From: East Africom Website <noreply@eastafricom.com>\r\n";
 $headers .= "Reply-To: $email\r\n";
 $headers .= "X-Mailer: PHP/" . phpversion();
 
-// Configure PHP to use SMTP (for Test Mail Server Tool)
-// Default SMTP settings - can be overridden in php.ini
-ini_set('SMTP', 'localhost');
-ini_set('smtp_port', '25');
-ini_set('sendmail_from', 'noreply@eastafricom.com');
+// Configure SMTP based on environment
+$environment = $_SERVER['HTTP_HOST'] ?? 'localhost';
+$isLocal = (strpos($environment, 'localhost') !== false || strpos($environment, '127.0.0.1') !== false);
 
-// Send email
+if ($isLocal) {
+    // Local development - use Test Mail Server Tool
+    ini_set('SMTP', 'localhost');
+    ini_set('smtp_port', '25');
+    ini_set('sendmail_from', 'noreply@eastafricom.com');
+    error_log("EMAIL CONFIG: Local development - Using localhost:25 SMTP");
+} else {
+    // Production (Hostinger) - uses built-in mail() function with default settings
+    // Hostinger's mail server is automatically configured
+    error_log("EMAIL CONFIG: Production - Using default mail server");
+}
+
+// Send email to company (Frank)
 try {
-    $mailSent = @mail($to, $subject, $message, $headers);
+    $mailSent = mail($to, $subject, $message, $headers);
+    
+    // Log the attempt with more detail
+    if ($mailSent) {
+        error_log("SUCCESS: Quote email sent to Frank ($to) - Product: $product, Company: $company, Environment: " . ($isLocal ? 'LOCAL' : 'PRODUCTION'));
+    } else {
+        error_log("FAILED: Quote email to Frank ($to) failed - Product: $product, Company: $company");
+        if ($isLocal) {
+            error_log("NOTE: For local testing, ensure Test Mail Server Tool is running on localhost:25");
+        } else {
+            error_log("NOTE: Check Hostinger email logs in cPanel");
+        }
+    }
 } catch (Exception $e) {
-    error_log("Mail error: " . $e->getMessage());
+    error_log("EXCEPTION: Mail error to Frank - " . $e->getMessage());
     $mailSent = false;
 }
 
@@ -189,7 +212,7 @@ $customerMessage = "
             <p><strong>Your Request Summary:</strong></p>
             <ul>
                 <li>Product: $product</li>
-                <li>Quantity: $quantity MT</li>
+                <li>Quantity: $quantity $unit</li>
                 <li>Shipping: $shipping</li>
                 <li>Company: $company</li>
             </ul>
@@ -220,34 +243,39 @@ $customerHeaders .= "From: East Africom <frank.asiimwe@eastafricom.com>\r\n";
 $customerHeaders .= "Reply-To: frank.asiimwe@eastafricom.com\r\n";
 
 try {
-    @mail($email, $customerSubject, $customerMessage, $customerHeaders);
+    $customerMailSent = mail($email, $customerSubject, $customerMessage, $customerHeaders);
+    
+    if ($customerMailSent) {
+        error_log("SUCCESS: Confirmation email sent to customer ($email)");
+    } else {
+        error_log("FAILED: Confirmation email to customer ($email) failed");
+    }
 } catch (Exception $e) {
-    error_log("Customer mail error: " . $e->getMessage());
+    error_log("EXCEPTION: Customer mail error - " . $e->getMessage());
 }
 
-// Optional: Save to database (uncomment if you have a database setup)
-/*
+// Save to database
 try {
-    $db = new PDO('mysql:host=localhost;dbname=eastafricom', 'username', 'password');
-    $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    require_once __DIR__ . '/config/database.php';
+    $database = new Database();
+    $db = $database->getConnection();
     
     $stmt = $db->prepare("
         INSERT INTO quotation_requests 
-        (product, product_id, quantity, shipping, certifications, company, country, 
-         contact_name, email, phone, requirements, timestamp, status) 
+        (product, product_id, quantity, unit, shipping, certifications, company, country, 
+         contact_name, email, phone, requirements, timestamp, status, email_sent) 
         VALUES 
-        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending')
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', ?)
     ");
     
     $stmt->execute([
-        $product, $productId, $quantity, $shipping, $certifications, 
-        $company, $country, $contactName, $email, $phone, $requirements, $timestamp
+        $product, $productId, $quantity, $unit, $shipping, $certifications, 
+        $company, $country, $contactName, $email, $phone, $requirements, $timestamp, $mailSent ? 1 : 0
     ]);
     
 } catch (PDOException $e) {
     error_log("Database error: " . $e->getMessage());
 }
-*/
 
 // Clean output buffer BEFORE sending JSON
 if (ob_get_level()) {

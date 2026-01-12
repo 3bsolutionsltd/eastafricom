@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quotation System - Quick Setup</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 800px;
+            width: 100%;
+            padding: 3rem;
+        }
+        h1 {
+            color: #10b981;
+            margin-bottom: 0.5rem;
+            font-size: 2rem;
+        }
+        .subtitle {
+            color: #666;
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+        .step {
+            background: #f8f9fa;
+            border-left: 4px solid #10b981;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-radius: 8px;
+        }
+        .step h2 {
+            color: #10b981;
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .step-number {
+            background: #10b981;
+            color: white;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        .btn {
+            display: inline-block;
+            background: #10b981;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 10px;
+            transition: all 0.3s;
+        }
+        .btn:hover {
+            background: #059669;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.4);
+        }
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        .feature {
+            background: #f0fdf4;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .feature-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        .feature-text {
+            font-size: 0.9rem;
+            color: #065f46;
+            font-weight: 600;
+        }
+        .success {
+            background: #d1fae5;
+            border-color: #10b981;
+            color: #065f46;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 2rem;
+            display: none;
+        }
+        code {
+            background: #1f2937;
+            color: #10b981;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Quotation System Setup</h1>
+        <p class="subtitle">Follow these simple steps to activate your new quotation management system</p>
+        
+        <div class="step">
+            <h2><span class="step-number">1</span> Create Database Table</h2>
+            <p>First, we need to create the database table to store quotation requests.</p>
+            <a href="backend/setup-quotations-table.php" class="btn" target="_blank">
+                ▶ Run Database Setup
+            </a>
+            <p style="margin-top: 10px; color: #666; font-size: 0.9rem;">
+                ⚠️ Run this only once. You should see a success message after clicking.
+            </p>
+        </div>
+        
+        <div class="step">
+            <h2><span class="step-number">2</span> Access Admin Interface</h2>
+            <p>View and manage all quotation requests from customers.</p>
+            <a href="backend/view-quotations.php" class="btn" target="_blank">
+                📋 Open Quotation Manager
+            </a>
+            <p style="margin-top: 10px; color: #666; font-size: 0.9rem;">
+                💡 Bookmark this page for easy access later.
+            </p>
+        </div>
+        
+        <div class="step">
+            <h2><span class="step-number">3</span> Test the System</h2>
+            <p>Try submitting a test quotation from your website to see how it works.</p>
+            <a href="index.html" class="btn" target="_blank">
+                🧪 Go to Website
+            </a>
+            <p style="margin-top: 10px; color: #666; font-size: 0.9rem;">
+                Click "Get Quotation" on any product, fill the form, and submit.
+            </p>
+        </div>
+        
+        <div class="features">
+            <div class="feature">
+                <div class="feature-icon">✉️</div>
+                <div class="feature-text">Email Notifications</div>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">⚖️</div>
+                <div class="feature-text">Multiple Units (kg, lbs, MT)</div>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">💰</div>
+                <div class="feature-text">Accurate Price Calculation</div>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">📊</div>
+                <div class="feature-text">Admin Dashboard</div>
+            </div>
+        </div>
+        
+        <div style="margin-top: 2rem; padding: 1.5rem; background: #fef3c7; border-radius: 8px; border-left: 4px solid #f59e0b;">
+            <h3 style="color: #92400e; margin-bottom: 0.5rem;">📖 Documentation</h3>
+            <p style="color: #78350f;">
+                For complete documentation, see <code>QUOTATION_SYSTEM_UPDATES.md</code>
+            </p>
+        </div>
+        
+        <div class="success" id="successMessage">
+            <strong>✅ Setup Complete!</strong>
+            <p>Your quotation system is now ready to use.</p>
+        </div>
+    </div>
+</body>
+</html>

@@ -117,6 +117,9 @@
                 <button onclick="showTab('activity')" class="tab-btn px-3 py-2 rounded-lg font-medium text-sm whitespace-nowrap">
                     <i class="fas fa-chart-line mr-1"></i>Activity
                 </button>
+                <button onclick="showTab('quotations')" class="tab-btn px-3 py-2 rounded-lg font-medium text-sm whitespace-nowrap">
+                    <i class="fas fa-file-invoice mr-1"></i>Quotations
+                </button>
                 <button onclick="showTab('sections')" class="tab-btn px-3 py-2 rounded-lg font-medium text-sm whitespace-nowrap">
                     <i class="fas fa-th-large mr-1"></i>Sections
                 </button>
@@ -352,6 +355,24 @@
                         <div class="flex items-center justify-center py-8">
                             <div class="loader"></div>
                             <span class="ml-3 text-gray-500">Loading activity...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quotations Tab -->
+        <div id="quotations-tab" class="tab-content hidden">
+            <div class="bg-white rounded-lg shadow">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h2 class="text-xl font-semibold text-gray-900">Quotation Requests</h2>
+                    <p class="text-sm text-gray-500 mt-1">Manage customer quotation requests and inquiries</p>
+                </div>
+                <div class="p-6">
+                    <div id="quotations-content">
+                        <div class="flex items-center justify-center py-8">
+                            <div class="loader"></div>
+                            <span class="ml-3 text-gray-500">Loading quotations...</span>
                         </div>
                     </div>
                 </div>
