@@ -89,43 +89,56 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <!-- Navigation Tabs -->
         <div class="mb-6">
-            <nav class="flex flex-wrap gap-2">
+            <nav class="flex flex-wrap gap-3">
+                <!-- Dashboard -->
                 <button onclick="showTab('dashboard')" class="tab-btn px-3 py-2 rounded-lg font-medium text-sm active whitespace-nowrap">
                     <i class="fas fa-chart-dashboard mr-1"></i>Dashboard
                 </button>
-                <button onclick="showTab('products')" class="tab-btn px-3 py-2 rounded-lg font-medium text-sm whitespace-nowrap">
-                    <i class="fas fa-coffee mr-1"></i>Products
-                </button>
-                <button onclick="showTab('contact-info')" class="tab-btn px-3 py-2 rounded-lg font-medium text-sm whitespace-nowrap">
-                    <i class="fas fa-address-card mr-1"></i>Contact
-                </button>
-                <button onclick="showTab('slideshow')" class="tab-btn px-3 py-2 rounded-lg font-medium text-sm whitespace-nowrap">
-                    <i class="fas fa-images mr-1"></i>Slideshow
-                </button>
-                <button onclick="showTab('testimonials')" class="tab-btn px-3 py-2 rounded-lg font-medium text-sm whitespace-nowrap">
-                    <i class="fas fa-quote-left mr-1"></i>Reviews
-                </button>
-                <button onclick="showTab('awards')" class="tab-btn px-3 py-2 rounded-lg font-medium text-sm whitespace-nowrap">
-                    <i class="fas fa-trophy mr-1"></i>Awards
-                </button>
-                <button onclick="showTab('certifications')" class="tab-btn px-3 py-2 rounded-lg font-medium text-sm whitespace-nowrap">
-                    <i class="fas fa-certificate mr-1"></i>Certifications
-                </button>
-                <button onclick="showTab('quality-badges')" class="tab-btn px-3 py-2 rounded-lg font-medium text-sm whitespace-nowrap">
-                    <i class="fas fa-shield-alt mr-1"></i>Quality
-                </button>
-                <button onclick="showTab('activity')" class="tab-btn px-3 py-2 rounded-lg font-medium text-sm whitespace-nowrap">
-                    <i class="fas fa-chart-line mr-1"></i>Activity
-                </button>
-                <button onclick="showTab('quotations')" class="tab-btn px-3 py-2 rounded-lg font-medium text-sm whitespace-nowrap">
-                    <i class="fas fa-file-invoice mr-1"></i>Quotations
-                </button>
-                <button onclick="showTab('sections')" class="tab-btn px-3 py-2 rounded-lg font-medium text-sm whitespace-nowrap">
-                    <i class="fas fa-th-large mr-1"></i>Sections
-                </button>
-                <button onclick="showTab('settings')" class="tab-btn px-3 py-2 rounded-lg font-medium text-sm whitespace-nowrap">
-                    <i class="fas fa-cog mr-1"></i>Settings
-                </button>
+                
+                <!-- Business & Sales Group -->
+                <div class="flex gap-1.5 border-l-2 border-blue-400 pl-3">
+                    <button onclick="showTab('quotations')" class="tab-btn px-3 py-2 rounded-lg font-medium text-sm whitespace-nowrap">
+                        <i class="fas fa-file-invoice mr-1"></i>Quotations
+                    </button>
+                    <button onclick="showTab('products')" class="tab-btn px-3 py-2 rounded-lg font-medium text-sm whitespace-nowrap">
+                        <i class="fas fa-coffee mr-1"></i>Products
+                    </button>
+                    <button onclick="showTab('activity')" class="tab-btn px-3 py-2 rounded-lg font-medium text-sm whitespace-nowrap">
+                        <i class="fas fa-chart-line mr-1"></i>Activity
+                    </button>
+                </div>
+                
+                <!-- Content Management Group -->
+                <div class="flex gap-1.5 border-l-2 border-green-400 pl-3">
+                    <button onclick="showTab('slideshow')" class="tab-btn px-3 py-2 rounded-lg font-medium text-sm whitespace-nowrap">
+                        <i class="fas fa-images mr-1"></i>Slideshow
+                    </button>
+                    <button onclick="showTab('testimonials')" class="tab-btn px-3 py-2 rounded-lg font-medium text-sm whitespace-nowrap">
+                        <i class="fas fa-quote-left mr-1"></i>Reviews
+                    </button>
+                    <button onclick="showTab('awards')" class="tab-btn px-3 py-2 rounded-lg font-medium text-sm whitespace-nowrap">
+                        <i class="fas fa-trophy mr-1"></i>Awards
+                    </button>
+                    <button onclick="showTab('certifications')" class="tab-btn px-3 py-2 rounded-lg font-medium text-sm whitespace-nowrap">
+                        <i class="fas fa-certificate mr-1"></i>Certifications
+                    </button>
+                    <button onclick="showTab('quality-badges')" class="tab-btn px-3 py-2 rounded-lg font-medium text-sm whitespace-nowrap">
+                        <i class="fas fa-shield-alt mr-1"></i>Quality
+                    </button>
+                </div>
+                
+                <!-- Site Configuration Group -->
+                <div class="flex gap-1.5 border-l-2 border-gray-400 pl-3">
+                    <button onclick="showTab('contact-info')" class="tab-btn px-3 py-2 rounded-lg font-medium text-sm whitespace-nowrap">
+                        <i class="fas fa-address-card mr-1"></i>Contact
+                    </button>
+                    <button onclick="showTab('sections')" class="tab-btn px-3 py-2 rounded-lg font-medium text-sm whitespace-nowrap">
+                        <i class="fas fa-th-large mr-1"></i>Sections
+                    </button>
+                    <button onclick="showTab('settings')" class="tab-btn px-3 py-2 rounded-lg font-medium text-sm whitespace-nowrap">
+                        <i class="fas fa-cog mr-1"></i>Settings
+                    </button>
+                </div>
             </nav>
         </div>
 

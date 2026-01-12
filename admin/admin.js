@@ -832,6 +832,7 @@ class AdminDashboard {
                     <option value="">All Statuses</option>
                     <option value="pending">Pending</option>
                     <option value="responded">Responded</option>
+                    <option value="accepted">Accepted</option>
                     <option value="converted">Converted</option>
                     <option value="archived">Archived</option>
                 </select>
@@ -864,13 +865,23 @@ class AdminDashboard {
 
     renderQuotationRow(quotation) {
         const statusColors = {
-            pending: 'bg-yellow-100 text-yellow-800',
-            responded: 'bg-blue-100 text-blue-800',
-            converted: 'bg-green-100 text-green-800',
-            archived: 'bg-gray-100 text-gray-800'
+            pending: 'bg-yellow-100 text-yellow-800 border border-yellow-200',
+            responded: 'bg-blue-100 text-blue-800 border border-blue-200',
+            accepted: 'bg-emerald-100 text-emerald-800 border border-emerald-200',
+            converted: 'bg-green-100 text-green-800 border border-green-200',
+            archived: 'bg-gray-100 text-gray-800 border border-gray-200'
+        };
+        
+        const statusLabels = {
+            pending: 'Pending',
+            responded: 'Responded',
+            accepted: 'Accepted',
+            converted: 'Converted',
+            archived: 'Archived'
         };
 
-        const statusColor = statusColors[quotation.status] || 'bg-gray-100 text-gray-800';
+        const statusColor = statusColors[quotation.status] || 'bg-gray-100 text-gray-800 border border-gray-200';
+        const statusLabel = statusLabels[quotation.status] || quotation.status;
         const date = new Date(quotation.created_at).toLocaleDateString('en-US', { 
             year: 'numeric', 
             month: 'short', 
@@ -893,8 +904,8 @@ class AdminDashboard {
                     ${quotation.quantity} ${quotation.unit || 'MT'}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
-                    <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${statusColor}">
-                        ${quotation.status}
+                    <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-lg ${statusColor}">
+                        ${statusLabel}
                     </span>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm">
@@ -2476,6 +2487,7 @@ async function updateQuotationStatus(id) {
                     <select id="quotation-status" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
                         <option value="pending" ${q.status === 'pending' ? 'selected' : ''}>Pending</option>
                         <option value="responded" ${q.status === 'responded' ? 'selected' : ''}>Responded</option>
+                        <option value="accepted" ${q.status === 'accepted' ? 'selected' : ''}>Accepted</option>
                         <option value="converted" ${q.status === 'converted' ? 'selected' : ''}>Converted to Order</option>
                         <option value="archived" ${q.status === 'archived' ? 'selected' : ''}>Archived</option>
                     </select>
